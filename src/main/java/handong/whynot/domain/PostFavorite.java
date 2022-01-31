@@ -18,5 +18,5 @@ public class PostFavorite {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    public User suer;
+    public User user;
 }

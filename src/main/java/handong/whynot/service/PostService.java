@@ -26,6 +26,7 @@ public class PostService {
                                 .title(post.title)
                                 .postImg(post.postImg)
                                 .createdDt(post.createdDt)
+                                .updatedDt(post.updatedDt)
                                 .createdBy(post.createdBy)
                                 .content(post.content)
                                 .isRecruiting(post.isRecruiting)

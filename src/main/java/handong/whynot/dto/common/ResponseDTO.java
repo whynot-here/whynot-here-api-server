@@ -2,11 +2,11 @@ package handong.whynot.dto.common;
 
 import lombok.*;
 
-@Builder
-@Getter
-@Setter
+
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter @Setter
+@Builder
 public class ResponseDTO {
 
     Integer statusCode;

@@ -1,5 +1,6 @@
 package handong.whynot.domain;
 
+import handong.whynot.domain.common.BaseTimeEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,10 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Getter @Setter
 @EqualsAndHashCode(of = "id")
-public class Post {
+public class Post extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -25,9 +25,6 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "user_id")
     public User createdBy;
-
-//    @OneToMany
-//    public List<User> applicants = new ArrayList<>();
 
     @Column(name = "title")
     public String title;
@@ -41,10 +38,6 @@ public class Post {
     @Column(name = "is_recruiting")
     public boolean isRecruiting;
 
-    @Column(name = "created_dt")
-    public LocalDateTime createdDt;
-
     @Column(name = "closed_dt")
     public LocalDateTime closedDt;
-
 }

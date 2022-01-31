@@ -23,7 +23,4 @@ public class User {
 
     @Column(name = "profile_img")
     public String profileImg;
-
-
-
 }

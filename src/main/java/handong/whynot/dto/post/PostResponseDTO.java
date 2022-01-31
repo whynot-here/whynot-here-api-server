@@ -12,8 +12,8 @@ import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Getter @Setter
+@Builder
 public class PostResponseDTO {
 
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm";
@@ -27,6 +27,9 @@ public class PostResponseDTO {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = "Asia/Seoul")
     public LocalDateTime createdDt;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = "Asia/Seoul")
+    public LocalDateTime updatedDt;
 
     public User createdBy;
 
