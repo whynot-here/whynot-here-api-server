@@ -1,9 +1,7 @@
 package handong.whynot.repository;
 
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import handong.whynot.domain.*;
-import handong.whynot.dto.post.PostResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -24,15 +22,10 @@ public class PostQueryRepository {
     private final QUser qUser = QUser.user;
 
     // Post Full info
-    public List<PostResponseDTO> getPosts() {
+    public List<Post> getPosts() {
 
         // dto 하나더 만들기는 그래서 이렇게 fields로 넣었음.
-        return queryFactory.select(
-                    Projections.fields(PostResponseDTO.class,
-                            qPost.id, qPost.title, qPost.postImg,
-                            qPost.createdDt, qPost.createdBy, qPost.content,
-                            qPost.isRecruiting))
-                .from(qPost)
+        return queryFactory.selectFrom(qPost)
                 .fetch();
     }
 
