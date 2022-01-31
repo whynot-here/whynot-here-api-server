@@ -1,4 +1,7 @@
 package handong.whynot.dto.common;
 
-public class ResponseCode {
+public interface ResponseCode {
+    Integer getStatusCode();
+    String getMessage();
 }
+
