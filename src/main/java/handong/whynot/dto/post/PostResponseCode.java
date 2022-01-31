@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum PostResponseCode implements ResponseCode {
     POST_CREATE_OK(20001, "공고 [생성]에 성공하였습니다."),
-    POST_CREATE_FAIL_ALREADY_EXIST(40001, "공고 [생성]에 실패하였습니다. - 이미 존재함"),
+    POST_CREATE_FAIL(40001, "공고 [생성]에 실패하였습니다."),
 
     POST_READ_OK(20002, "공고 [조회]에 성공하였습니다."),
     POST_READ_FAIL(40002, "공고 [조회]에 실패하였습니다."),
