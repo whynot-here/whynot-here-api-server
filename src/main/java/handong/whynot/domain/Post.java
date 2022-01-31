@@ -1,9 +1,7 @@
 package handong.whynot.domain;
 
 import handong.whynot.domain.common.BaseTimeEntity;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor
 @Getter @Setter
 @EqualsAndHashCode(of = "id")
 public class Post extends BaseTimeEntity {
@@ -40,4 +39,17 @@ public class Post extends BaseTimeEntity {
 
     @Column(name = "closed_dt")
     public LocalDateTime closedDt;
+
+    @Builder
+    public Post(User createdBy, String title, String content, String postImg) {
+        this.createdBy = createdBy;
+        this.title = title;
+        this.content = content;
+        this.postImg = postImg;
+    }
+
+    public Post addJobs(List<JobPost> jobs) {
+        this.jobPosts = jobPosts;
+        return this;
+    }
 }

@@ -1,14 +1,17 @@
 package handong.whynot.api;
 
+import handong.whynot.dto.common.ResponseDTO;
+import handong.whynot.dto.post.PostRequestDTO;
+import handong.whynot.dto.post.PostResponseCode;
 import handong.whynot.dto.post.PostResponseDTO;
 import handong.whynot.service.PostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/v1/posts")
@@ -23,7 +26,13 @@ public class PostController {
         return postService.getPosts();
     }
 
-//    @PostMapping("")
-//    public void
+    @PostMapping("")
+    @ResponseStatus(CREATED)
+    public ResponseDTO createPost(@RequestBody PostRequestDTO request) {
+
+        postService.createPost(request);
+
+        return ResponseDTO.of(PostResponseCode.POST_CREATE_OK);
+    }
 
 }
