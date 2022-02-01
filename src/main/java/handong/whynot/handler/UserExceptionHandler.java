@@ -1,7 +1,6 @@
 package handong.whynot.handler;
 
 import handong.whynot.dto.common.ErrorResponseDTO;
-import handong.whynot.dto.post.PostResponseCode;
 import handong.whynot.dto.user.UserResponseCode;
 import handong.whynot.exception.user.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
