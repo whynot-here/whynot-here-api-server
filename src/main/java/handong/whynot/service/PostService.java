@@ -32,35 +32,28 @@ public class PostService {
 
         List<Post> posts = postQueryRepository.getPosts();
         return posts.stream()
-                .map(post -> PostResponseDTO.builder()
-                                .id(post.id)
-                                .title(post.title)
-                                .postImg(post.postImg)
-                                .createdDt(post.createdDt)
-                                .updatedDt(post.updatedDt)
-                                .createdBy(post.createdBy)
-                                .content(post.content)
-                                .isRecruiting(post.isRecruiting)
-                                .jobs(postQueryRepository.getJobs(post.id))
-                                .applicants(postQueryRepository.getApplicants(post.id))
-                                .build()
-                        )
+                .map(post ->
+                        PostResponseDTO.of(post,
+                                postQueryRepository.getJobs(post.getId()),
+                                postQueryRepository.getApplicants(post.getId())))
                 .collect(Collectors.toList());
     }
 
     public Post createPost(PostRequestDTO request) {
 
         User user = userRepository.findById(request.userId)
-                .orElseThrow(() -> new UserNotFoundException(UserResponseCode.USER_READ_FAIL));
+                .orElseThrow(
+                        () -> new UserNotFoundException(UserResponseCode.USER_READ_FAIL));
 
         // 1. Post 저장
         Post post = Post.builder()
-                        .createdBy(user)
-                        .title(request.title)
-                        .content(request.content)
-                        .postImg(request.postImg)
-                        .build();
-        post.isRecruiting = true;
+                .createdBy(user)
+                .title(request.title)
+                .content(request.content)
+                .postImg(request.postImg)
+                .build();
+
+        post.setRecruiting(true);
         Post newPost = postRepository.save(post);
 
         // 2. Job 저장
@@ -68,19 +61,20 @@ public class PostService {
         request.jobIds.forEach(
                 id -> {
                     Job job = jobRepository.findById(id)
-                            .orElseThrow(() -> new JobNotFoundException(JobResponseCode.JOB_READ_FAIL));
+                            .orElseThrow(
+                                    () -> new JobNotFoundException(JobResponseCode.JOB_READ_FAIL));
 
                     JobPost jobPost = JobPost.builder()
-                                    .job(job)
-                                    .post(newPost)
-                                    .build();
+                            .job(job)
+                            .post(newPost)
+                            .build();
 
                     jobPosts.add(jobPost);
                     jobPostRepository.save(jobPost);
                 }
         );
-        post.addJobs(jobPosts);
+//        newPost.addJobs(jobPosts);
 
-        return post;
+        return newPost;
     }
 }
