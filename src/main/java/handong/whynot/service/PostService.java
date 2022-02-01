@@ -4,7 +4,6 @@ import handong.whynot.domain.Job;
 import handong.whynot.domain.JobPost;
 import handong.whynot.domain.Post;
 import handong.whynot.domain.User;
-import handong.whynot.dto.job.JobEnum;
 import handong.whynot.dto.job.JobResponseCode;
 import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseDTO;

@@ -48,8 +48,7 @@ public class Post extends BaseTimeEntity {
         this.postImg = postImg;
     }
 
-    public Post addJobs(List<JobPost> jobs) {
+    public void addJobs(List<JobPost> jobs) {
         this.jobPosts = jobPosts;
-        return this;
     }
 }
