@@ -3,6 +3,7 @@ package handong.whynot.dto.post;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import handong.whynot.domain.Job;
+import handong.whynot.domain.Post;
 import handong.whynot.domain.User;
 import lombok.*;
 
@@ -12,32 +13,50 @@ import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter @Setter
+@Getter
+@Setter
 @Builder
 public class PostResponseDTO {
 
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm";
 
     @JsonProperty(namespace = "postId")
-    public Long id;
+    private Long id;
 
-    public String title;
+    private String title;
 
-    public String postImg;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = "Asia/Seoul")
-    public LocalDateTime createdDt;
+    private String postImg;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = "Asia/Seoul")
-    public LocalDateTime updatedDt;
+    private LocalDateTime createdDt;
 
-    public User createdBy;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = "Asia/Seoul")
+    private LocalDateTime updatedDt;
 
-    public String content;
+    private User createdBy;
 
-    public boolean isRecruiting;
+    private String content;
 
-    public List<Job> jobs = new ArrayList<Job>();
+    private boolean isRecruiting;
 
-    public List<User> applicants = new ArrayList<User>();
+    @Builder.Default
+    private List<Job> jobs = new ArrayList<Job>();
+
+    @Builder.Default
+    private List<User> applicants = new ArrayList<User>();
+
+    public static PostResponseDTO of(Post post, List<Job> jobs, List<User> applicants) {
+        return builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .postImg(post.getPostImg())
+                .createdDt(post.getCreatedDt())
+                .updatedDt(post.getUpdatedDt())
+                .createdBy(post.getCreatedBy())
+                .content(post.getContent())
+                .isRecruiting(post.isRecruiting())
+                .jobs(jobs)
+                .applicants(applicants)
+                .build();
+    }
 }

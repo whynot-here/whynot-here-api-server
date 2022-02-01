@@ -9,36 +9,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
-@Getter @Setter
+@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Post extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    public Long id;
+    private Long id;
 
     @OneToMany(mappedBy = "post")
     private List<JobPost> jobPosts = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    public User createdBy;
+    private User createdBy;
 
     @Column(name = "title")
-    public String title;
+    private String title;
 
     @Column(name = "content")
-    public String content;
+    private String content;
 
     @Column(name = "post_img")
-    public String postImg;
+    private String postImg;
 
     @Column(name = "is_recruiting")
-    public boolean isRecruiting;
+    private boolean isRecruiting;
 
     @Column(name = "closed_dt")
-    public LocalDateTime closedDt;
+    private LocalDateTime closedDt;
 
     @Builder
     public Post(User createdBy, String title, String content, String postImg) {
