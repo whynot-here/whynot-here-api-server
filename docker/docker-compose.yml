@@ -1,0 +1,16 @@
+version: "3"
+services:
+  db:
+    image: mysql:latest
+    container_name: db
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: "whynot"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "user"
+      MYSQL_PASSWORD: "user"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
