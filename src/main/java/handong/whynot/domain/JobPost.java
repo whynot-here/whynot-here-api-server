@@ -1,13 +1,14 @@
 package handong.whynot.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter @Setter
+@Builder
 @EqualsAndHashCode(of = "id")
 public class JobPost {
 
