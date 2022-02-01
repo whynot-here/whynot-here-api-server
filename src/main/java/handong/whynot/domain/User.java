@@ -1,26 +1,31 @@
 package handong.whynot.domain;
 
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    public Long id;
+    private Long id;
 
     @Column(name = "email")
-    public String email;
+    private String email;
 
     @Column(name = "nickname")
-    public String nickname;
+    private String nickname;
 
     @Column(name = "password")
-    public String password;
+    private String password;
 
     @Column(name = "profile_img")
-    public String profileImg;
+    private String profileImg;
 }
