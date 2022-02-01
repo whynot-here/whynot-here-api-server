@@ -3,8 +3,6 @@ package handong.whynot.domain;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @EqualsAndHashCode(of = "id")
@@ -16,8 +14,4 @@ public class Job {
 
     @Column(name = "name", nullable = false)
     public String name;
-
-//    @OneToMany(mappedBy = "job")
-//    private List<JobPost> jobPosts = new ArrayList<>();
-
 }
