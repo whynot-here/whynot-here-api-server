@@ -31,18 +31,18 @@ public class PostQueryRepository {
 
     public List<Job> getJobs(Long post_id) {
         return queryFactory.selectFrom(qJob)
-                        .where(qJob.id.in(
-                                select(qJobPost.job.id).from(qJobPost)
-                                        .where(qJobPost.post.id.eq(post_id))
-                        ))
+                .where(qJob.id.in(
+                        select(qJobPost.job.id).from(qJobPost)
+                                .where(qJobPost.post.id.eq(post_id))
+                ))
                 .fetch();
     }
 
     public List<User> getApplicants(Long post_id) {
         return queryFactory.selectFrom(qUser)
                 .where(qUser.id.in(
-                        select(qPostApply.user.id).from(qPostApply)
-                                .where(qPostApply.post.id.eq(post_id))
+                                select(qPostApply.user.id).from(qPostApply)
+                                        .where(qPostApply.post.id.eq(post_id))
                         )
                 )
                 .fetch();
