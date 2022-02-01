@@ -1,26 +1,31 @@
 package handong.whynot.domain;
 
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class PostApply {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    public Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
-    public Post post;
+    private Post post;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    public User user;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "job_id")
-    public Job job;
+    private Job job;
 }

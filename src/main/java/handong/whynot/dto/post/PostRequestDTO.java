@@ -7,7 +7,8 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter @Setter
+@Getter
+@Setter
 @Builder
 public class PostRequestDTO {
 
@@ -16,5 +17,6 @@ public class PostRequestDTO {
     public String content;
     public String postImg;
 
+    @Builder.Default
     public List<Long> jobIds = new ArrayList<>();
 }
