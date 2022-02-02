@@ -21,6 +21,7 @@ public class Post extends BaseTimeEntity {
     @Column(name = "id")
     private Long id;
 
+    @Builder.Default
     @OneToMany(mappedBy = "post")
     private List<JobPost> jobPosts = new ArrayList<>();
 
@@ -49,6 +50,7 @@ public class Post extends BaseTimeEntity {
         this.title = title;
         this.content = content;
         this.postImg = postImg;
+        this.isRecruiting = true;
     }
 
     public void addJobs(List<JobPost> jobs) {
