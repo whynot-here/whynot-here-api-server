@@ -4,9 +4,6 @@ server:
     include-stacktrace: never
 
 spring:
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher   # swagger 임시방편 조치. (제거 대상)
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3307/whynot?characterEncoding=UTF-8&serverTimezone=UTC
