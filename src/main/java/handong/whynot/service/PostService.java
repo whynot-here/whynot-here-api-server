@@ -14,6 +14,7 @@ import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,25 +40,23 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    public Post createPost(PostRequestDTO request) {
+    @Transactional
+    public void createPost(PostRequestDTO request) {
 
-        User user = userRepository.findById(request.userId)
+        User user = userRepository.findById(request.getUserId())
                 .orElseThrow(
                         () -> new UserNotFoundException(UserResponseCode.USER_READ_FAIL));
 
         // 1. Post 저장
         Post post = Post.builder()
                 .createdBy(user)
-                .title(request.title)
-                .content(request.content)
-                .postImg(request.postImg)
+                .title(request.getTitle())
+                .content(request.getContent())
+                .postImg(request.getPostImg())
                 .build();
-
-        post.setRecruiting(true);
         Post newPost = postRepository.save(post);
 
-        // 2. Job 저장
-        List<JobPost> jobPosts = new ArrayList<>();
+        // 2. JobPost 저장
         request.jobIds.forEach(
                 id -> {
                     Job job = jobRepository.findById(id)
@@ -69,12 +68,8 @@ public class PostService {
                             .post(newPost)
                             .build();
 
-                    jobPosts.add(jobPost);
                     jobPostRepository.save(jobPost);
                 }
         );
-//        newPost.addJobs(jobPosts);
-
-        return newPost;
     }
 }
