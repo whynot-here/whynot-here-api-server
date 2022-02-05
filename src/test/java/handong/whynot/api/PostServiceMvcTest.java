@@ -39,7 +39,7 @@ public class PostServiceMvcTest {
 
         // given
         PostRequestDTO requestDTO = PostRequestDTO.builder()
-                .userId(1L)
+                .accountId(1L)
                 .title("[공고 모집] 캡스톤 함께하실 분!")
                 .content("행복한 펫을 위해 서비스를 만들고자 합니다.")
                 .postImg("http://image.com")
@@ -47,7 +47,7 @@ public class PostServiceMvcTest {
                 .build();
 
         // when, given
-        mockMvc.perform(post("/v1/posts/")
+        mockMvc.perform(post("/v1/posts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO))
