@@ -1,15 +1,15 @@
 package handong.whynot.service;
 
+import handong.whynot.domain.Account;
 import handong.whynot.domain.Job;
 import handong.whynot.domain.JobPost;
 import handong.whynot.domain.Post;
-import handong.whynot.domain.User;
 import handong.whynot.dto.job.JobResponseCode;
 import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseDTO;
-import handong.whynot.dto.user.UserResponseCode;
+import handong.whynot.dto.account.AccountResponseCode;
 import handong.whynot.exception.job.JobNotFoundException;
-import handong.whynot.exception.user.UserNotFoundException;
+import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class PostService {
     private final PostQueryRepository postQueryRepository;
     private final JobRepository jobRepository;
     private final JobPostRepository jobPostRepository;
-    private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
 
     public List<PostResponseDTO> getPosts() {
 
@@ -42,13 +42,13 @@ public class PostService {
     @Transactional
     public void createPost(PostRequestDTO request) {
 
-        User user = userRepository.findById(request.getUserId())
+        Account account= accountRepository.findById(request.getAccountId())
                 .orElseThrow(
-                        () -> new UserNotFoundException(UserResponseCode.USER_READ_FAIL));
+                        () -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
 
         // 1. Post 저장
         Post post = Post.builder()
-                .createdBy(user)
+                .createdBy(account)
                 .title(request.getTitle())
                 .content(request.getContent())
                 .postImg(request.getPostImg())
