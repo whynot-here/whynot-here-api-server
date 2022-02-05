@@ -1,14 +1,14 @@
 package handong.whynot.service;
 
+import handong.whynot.domain.Account;
 import handong.whynot.domain.Job;
 import handong.whynot.domain.Post;
-import handong.whynot.domain.User;
 import handong.whynot.dto.job.JobResponseCode;
 import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseDTO;
-import handong.whynot.dto.user.UserResponseCode;
+import handong.whynot.dto.account.AccountResponseCode;
 import handong.whynot.exception.job.JobNotFoundException;
-import handong.whynot.exception.user.UserNotFoundException;
+import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.repository.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ class PostServiceTest {
     @Mock
     private JobPostRepository jobPostRepository;
     @Mock
-    private UserRepository userRepository;
+    private AccountRepository accountRepository;
     @InjectMocks
     private PostService postService;
 
@@ -67,19 +67,19 @@ class PostServiceTest {
 
     @DisplayName("공고생성 [실패1] - 등록되지 않은 사용자")
     @Test
-    void createPostWithUserNotFoundException() {
+    void createPostWithAccountNotFoundException() {
         // given
-        Long notExistUserId = 123456789L;
+        Long notExistAccountId = 123456789L;
         PostRequestDTO requestDTO = PostRequestDTO.builder()
-                .userId(notExistUserId).build();
-        when(userRepository.findById(notExistUserId))
-                .thenThrow(new UserNotFoundException(UserResponseCode.USER_READ_FAIL));
+                .accountId(notExistAccountId).build();
+        when(accountRepository.findById(notExistAccountId))
+                .thenThrow(new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
 
         // when, then
-        UserNotFoundException exception =
-                assertThrows(UserNotFoundException.class, () -> postService.createPost(requestDTO));
-        assertEquals(UserResponseCode.USER_READ_FAIL, exception.getResponseCode());
-        verify(userRepository, times(1)).findById(notExistUserId);
+        AccountNotFoundException exception =
+                assertThrows(AccountNotFoundException.class, () -> postService.createPost(requestDTO));
+        assertEquals(AccountResponseCode.ACCOUNT_READ_FAIL, exception.getResponseCode());
+        verify(accountRepository, times(1)).findById(notExistAccountId);
         verify(jobRepository, never()).findById(any());
     }
 
@@ -87,8 +87,8 @@ class PostServiceTest {
     @Test
     void createPostWithJobNotFoundException() {
         // given
-        User user = User.builder().build();
-        when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        Account account = Account.builder().build();
+        when(accountRepository.findById(any())).thenReturn(Optional.of(account));
 
         List<Long> jobIds = Arrays.asList(1L, 2L, 200L);
         Long notExistJobId = jobIds.get(jobIds.size() - 1);

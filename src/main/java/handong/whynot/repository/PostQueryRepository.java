@@ -19,7 +19,7 @@ public class PostQueryRepository {
     private final QJobPost qJobPost = QJobPost.jobPost;
     private final QJob qJob = QJob.job;
     private final QPostApply qPostApply = QPostApply.postApply;
-    private final QUser qUser = QUser.user;
+    private final QAccount qAccount = QAccount.account;
 
     // Post Full info
     public List<Post> getPosts() {
@@ -38,10 +38,10 @@ public class PostQueryRepository {
                 .fetch();
     }
 
-    public List<User> getApplicants(Long post_id) {
-        return queryFactory.selectFrom(qUser)
-                .where(qUser.id.in(
-                                select(qPostApply.user.id).from(qPostApply)
+    public List<Account> getApplicants(Long post_id) {
+        return queryFactory.selectFrom(qAccount)
+                .where(qAccount.id.in(
+                                select(qPostApply.account.id).from(qPostApply)
                                         .where(qPostApply.post.id.eq(post_id))
                         )
                 )

@@ -2,9 +2,9 @@ package handong.whynot.dto.post;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import handong.whynot.domain.Account;
 import handong.whynot.domain.Job;
 import handong.whynot.domain.Post;
-import handong.whynot.domain.User;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -33,7 +33,7 @@ public class PostResponseDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = "Asia/Seoul")
     private LocalDateTime updatedDt;
 
-    private User createdBy;
+    private Account createdBy;
 
     private String content;
 
@@ -43,9 +43,9 @@ public class PostResponseDTO {
     private List<Job> jobs = new ArrayList<Job>();
 
     @Builder.Default
-    private List<User> applicants = new ArrayList<User>();
+    private List<Account> applicants = new ArrayList<Account>();
 
-    public static PostResponseDTO of(Post post, List<Job> jobs, List<User> applicants) {
+    public static PostResponseDTO of(Post post, List<Job> jobs, List<Account> applicants) {
         return builder()
                 .id(post.getId())
                 .title(post.getTitle())
