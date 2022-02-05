@@ -105,6 +105,6 @@ class PostServiceTest {
         JobNotFoundException exception =
                 assertThrows(JobNotFoundException.class, () -> postService.createPost(requestDTO));
         assertEquals(JobResponseCode.JOB_READ_FAIL, exception.getResponseCode());
-        verify(jobRepository, times(1)).save(any());
+        verify(postRepository, times(1)).save(any());
     }
 }
