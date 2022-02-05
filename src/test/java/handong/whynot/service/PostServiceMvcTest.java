@@ -1,9 +1,8 @@
-package handong.whynot.api;
+package handong.whynot.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import handong.whynot.api.PostController;
 import handong.whynot.dto.post.PostRequestDTO;
-import handong.whynot.service.PostService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
