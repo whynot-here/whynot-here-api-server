@@ -20,7 +20,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .authorizeRequests()
                 .antMatchers("/", "/v1/posts", "/login", "/sign-up", "/check-email-token",
                         "/email-login", "/login-by-email").permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
+        .and()
+                .formLogin()
+//                .loginPage()  // 프론트 URL 지정 필요
+                .usernameParameter("email")
+                .passwordParameter("password")
+                .defaultSuccessUrl("/v1/posts")
+                .permitAll()
+        .and()
+                .logout()
+//                .logoutUrl() // 프론트 URL 지정 필요
+                .logoutSuccessUrl("/v1/posts")
+        ;
     }
 
     @Override
