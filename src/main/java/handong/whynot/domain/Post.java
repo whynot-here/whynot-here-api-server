@@ -53,7 +53,7 @@ public class Post extends BaseTimeEntity {
         this.isRecruiting = true;
     }
 
-    public void addJobs(List<JobPost> jobs) {
+    public void addJobs(List<JobPost> jobPosts) {
         this.jobPosts = jobPosts;
     }
 }

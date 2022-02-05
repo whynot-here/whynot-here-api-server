@@ -9,8 +9,8 @@ import lombok.*;
 @Builder
 public class ResponseDTO {
 
-    Integer statusCode;
-    String message;
+    private Integer statusCode;
+    private String message;
 
     public static ResponseDTO of(ResponseCode responseCode) {
         return ResponseDTO.builder()
