@@ -6,6 +6,9 @@ import handong.whynot.dto.account.SignUpDTO;
 import handong.whynot.dto.account.UserAccount;
 import handong.whynot.exception.account.AccountAlreadyExistEmailException;
 import handong.whynot.exception.account.AccountAlreadyExistNicknameException;
+import handong.whynot.exception.account.AccountNotValidToken;
+import handong.whynot.mail.EmailMessage;
+import handong.whynot.mail.EmailService;
 import handong.whynot.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,6 +29,7 @@ public class AccountService implements UserDetailsService {
 
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Override
     public UserDetails loadUserByUsername(String emailOrNickname) throws UsernameNotFoundException {
@@ -60,12 +64,38 @@ public class AccountService implements UserDetailsService {
                 .build();
         Account newAccount = accountRepository.save(account);
 
-        // todo: 이메일 확인을 위한 토큰 생성 필요
-//        newAccount.generateEmailCheckToken();
+        newAccount.generateEmailCheckToken();
 
-        // todo: 이메일 전송
-//        sendSignUpConfirmEmail(newAccount);
+        sendSignUpConfirmEmail(newAccount);
         return newAccount;
+    }
+
+    public void sendSignUpConfirmEmail(Account newAccount) {
+        String message = "http://localhost:9000/check-email-token?token=" + newAccount.getEmailCheckToken() +
+                "&email=" + newAccount.getEmail();
+
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(newAccount.getEmail())
+                .subject("회원 가입 인증")
+                .message(message)
+                .build();
+
+        emailService.sendEmail(emailMessage);
+    }
+
+    public void checkEmail(String token, String email) {
+
+        Account account = accountRepository.findByEmail(email);
+        if (account == null) {
+            throw new AccountNotValidToken(AccountResponseCode.ACCOUNT_NOT_VALID_TOKEN);
+        }
+
+        if (!account.isValidToken(token)) {
+            throw new AccountNotValidToken(AccountResponseCode.ACCOUNT_NOT_VALID_TOKEN);
+        }
+
+        account.completeSignUp();
+        login(account);
     }
 
     public void login(Account account) {
