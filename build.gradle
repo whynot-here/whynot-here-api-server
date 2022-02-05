@@ -45,6 +45,9 @@ dependencies {
     // security
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
+    // validator
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 

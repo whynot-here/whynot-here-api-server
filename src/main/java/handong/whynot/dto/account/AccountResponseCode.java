@@ -17,7 +17,15 @@ public enum AccountResponseCode implements ResponseCode {
     ACCOUNT_UPDATE_FAIL_NOT_FOUND(40003, "사용자 [수정]에 실패하였습니다. - 해당 id 찾을 수 없음"),
 
     ACCOUNT_DELETE_OK(20004, "사용자 [삭제]에 성공하였습니다."),
-    ACCOUNT_DELETE_FAIL_NOT_FOUND(40004, "사용자 [삭제]에 실패하였습니다. - 해당 id 찾을 수 없음");
+    ACCOUNT_DELETE_FAIL_NOT_FOUND(40004, "사용자 [삭제]에 실패하였습니다. - 해당 id 찾을 수 없음"),
+
+    ACCOUNT_NOT_VALID_FROM(40005, "사용자 [입력검증]에 실패하였습니다."),
+    ACCOUNT_ALREADY_EXIST_EMAIL(40006, "사용자 [중복검증]에 실패하였습니다. - 이미 사용중인 이메일입니다."),
+    ACCOUNT_ALREADY_EXIST_NICKNAME(40007, "사용자 [중복검증]에 실패하였습니다. - 이미 사용중인 닉네임입니다."),
+    ACCOUNT_NOT_VALID_TOKEN(40008, "사용자 [이메일 토큰검증]에 실패하였습니다."),
+    ACCOUNT_CREATE_TOKEN_OK(20005, "사용자 [토큰생성]에 성공하였습니다."),
+    ACCOUNT_VERIFY_OK(20006, "사용자 [이메일 토큰검증]에 성공하였습니다."),
+    ACCOUNT_FORBIDDEN(40009, "사용자 인증이 필요합니다.");
 
     private final Integer statusCode;
     private final String message;
