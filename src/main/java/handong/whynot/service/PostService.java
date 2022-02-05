@@ -1,20 +1,19 @@
 package handong.whynot.service;
 
-import handong.whynot.domain.Account;
 import handong.whynot.domain.Job;
 import handong.whynot.domain.JobPost;
 import handong.whynot.domain.Post;
+import handong.whynot.domain.User;
 import handong.whynot.dto.job.JobResponseCode;
 import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseDTO;
-import handong.whynot.dto.account.AccountResponseCode;
+import handong.whynot.dto.user.UserResponseCode;
 import handong.whynot.exception.job.JobNotFoundException;
-import handong.whynot.exception.account.AccountNotFoundException;
+import handong.whynot.exception.user.UserNotFoundException;
 import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +26,7 @@ public class PostService {
     private final PostQueryRepository postQueryRepository;
     private final JobRepository jobRepository;
     private final JobPostRepository jobPostRepository;
-    private final AccountRepository accountRepository;
+    private final UserRepository userRepository;
 
     public List<PostResponseDTO> getPosts() {
 
@@ -40,23 +39,25 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public void createPost(PostRequestDTO request) {
+    public Post createPost(PostRequestDTO request) {
 
-        Account account= accountRepository.findById(request.getAccountId())
+        User user = userRepository.findById(request.userId)
                 .orElseThrow(
-                        () -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
+                        () -> new UserNotFoundException(UserResponseCode.USER_READ_FAIL));
 
         // 1. Post 저장
         Post post = Post.builder()
-                .createdBy(account)
-                .title(request.getTitle())
-                .content(request.getContent())
-                .postImg(request.getPostImg())
+                .createdBy(user)
+                .title(request.title)
+                .content(request.content)
+                .postImg(request.postImg)
                 .build();
+
+        post.setRecruiting(true);
         Post newPost = postRepository.save(post);
 
-        // 2. JobPost 저장
+        // 2. Job 저장
+        List<JobPost> jobPosts = new ArrayList<>();
         request.jobIds.forEach(
                 id -> {
                     Job job = jobRepository.findById(id)
@@ -68,8 +69,12 @@ public class PostService {
                             .post(newPost)
                             .build();
 
+                    jobPosts.add(jobPost);
                     jobPostRepository.save(jobPost);
                 }
         );
+//        newPost.addJobs(jobPosts);
+
+        return newPost;
     }
 }

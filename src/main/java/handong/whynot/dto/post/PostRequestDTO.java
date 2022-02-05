@@ -1,6 +1,8 @@
 package handong.whynot.dto.post;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,14 +10,12 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class PostRequestDTO {
 
-    private Long accountId;
-    private String title;
-    private String content;
-    private String postImg;
+    public Long userId;
+    public String title;
+    public String content;
+    public String postImg;
 
     @Builder.Default
     public List<Long> jobIds = new ArrayList<>();

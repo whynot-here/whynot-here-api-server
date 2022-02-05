@@ -1,8 +1,8 @@
 package handong.whynot.handler;
 
 import handong.whynot.dto.common.ErrorResponseDTO;
-import handong.whynot.dto.account.AccountResponseCode;
-import handong.whynot.exception.account.AccountNotFoundException;
+import handong.whynot.dto.user.UserResponseCode;
+import handong.whynot.exception.user.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -12,11 +12,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestControllerAdvice
 @Slf4j
-public class AccountExceptionHandler {
+public class UserExceptionHandler {
 
     @ResponseStatus(NOT_FOUND)
-    @ExceptionHandler(AccountNotFoundException.class)
+    @ExceptionHandler(UserNotFoundException.class)
     public ErrorResponseDTO postNotFoundExceptionHandle() {
-        return ErrorResponseDTO.of(AccountResponseCode.ACCOUNT_READ_FAIL, null);
+        return ErrorResponseDTO.of(UserResponseCode.USER_READ_FAIL, null);
     }
 }

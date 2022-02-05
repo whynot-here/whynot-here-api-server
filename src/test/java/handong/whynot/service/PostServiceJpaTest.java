@@ -27,7 +27,7 @@ class PostServiceJpaTest {
     @Rollback(value = false)
     void createPost() {
         PostRequestDTO requestDTO = PostRequestDTO.builder()
-                .accountId(1L)
+                .userId(1L)
                 .content("content")
                 .postImg("postImg")
                 .jobIds(Arrays.asList(1L, 2L))

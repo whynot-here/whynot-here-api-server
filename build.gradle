@@ -42,9 +42,6 @@ dependencies {
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
     annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 
-    // security
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 

@@ -9,7 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter @Setter
 @Builder
-//@JsonInclude(JsonInclude.Include.NON_NULL)   // null이면 Json반환 시 제외. (errors가 null인 경우를 위함.)
+@JsonInclude(JsonInclude.Include.NON_NULL)   // null이면 Json반환 시 제외. (errors가 null인 경우를 위함.)
 public class ErrorResponseDTO {
 
     Integer statusCode;

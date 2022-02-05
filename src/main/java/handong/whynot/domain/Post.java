@@ -21,13 +21,12 @@ public class Post extends BaseTimeEntity {
     @Column(name = "id")
     private Long id;
 
-    @Builder.Default
     @OneToMany(mappedBy = "post")
     private List<JobPost> jobPosts = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "account_id")
-    private Account createdBy;
+    @JoinColumn(name = "user_id")
+    private User createdBy;
 
     @Column(name = "title")
     private String title;
@@ -45,12 +44,11 @@ public class Post extends BaseTimeEntity {
     private LocalDateTime closedDt;
 
     @Builder
-    public Post(Account createdBy, String title, String content, String postImg) {
+    public Post(User createdBy, String title, String content, String postImg) {
         this.createdBy = createdBy;
         this.title = title;
         this.content = content;
         this.postImg = postImg;
-        this.isRecruiting = true;
     }
 
     public void addJobs(List<JobPost> jobs) {
