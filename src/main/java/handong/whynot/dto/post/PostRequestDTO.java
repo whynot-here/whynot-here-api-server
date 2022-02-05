@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PostRequestDTO {
 
-    private Long userId;
+    private Long accountId;
     private String title;
     private String content;
     private String postImg;
