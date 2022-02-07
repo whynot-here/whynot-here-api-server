@@ -1,0 +1,3 @@
+[submodule "src/main/resources/whynot-config"]
+	path = src/main/resources/whynot-config
+	url = https://github.com/osj3474/whynot-config.git
