@@ -1,13 +1,12 @@
 package handong.whynot.service;
 
-import handong.whynot.domain.Account;
-import handong.whynot.domain.Job;
-import handong.whynot.domain.JobPost;
-import handong.whynot.domain.Post;
+import handong.whynot.domain.*;
 import handong.whynot.dto.job.JobResponseCode;
 import handong.whynot.dto.post.PostRequestDTO;
+import handong.whynot.dto.post.PostResponseCode;
 import handong.whynot.dto.post.PostResponseDTO;
 import handong.whynot.exception.job.JobNotFoundException;
+import handong.whynot.exception.post.PostNotFoundException;
 import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +24,8 @@ public class PostService {
     private final JobRepository jobRepository;
     private final JobPostRepository jobPostRepository;
     private final AccountRepository accountRepository;
+    private final PostFavoriteRepository postFavoriteRepository;
+    private final PostApplyRepository postApplyRepository;
     
     public List<PostResponseDTO> getPosts() {
 
@@ -64,5 +65,35 @@ public class PostService {
                     jobPostRepository.save(jobPost);
                 }
         );
+    }
+
+    public PostResponseDTO getPost(Long id) {
+
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        return PostResponseDTO.of(post,
+                postQueryRepository.getJobs(post.getId()),
+                postQueryRepository.getApplicants(post.getId()));
+    }
+
+    public void deletePost(Long id, Account account) {
+        Post post = postRepository.findByIdAndCreatedBy(id, account)
+                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        // 1. job 삭제
+        List<JobPost> jobPosts = jobPostRepository.findAllByPost(post);
+        jobPosts.forEach(jobPost -> jobPostRepository.deleteById(jobPost.getId()));
+
+
+        // 2. favorite 삭제
+        List<PostFavorite> postFavorites = postFavoriteRepository.findAllByPost(post);
+        postFavorites.forEach(postFavorite -> postFavoriteRepository.deleteById(postFavorite.getId()));
+
+        // 3. apply 삭제
+        List<PostApply> postApplys = postApplyRepository.findAllByPost(post);
+        postApplys.forEach(postApply -> postApplyRepository.deleteById(postApply.getId()));
+
+        postRepository.delete(post);
     }
 }
