@@ -7,9 +7,7 @@ import handong.whynot.domain.Post;
 import handong.whynot.dto.job.JobResponseCode;
 import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseDTO;
-import handong.whynot.dto.account.AccountResponseCode;
 import handong.whynot.exception.job.JobNotFoundException;
-import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +25,8 @@ public class PostService {
     private final JobRepository jobRepository;
     private final JobPostRepository jobPostRepository;
     private final AccountRepository accountRepository;
+    private final PostFavoriteRepository postFavoriteRepository;
+    private final PostApplyRepository postApplyRepository;
 
     public List<PostResponseDTO> getPosts() {
 
@@ -40,11 +40,7 @@ public class PostService {
     }
 
     @Transactional
-    public void createPost(PostRequestDTO request) {
-
-        Account account= accountRepository.findById(request.getAccountId())
-                .orElseThrow(
-                        () -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
+    public void createPost(PostRequestDTO request, Account account) {
 
         // 1. Post 저장
         Post post = Post.builder()

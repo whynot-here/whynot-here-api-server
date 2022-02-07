@@ -8,6 +8,7 @@ import handong.whynot.exception.account.AccountNotValidFormException;
 import handong.whynot.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,5 +35,11 @@ public class AccountController {
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_CREATE_TOKEN_OK);
     }
 
-    // todo: 이메일 검증 API 개발 필요 + 로그인 처리
+    @GetMapping("/check-email-token")
+    public ResponseDTO checkEmailToken(String token, String email) {
+
+        accountService.checkEmail(token, email);
+
+        return ResponseDTO.of(AccountResponseCode.ACCOUNT_VERIFY_OK);
+    }
 }
