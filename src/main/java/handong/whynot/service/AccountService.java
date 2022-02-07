@@ -6,6 +6,7 @@ import handong.whynot.dto.account.SignUpDTO;
 import handong.whynot.dto.account.UserAccount;
 import handong.whynot.exception.account.AccountAlreadyExistEmailException;
 import handong.whynot.exception.account.AccountAlreadyExistNicknameException;
+import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.account.AccountNotValidToken;
 import handong.whynot.mail.EmailMessage;
 import handong.whynot.mail.EmailService;
@@ -33,13 +34,21 @@ public class AccountService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String emailOrNickname) throws UsernameNotFoundException {
+
         Account account = accountRepository.findByEmail(emailOrNickname);
+
         if (account == null) {
             account = accountRepository.findByNickname(emailOrNickname);
         }
 
         if (account == null) {
-            throw new UsernameNotFoundException(emailOrNickname);
+            // todo: 여기 Exception들은 filter로 처리하도록 수정필요
+            throw new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL);
+        }
+
+        if (!account.getEmailVerified()) {
+            // todo: 여기 Exception들은 filter로 처리하도록 수정필요
+            throw new AccountNotValidToken(AccountResponseCode.ACCOUNT_NOT_VALID_TOKEN);
         }
 
         return new UserAccount(account);
@@ -95,6 +104,7 @@ public class AccountService implements UserDetailsService {
         }
 
         account.completeSignUp();
+        accountRepository.save(account);
         login(account);
     }
 
