@@ -1,8 +1,9 @@
 package handong.whynot.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import handong.whynot.api.PostController;
+import handong.whynot.common.WithMockCustomUser;
 import handong.whynot.dto.post.PostRequestDTO;
+import handong.whynot.service.AccountService;
 import handong.whynot.service.PostService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,8 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockBean(JpaMetamodelMappingContext.class)
 public class PostServiceMvcTest {
 
-    @MockBean
-    private PostService postService;
+    @MockBean private PostService postService;
+    @MockBean private AccountService accountService;
 
     @Autowired
     MockMvc mockMvc;
@@ -35,11 +36,11 @@ public class PostServiceMvcTest {
 
     @DisplayName("공고생성 [성공]")
     @Test
+    @WithMockCustomUser
     void createPost() throws Exception {
 
         // given
         PostRequestDTO requestDTO = PostRequestDTO.builder()
-                .accountId(1L)
                 .title("[공고 모집] 캡스톤 함께하실 분!")
                 .content("행복한 펫을 위해 서비스를 만들고자 합니다.")
                 .postImg("http://image.com")

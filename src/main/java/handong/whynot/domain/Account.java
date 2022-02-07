@@ -32,7 +32,7 @@ public class Account {
     private String profileImg;
 
     @Column(name = "email_verified")
-    private boolean emailVerified;
+    private Boolean emailVerified;
 
     @Column(name = "email_check_token")
     private String emailCheckToken;

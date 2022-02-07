@@ -3,6 +3,7 @@ package handong.whynot.service;
 import handong.whynot.domain.JobPost;
 import handong.whynot.domain.Post;
 import handong.whynot.dto.post.PostRequestDTO;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest
+@Disabled
 class PostServiceJpaTest {
 
     @Autowired
@@ -27,13 +29,12 @@ class PostServiceJpaTest {
     @Rollback(value = false)
     void createPost() {
         PostRequestDTO requestDTO = PostRequestDTO.builder()
-                .accountId(1L)
                 .content("content")
                 .postImg("postImg")
                 .jobIds(Arrays.asList(1L, 2L))
                 .build();
 
-        postService.createPost(requestDTO);
+//        postService.createPost(requestDTO);
 
         entityManager.flush();
         entityManager.clear();
