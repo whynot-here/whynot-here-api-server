@@ -25,9 +25,7 @@ public class PostService {
     private final JobRepository jobRepository;
     private final JobPostRepository jobPostRepository;
     private final AccountRepository accountRepository;
-    private final PostFavoriteRepository postFavoriteRepository;
-    private final PostApplyRepository postApplyRepository;
-
+    
     public List<PostResponseDTO> getPosts() {
 
         List<Post> posts = postQueryRepository.getPosts();
