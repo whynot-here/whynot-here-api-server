@@ -1,5 +1,7 @@
 package handong.whynot.api;
 
+import handong.whynot.domain.Account;
+import handong.whynot.dto.account.CurrentAccount;
 import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseCode;
@@ -27,11 +29,10 @@ public class PostController {
 
     @PostMapping("")
     @ResponseStatus(CREATED)
-    public ResponseDTO createPost(@RequestBody PostRequestDTO request) {
+    public ResponseDTO createPost(@RequestBody PostRequestDTO request, @CurrentAccount Account account) {
 
-        postService.createPost(request);
+        postService.createPost(request, account);
 
         return ResponseDTO.of(PostResponseCode.POST_CREATE_OK);
     }
-
 }

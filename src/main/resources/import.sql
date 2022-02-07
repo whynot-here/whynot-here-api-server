@@ -1,4 +1,4 @@
-insert into `account`(email, nickname, password, profile_img) values("test@naver.com", "Sangjin", "1234", "http://www.naver.com");
+insert into `account`(email, nickname, password, profile_img, email_verified) values("test@naver.com", "Sangjin", "1234", "http://www.naver.com", 1);
 
 insert into `job`(name) values('개발자');
 insert into `job`(name) values('디자이너');
