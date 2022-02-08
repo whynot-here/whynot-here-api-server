@@ -48,4 +48,12 @@ public class PostController {
 
         return ResponseDTO.of(PostResponseCode.POST_DELETE_OK);
     }
+
+    @PutMapping("/{postId}")
+    public ResponseDTO updatePost(@PathVariable Long postId, @RequestBody PostRequestDTO request, @CurrentAccount Account account) {
+
+        postService.updatePost(postId, request, account);
+
+        return ResponseDTO.of(PostResponseCode.POST_UPDATE_OK);
+    }
 }

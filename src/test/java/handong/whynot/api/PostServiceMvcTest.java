@@ -14,7 +14,6 @@ import handong.whynot.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -29,13 +28,12 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 
@@ -70,6 +68,7 @@ public class PostServiceMvcTest {
                         .title("공프기 모집")
                         .content("개발자, 디자이너가 필요해요~!!").build();
         PostResponseDTO dto = PostResponseDTO.of(post, new ArrayList<>(), new ArrayList<>());
+        when(postRepository.findById(1L)).thenReturn(Optional.of(post));
         when(postService.getPost(1L)).thenReturn(dto);
 
         MockMvcBuilders
@@ -119,6 +118,26 @@ public class PostServiceMvcTest {
 
         mockMvc.perform(delete("/v1/posts/{postId}", 1L))
                 .andExpect(jsonPath("statusCode").value(20004))
+                .andDo(print());
+
+    }
+
+    @DisplayName("공고 단건 업데이트")
+    @Test
+    @WithMockCustomUser
+    void updatePostTest() throws Exception {
+
+        PostRequestDTO dto = PostRequestDTO.builder()
+                .title("제목 수정")
+                .content("내용 수정")
+                .postImg("http://image-edited.com")
+                .build();
+
+        mockMvc.perform(put("/v1/posts/{postId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(jsonPath("statusCode").value(20003))
                 .andDo(print());
 
     }
