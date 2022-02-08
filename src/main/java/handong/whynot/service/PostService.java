@@ -39,7 +39,7 @@ public class PostService {
     }
 
     @Transactional
-    public void createPost(PostRequestDTO request, Account account) {
+    public Post createPost(PostRequestDTO request, Account account) {
 
         // 1. Post 저장
         Post post = Post.builder()
@@ -65,6 +65,8 @@ public class PostService {
                     jobPostRepository.save(jobPost);
                 }
         );
+
+        return newPost;
     }
 
     public PostResponseDTO getPost(Long id) {
@@ -84,7 +86,6 @@ public class PostService {
         // 1. job 삭제
         List<JobPost> jobPosts = jobPostRepository.findAllByPost(post);
         jobPosts.forEach(jobPost -> jobPostRepository.deleteById(jobPost.getId()));
-
 
         // 2. favorite 삭제
         List<PostFavorite> postFavorites = postFavoriteRepository.findAllByPost(post);
