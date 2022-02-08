@@ -182,35 +182,4 @@ class PostServiceTest {
                 assertThrows(PostNotFoundException.class, () -> postService.deletePost(notExistPostId, currentAccount));
         verify(jobPostRepository, never()).findAllByPost(any());
     }
-
-    @DisplayName("공고 단건 삭제 성공")
-    @Test
-    void deletePostOK() {
-
-        // given
-        Long currentAccountId = 1L;
-        Long postOwnerAccountId = currentAccountId;
-        Long postId = 1L;
-
-        Account currentAccount = Account.builder().id(currentAccountId).build();
-        Account postOwnerAccount = Account.builder().id(postOwnerAccountId).build();
-
-        Post post = Post.builder().id(postId).createdBy(postOwnerAccount).build();
-
-        JobPost jobPost = JobPost.builder().id(1L).build();
-        PostFavorite postFavorite = PostFavorite.builder().id(1L).build();
-
-        when(jobPostRepository.findAllByPost(post)).thenReturn(Arrays.asList(jobPost));
-        when(jobPostRepository.deleteById(jobPost.getId())
-
-
-
-
-        // when
-        postService.deletePost(postId, currentAccount);
-
-        // then
-        assertEquals();
-
-    }
 }
