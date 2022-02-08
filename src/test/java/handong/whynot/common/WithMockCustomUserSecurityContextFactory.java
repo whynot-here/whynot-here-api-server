@@ -24,6 +24,7 @@ public class WithMockCustomUserSecurityContextFactory implements WithSecurityCon
         String nickname = customUser.username();
 
         Account account = Account.builder()
+                .id(1L)
                 .nickname(nickname)
                 .email(nickname + "@email.com")
                 .password("12345678")
