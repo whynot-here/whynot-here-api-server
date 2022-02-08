@@ -97,4 +97,15 @@ public class PostService {
 
         postRepository.delete(post);
     }
+
+    public void updatePost(Long postId, PostRequestDTO request, Account account) {
+
+        Post post = postRepository.findByIdAndCreatedBy(postId, account)
+                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        post.update(request);
+
+        postRepository.save(post);
+
+    }
 }

@@ -1,6 +1,8 @@
 package handong.whynot.service;
 
-import handong.whynot.domain.*;
+import handong.whynot.domain.Account;
+import handong.whynot.domain.Job;
+import handong.whynot.domain.Post;
 import handong.whynot.dto.account.AccountResponseCode;
 import handong.whynot.dto.job.JobResponseCode;
 import handong.whynot.dto.post.PostRequestDTO;
@@ -159,6 +161,7 @@ class PostServiceTest {
         // when, then
         PostNotFoundException exception =
                 assertThrows(PostNotFoundException.class, () -> postService.deletePost(postId, currentAccount));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
         verify(jobPostRepository, never()).findAllByPost(any());
     }
 
@@ -180,6 +183,59 @@ class PostServiceTest {
         // when, then
         PostNotFoundException exception =
                 assertThrows(PostNotFoundException.class, () -> postService.deletePost(notExistPostId, currentAccount));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
         verify(jobPostRepository, never()).findAllByPost(any());
+    }
+
+    @DisplayName("공고 단건 업데이트 [실패1] - 본인 공고가 아닌 경우")
+    @Test
+    void updatePostNotFoundException1() {
+
+        // given
+        Long currentAccountId = 1L;
+        Long postId = 1L;
+
+        Account currentAccount = Account.builder().id(currentAccountId).build();
+
+        PostRequestDTO dto = PostRequestDTO.builder()
+                .title("제목 수정")
+                .content("내용 수정")
+                .postImg("http://image-edited.com")
+                .build();
+
+        when(postRepository.findByIdAndCreatedBy(postId, currentAccount))
+                .thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        // when, then
+        PostNotFoundException exception =
+                assertThrows(PostNotFoundException.class, () -> postService.updatePost(postId, dto, currentAccount));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
+        verify(postRepository, never()).save(any());
+
+    }
+
+    @DisplayName("공고 단건 업데이트 [실패2] - 본인 공고이나 존재하지 않는 공고인 경우")
+    @Test
+    void updatePostNotFoundException2() {
+
+        // given
+        Long currentAccountId = 1L;
+        Long notExistPostId = 12345L;
+
+        Account currentAccount = Account.builder().id(currentAccountId).build();
+
+        PostRequestDTO dto = PostRequestDTO.builder()
+                .title("제목 수정")
+                .content("내용 수정")
+                .postImg("http://image-edited.com")
+                .build();
+        when(postRepository.findByIdAndCreatedBy(notExistPostId, currentAccount))
+                .thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        // when, then
+        PostNotFoundException exception =
+                assertThrows(PostNotFoundException.class, () -> postService.updatePost(notExistPostId, dto, currentAccount));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
+        verify(postRepository, never()).save(any());
     }
 }
