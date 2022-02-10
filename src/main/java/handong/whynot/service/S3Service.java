@@ -33,11 +33,11 @@ public class S3Service {
         File uploadFile = convert(multipartFile)
                 .orElseThrow(() -> new S3InvalidFileTypeException(S3ResponseCode.AWS_S3_UPLOAD_FAIL));
 
-        return upload(uploadFile, dirName);
+        return uploadS3(uploadFile, dirName);
     }
 
     // S3로 파일 업로드
-    private String upload(File uploadFile, String dirName) {
+    private String uploadS3(File uploadFile, String dirName) {
         // S3에 저장된 파일 이름
         final String fileName = dirName + "/" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ssSS")) + "-" + uploadFile.getName();
 
