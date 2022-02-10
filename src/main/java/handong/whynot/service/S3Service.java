@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import handong.whynot.dto.cloud.S3ResponseCode;
+import handong.whynot.exception.cloud.S3AclException;
 import handong.whynot.exception.cloud.S3InvalidFileTypeException;
 import handong.whynot.util.ImageType;
 import lombok.RequiredArgsConstructor;
@@ -52,15 +53,12 @@ public class S3Service {
     // S3로 업로드
     private String putS3(File uploadFile, String fileName) {
 
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
-
-        // 혹시 업로드 안된다면, S3권한 문제인지 아래로 확인.
-//        try{
-//            PutObjectRequest req = new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead);
-//            amazonS3Client.putObject(req);
-//        }catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        try{
+            PutObjectRequest req = new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead);
+            amazonS3Client.putObject(req);
+        }catch (Exception e) {
+            throw new S3AclException(S3ResponseCode.AWS_S3_UPLOAD_FAIL_ACL_ISSUE);
+        }
 
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
