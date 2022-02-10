@@ -95,21 +95,21 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    private void deleteJobPosts(Post post) {
+    public void deleteJobPosts(Post post) {
 
         List<JobPost> jobPosts = jobPostRepository.findAllByPost(post);
         jobPosts.forEach(jobPost -> jobPostRepository.deleteById(jobPost.getId()));
 
     }
 
-    private void deletePostFavorites(Post post) {
+    public void deletePostFavorites(Post post) {
 
         List<PostFavorite> postFavorites = postFavoriteRepository.findAllByPost(post);
         postFavorites.forEach(postFavorite -> postFavoriteRepository.deleteById(postFavorite.getId()));
 
     }
 
-    private void deletePostApplys(Post post) {
+    public void deletePostApplys(Post post) {
 
         List<PostApply> postApplys = postApplyRepository.findAllByPost(post);
         postApplys.forEach(postApply -> postApplyRepository.deleteById(postApply.getId()));
