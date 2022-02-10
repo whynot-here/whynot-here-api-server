@@ -84,18 +84,36 @@ public class PostService {
                 .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
 
         // 1. job 삭제
+        deleteJobPosts(post);
+
+        // 2. favorite 삭제
+        deletePostFavorites(post);
+
+        // 3. apply 삭제
+        deletePostApplys(post);
+
+        postRepository.delete(post);
+    }
+
+    private void deleteJobPosts(Post post) {
+
         List<JobPost> jobPosts = jobPostRepository.findAllByPost(post);
         jobPosts.forEach(jobPost -> jobPostRepository.deleteById(jobPost.getId()));
 
-        // 2. favorite 삭제
+    }
+
+    private void deletePostFavorites(Post post) {
+
         List<PostFavorite> postFavorites = postFavoriteRepository.findAllByPost(post);
         postFavorites.forEach(postFavorite -> postFavoriteRepository.deleteById(postFavorite.getId()));
 
-        // 3. apply 삭제
+    }
+
+    private void deletePostApplys(Post post) {
+
         List<PostApply> postApplys = postApplyRepository.findAllByPost(post);
         postApplys.forEach(postApply -> postApplyRepository.deleteById(postApply.getId()));
 
-        postRepository.delete(post);
     }
 
     public void updatePost(Long postId, PostRequestDTO request, Account account) {
