@@ -7,17 +7,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-public class ImageType {
+public final class ImageType {
 
-    public static final ArrayList<String> IMAGE_MIME_TYPES = new ArrayList<>(
+    public static final List<String> IMAGE_MIME_TYPES = new ArrayList<>(
             Arrays.asList("image/gif", "image/jpeg", "image/png", "image/bmp")   // 허용 타입들 여기서 선언
     );
 
     private ImageType() {}
 
     // 허용한 파일 타입이 맞는지 검증
-    public static Boolean isValidFileMimeType(File file, ArrayList<String> MIME_TYPES) throws IOException {
+    public static Boolean isValidFileMimeType(File file, List<String> MIME_TYPES) throws IOException {
         final String fileMimeType = new Tika().detect(file);
 
         for (String mimeType : MIME_TYPES) {
