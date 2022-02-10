@@ -1,8 +1,6 @@
 package handong.whynot.service;
 
-import handong.whynot.domain.Account;
-import handong.whynot.domain.Job;
-import handong.whynot.domain.Post;
+import handong.whynot.domain.*;
 import handong.whynot.dto.account.AccountResponseCode;
 import handong.whynot.dto.job.JobResponseCode;
 import handong.whynot.dto.post.PostRequestDTO;
@@ -38,6 +36,9 @@ class PostServiceTest {
     @Mock private JobRepository jobRepository;
     @Mock private JobPostRepository jobPostRepository;
     @Mock private AccountRepository accountRepository;
+    @Mock private PostFavoriteRepository postFavoriteRepository;
+    @Mock private PostApplyRepository postApplyRepository;
+
 
     @InjectMocks
     private PostService postService;
@@ -237,5 +238,71 @@ class PostServiceTest {
                 assertThrows(PostNotFoundException.class, () -> postService.updatePost(notExistPostId, dto, currentAccount));
         assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
         verify(postRepository, never()).save(any());
+    }
+
+    @DisplayName("공고에 해당되는 직군 제거")
+    @Test
+    void deleteJobPostsTest() {
+
+        // given
+        Post post = Post.builder().build();
+        JobPost jobPost1 = JobPost.builder().id(1L).post(post).build();
+        JobPost jobPost2 = JobPost.builder().id(2L).post(post).build();
+
+        List<JobPost> jobPosts =  Arrays.asList(jobPost1, jobPost2);
+
+        when(jobPostRepository.findAllByPost(post)).thenReturn(jobPosts);
+        doNothing().when(jobPostRepository).deleteById(any());
+
+        // when
+        postService.deleteJobPosts(post);
+
+        // then
+        verify(jobPostRepository, times(1)).findAllByPost(post);
+        verify(jobPostRepository, times(jobPosts.size())).deleteById(anyLong());
+    }
+
+    @DisplayName("공고에 해당되는 좋아요 정보 제거")
+    @Test
+    void deletePostFavoritesTest() {
+
+        // given
+        Post post = Post.builder().build();
+
+        PostFavorite postFavorite1 = PostFavorite.builder().id(1L).post(post).build();
+        PostFavorite postFavorite2 = PostFavorite.builder().id(2L).post(post).build();
+
+        List<PostFavorite> postFavorites = Arrays.asList(postFavorite1, postFavorite2);
+        when(postFavoriteRepository.findAllByPost(post)).thenReturn(postFavorites);
+        doNothing().when(postFavoriteRepository).deleteById(anyLong());
+
+        // when
+        postService.deletePostFavorites(post);
+
+        // then
+        verify(postFavoriteRepository, times(1)).findAllByPost(post);
+        verify(postFavoriteRepository, times(postFavorites.size())).deleteById(anyLong());
+    }
+
+    @DisplayName("공고에 해당되는 지원 정보 제거")
+    @Test
+    void deletePostApplysTest() {
+
+        // given
+        Post post = Post.builder().build();
+
+        PostApply postApply1 = PostApply.builder().id(1L).post(post).build();
+        PostApply postApply2 = PostApply.builder().id(2L).post(post).build();
+
+        List<PostApply> postApplys = Arrays.asList(postApply1, postApply2);
+        when(postApplyRepository.findAllByPost(post)).thenReturn(postApplys);
+        doNothing().when(postApplyRepository).deleteById(anyLong());
+
+        // when
+        postService.deletePostApplys(post);
+
+        // then
+        verify(postApplyRepository, times(1)).findAllByPost(post);
+        verify(postApplyRepository, times(postApplys.size())).deleteById(anyLong());
     }
 }
