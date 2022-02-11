@@ -56,4 +56,12 @@ public class PostController {
 
         return ResponseDTO.of(PostResponseCode.POST_UPDATE_OK);
     }
+
+    @DeleteMapping("/apply/{postId}")
+    public ResponseDTO deleteApply(@PathVariable Long postId, @CurrentAccount Account account) {
+
+        postService.deleteApply(postId, account);
+
+        return ResponseDTO.of(PostResponseCode.POST_DELETE_APPLY_OK);
+    }
 }
