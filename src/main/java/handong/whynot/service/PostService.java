@@ -126,4 +126,16 @@ public class PostService {
         postRepository.save(post);
 
     }
+
+    public List<PostResponseDTO> getMyPosts(Account account) {
+
+        List<Post> posts = postRepository.findAllByCreatedBy(account);
+
+        return posts.stream()
+                .map(post ->
+                        PostResponseDTO.of(post,
+                                postQueryRepository.getJobs(post.getId()),
+                                postQueryRepository.getApplicants(post.getId())))
+                .collect(Collectors.toList());
+    }
 }

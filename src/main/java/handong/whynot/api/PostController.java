@@ -10,6 +10,7 @@ import handong.whynot.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -55,5 +56,11 @@ public class PostController {
         postService.updatePost(postId, request, account);
 
         return ResponseDTO.of(PostResponseCode.POST_UPDATE_OK);
+    }
+
+    @GetMapping("/own")
+    public List<PostResponseDTO> getMyPosts(@CurrentAccount Account account) {
+        
+        return postService.getMyPosts(account);
     }
 }
