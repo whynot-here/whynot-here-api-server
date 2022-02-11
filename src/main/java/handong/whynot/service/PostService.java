@@ -6,7 +6,10 @@ import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseCode;
 import handong.whynot.dto.post.PostResponseDTO;
 import handong.whynot.exception.job.JobNotFoundException;
+import handong.whynot.exception.post.PostAlreadyApplyOff;
 import handong.whynot.exception.post.PostNotFoundException;
+import handong.whynot.mail.EmailMessage;
+import handong.whynot.mail.EmailService;
 import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +29,7 @@ public class PostService {
     private final AccountRepository accountRepository;
     private final PostFavoriteRepository postFavoriteRepository;
     private final PostApplyRepository postApplyRepository;
+    private final EmailService emailService;
     
     public List<PostResponseDTO> getPosts() {
 
@@ -124,6 +128,35 @@ public class PostService {
         post.update(request);
 
         postRepository.save(post);
+
+    }
+
+    public void deleteApply(Long postId, Account account) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        List<PostApply> applies = postQueryRepository.getApplyByPostId(post, account);
+        if (applies.isEmpty()) {
+            throw new PostAlreadyApplyOff(PostResponseCode.POST_DELETE_APPLY_FAIL);
+        }
+
+        PostApply apply = applies.get(0);
+
+        postApplyRepository.deleteById(apply.getId());
+
+        // 이메일 전송
+        String message = account.getNickname() + " 님이"
+                + post.getTitle() + " 공고에 "
+                + apply.getJob().getName() + " 직무 지원 요청을 취소하였습니다.";
+
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(post.getCreatedBy().getEmail())
+                .subject("[공고 지원 취소 알림] "+post.getTitle()+" by "+account.getNickname())
+                .message(message)
+                .build();
+
+        emailService.sendEmail(emailMessage);
 
     }
 }

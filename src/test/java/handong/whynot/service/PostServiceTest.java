@@ -8,7 +8,9 @@ import handong.whynot.dto.post.PostResponseCode;
 import handong.whynot.dto.post.PostResponseDTO;
 import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.job.JobNotFoundException;
+import handong.whynot.exception.post.PostAlreadyApplyOff;
 import handong.whynot.exception.post.PostNotFoundException;
+import handong.whynot.mail.EmailService;
 import handong.whynot.repository.*;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -38,6 +40,7 @@ class PostServiceTest {
     @Mock private AccountRepository accountRepository;
     @Mock private PostFavoriteRepository postFavoriteRepository;
     @Mock private PostApplyRepository postApplyRepository;
+    @Mock private EmailService emailService;
 
 
     @InjectMocks
@@ -304,5 +307,50 @@ class PostServiceTest {
         // then
         verify(postApplyRepository, times(1)).findAllByPost(post);
         verify(postApplyRepository, times(postApplys.size())).deleteById(anyLong());
+    }
+
+    @DisplayName("공고 신청 취소 [실패1] - 없는 공고인 경우")
+    @Test
+    void deleteApplyNotFoundPostException() {
+
+        // given
+        Account account = Account.builder().build();
+        Long notExistId = 12345L;
+        when(postRepository.findById(notExistId)).thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        // when, then
+        PostNotFoundException exception =
+                assertThrows(PostNotFoundException.class, () -> postService.deleteApply(notExistId, account));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
+
+        verify(jobRepository, never()).findById(anyLong());
+        verify(postQueryRepository, never()).getApplyByPostId(any(), any());
+        verify(postApplyRepository, never()).save(any());
+        verify(emailService, never()).sendEmail(any());
+
+    }
+
+
+    @DisplayName("공고 신청 [실패2] - 이미 취소한 공고인 경우")
+    @Test
+    void deleteApplyAlreadyOffException() {
+
+        // given
+        Account account = Account.builder().build();
+
+        Post post = Post.builder().id(1L).build();
+
+        Job job = Job.builder().id(1L).build();
+
+        when(postRepository.findById(anyLong())).thenReturn(Optional.ofNullable(post));
+        when(postQueryRepository.getApplyByPostId(post, account)).thenThrow(new PostAlreadyApplyOff(PostResponseCode.POST_DELETE_APPLY_FAIL));
+
+        // when, then
+        PostAlreadyApplyOff exception =
+                assertThrows(PostAlreadyApplyOff.class, () -> postService.deleteApply(post.getId(), account));
+        assertEquals(PostResponseCode.POST_DELETE_APPLY_FAIL, exception.getResponseCode());
+
+        verify(postApplyRepository, never()).save(any());
+        verify(emailService, never()).sendEmail(any());
     }
 }

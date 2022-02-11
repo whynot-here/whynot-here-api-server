@@ -47,4 +47,16 @@ public class PostQueryRepository {
                 )
                 .fetch();
     }
+
+    public List<PostApply> getApplyByPostId(Post post, Account account) {
+
+        Long postId = post.getId();
+        Long accountId = account.getId();
+
+        return queryFactory.select(qPostApply)
+                .from(qPost, qPostApply)
+                .where(qPostApply.account.id.eq(accountId)
+                        .and(qPostApply.post.id.eq(postId)))
+                .fetch();
+    }
 }

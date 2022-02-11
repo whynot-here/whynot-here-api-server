@@ -18,7 +18,10 @@ public enum PostResponseCode implements ResponseCode {
     POST_UPDATE_FAIL_NOT_FOUND(40003, "공고 [수정]에 실패하였습니다. - 해당 id 찾을 수 없음"),
 
     POST_DELETE_OK(20004, "공고 [삭제]에 성공하였습니다."),
-    POST_DELETE_FAIL_NOT_FOUND(40004, "공고 [삭제]에 실패하였습니다. - 해당 id 찾을 수 없음");
+    POST_DELETE_FAIL_NOT_FOUND(40004, "공고 [삭제]에 실패하였습니다. - 해당 id 찾을 수 없음"),
+
+    POST_DELETE_APPLY_OK(20010, "신청한 공고 [삭제]에 성공하였습니다."),
+    POST_DELETE_APPLY_FAIL(40010, "신청한 공고 [삭제]에 실패하였습니다. - 이미 취소 신청하였습니다.");
 
     private final Integer statusCode;
     private final String message;

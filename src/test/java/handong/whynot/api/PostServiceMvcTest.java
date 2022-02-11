@@ -6,6 +6,7 @@ import handong.whynot.domain.Account;
 import handong.whynot.domain.Post;
 import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseDTO;
+import handong.whynot.mail.EmailService;
 import handong.whynot.repository.AccountRepository;
 import handong.whynot.repository.PostQueryRepository;
 import handong.whynot.repository.PostRepository;
@@ -19,6 +20,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -46,6 +48,9 @@ public class PostServiceMvcTest {
     @MockBean private AccountService accountService;
     @MockBean private AccountRepository accountRepository;
     @MockBean private PostQueryRepository postQueryRepository;
+    @MockBean private PasswordEncoder passwordEncoder;
+    @MockBean private EmailService emailService;
+
 
     @Autowired MockMvc mockMvc;
     @Autowired ObjectMapper objectMapper;
@@ -140,5 +145,16 @@ public class PostServiceMvcTest {
                 .andExpect(jsonPath("statusCode").value(20003))
                 .andDo(print());
 
+    }
+
+    @DisplayName("공고 취소 성공")
+    @Test
+    @WithMockCustomUser
+    void createApplyTest() throws Exception {
+
+        mockMvc.perform(delete("/v1/posts/apply/{postId}", 1L))
+                .andExpect(jsonPath("statusCode").value(20010))
+                .andDo(print())
+        ;
     }
 }
