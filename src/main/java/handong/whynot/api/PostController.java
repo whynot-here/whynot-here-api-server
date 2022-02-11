@@ -3,6 +3,7 @@ package handong.whynot.api;
 import handong.whynot.domain.Account;
 import handong.whynot.dto.account.CurrentAccount;
 import handong.whynot.dto.common.ResponseDTO;
+import handong.whynot.dto.post.PostApplyRequestDTO;
 import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseCode;
 import handong.whynot.dto.post.PostResponseDTO;
@@ -55,5 +56,14 @@ public class PostController {
         postService.updatePost(postId, request, account);
 
         return ResponseDTO.of(PostResponseCode.POST_UPDATE_OK);
+    }
+
+    @PostMapping("/apply/{postId}")
+    @ResponseStatus(CREATED)
+    public ResponseDTO createFavorite(@PathVariable Long postId, @RequestBody PostApplyRequestDTO request, @CurrentAccount Account account) {
+
+        postService.createApply(postId, request, account);
+
+        return ResponseDTO.of(PostResponseCode.POST_CREATE_APPLY_OK);
     }
 }
