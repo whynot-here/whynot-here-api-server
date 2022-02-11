@@ -19,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -46,6 +47,7 @@ public class PostServiceMvcTest {
     @MockBean private AccountService accountService;
     @MockBean private AccountRepository accountRepository;
     @MockBean private PostQueryRepository postQueryRepository;
+    @MockBean private PasswordEncoder passwordEncoder;
 
     @Autowired MockMvc mockMvc;
     @Autowired ObjectMapper objectMapper;
@@ -138,6 +140,17 @@ public class PostServiceMvcTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(jsonPath("statusCode").value(20003))
+                .andDo(print());
+
+    }
+
+    @DisplayName("공고 좋아요 취소 삭제")
+    @Test
+    @WithMockCustomUser
+    void deleteFavoriteTest() throws Exception {
+
+        mockMvc.perform(delete("/v1/posts/favorite/{postId}", 1L))
+                .andExpect(jsonPath("statusCode").value(20006))
                 .andDo(print());
 
     }
