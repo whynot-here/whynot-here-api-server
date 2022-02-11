@@ -3,12 +3,15 @@ package handong.whynot.service;
 import handong.whynot.domain.*;
 import handong.whynot.dto.account.AccountResponseCode;
 import handong.whynot.dto.job.JobResponseCode;
+import handong.whynot.dto.post.PostApplyRequestDTO;
 import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseCode;
 import handong.whynot.dto.post.PostResponseDTO;
 import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.job.JobNotFoundException;
+import handong.whynot.exception.post.PostAlreadyApplyOn;
 import handong.whynot.exception.post.PostNotFoundException;
+import handong.whynot.mail.EmailService;
 import handong.whynot.repository.*;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -38,6 +41,7 @@ class PostServiceTest {
     @Mock private AccountRepository accountRepository;
     @Mock private PostFavoriteRepository postFavoriteRepository;
     @Mock private PostApplyRepository postApplyRepository;
+    @Mock private EmailService emailService;
 
 
     @InjectMocks
@@ -304,5 +308,80 @@ class PostServiceTest {
         // then
         verify(postApplyRepository, times(1)).findAllByPost(post);
         verify(postApplyRepository, times(postApplys.size())).deleteById(anyLong());
+    }
+
+    @DisplayName("공고 신청 [실패1] - 없는 공고인 경우")
+    @Test
+    void createApplyNotFoundPostException1() {
+
+        // given
+        Account account = Account.builder().build();
+        Long notExistId = 12345L;
+        PostApplyRequestDTO requestDTO = PostApplyRequestDTO.builder().build();
+        when(postRepository.findById(notExistId)).thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        // when, then
+        PostNotFoundException exception =
+                assertThrows(PostNotFoundException.class, () -> postService.createApply(notExistId, requestDTO, account));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
+
+        verify(jobRepository, never()).findById(anyLong());
+        verify(postQueryRepository, never()).getApplyByPostId(any(), any());
+        verify(postApplyRepository, never()).save(any());
+        verify(emailService, never()).sendEmail(any());
+
+    }
+
+    @DisplayName("공고 신청 [실패2] - 없는 직군인 경우")
+    @Test
+    void createApplyNotFoundPostException2() {
+
+        // given
+        Account account = Account.builder().build();
+        Long postId = 1L;
+        Post post = Post.builder().id(postId).build();
+
+        Long notExistJobId = 12345L;
+        PostApplyRequestDTO requestDTO = PostApplyRequestDTO.builder().job(notExistJobId).build();
+
+        when(postRepository.findById(anyLong())).thenReturn(Optional.ofNullable(post));
+        when(jobRepository.findById(notExistJobId)).thenThrow(new JobNotFoundException(JobResponseCode.JOB_READ_FAIL));
+
+        // when, then
+        JobNotFoundException exception =
+                assertThrows(JobNotFoundException.class, () -> postService.createApply(postId, requestDTO, account));
+        assertEquals(JobResponseCode.JOB_READ_FAIL, exception.getResponseCode());
+
+        verify(postQueryRepository, never()).getApplyByPostId(any(), any());
+        verify(postApplyRepository, never()).save(any());
+        verify(emailService, never()).sendEmail(any());
+
+    }
+
+    @DisplayName("공고 신청 [실패3] - 이미 신청한 공고인 경우")
+    @Test
+    void createApplyAlreadyOnException() {
+
+        // given
+        Account account = Account.builder().build();
+
+        Post post = Post.builder().id(1L).build();
+        PostApplyRequestDTO requestDTO = PostApplyRequestDTO.builder().job(1L).build();
+
+        PostApply postApply = PostApply.builder().build();
+
+        Job job = Job.builder().id(1L).build();
+
+        when(postRepository.findById(anyLong())).thenReturn(Optional.ofNullable(post));
+        when(jobRepository.findById(anyLong())).thenReturn(Optional.ofNullable(job));
+        when(postQueryRepository.getApplyByPostId(post, account)).thenThrow(new PostAlreadyApplyOn(PostResponseCode.POST_CREATE_APPLY_FAIL));
+
+        // when, then
+        PostAlreadyApplyOn exception =
+                assertThrows(PostAlreadyApplyOn.class, () -> postService.createApply(post.getId(), requestDTO, account));
+        assertEquals(PostResponseCode.POST_CREATE_APPLY_FAIL, exception.getResponseCode());
+
+        verify(postApplyRepository, never()).save(any());
+        verify(emailService, never()).sendEmail(any());
     }
 }
