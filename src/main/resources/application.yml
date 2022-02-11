@@ -33,3 +33,20 @@ spring:
           timeout: 5000
           starttls:
             enable: true
+
+  servlet:
+    multipart:
+      max-file-size: 3MB
+      max-request-size: 3MB
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${aws.s3.accessKey}
+      secretKey: ${aws.s3.secretKey}
+    s3:
+      bucket: ${aws.s3.bucketName}
+    region:
+      static: ${aws.s3.staticName}
+    stack:
+      auto: false
