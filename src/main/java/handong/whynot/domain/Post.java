@@ -1,6 +1,7 @@
 package handong.whynot.domain;
 
 import handong.whynot.domain.common.BaseTimeEntity;
+import handong.whynot.dto.post.PostRequestDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -55,5 +56,11 @@ public class Post extends BaseTimeEntity {
 
     public void addJobs(List<JobPost> jobPosts) {
         this.jobPosts = jobPosts;
+    }
+
+    public void update(PostRequestDTO request) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
+        this.postImg = request.getPostImg();
     }
 }

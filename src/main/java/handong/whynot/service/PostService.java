@@ -1,13 +1,12 @@
 package handong.whynot.service;
 
-import handong.whynot.domain.Account;
-import handong.whynot.domain.Job;
-import handong.whynot.domain.JobPost;
-import handong.whynot.domain.Post;
+import handong.whynot.domain.*;
 import handong.whynot.dto.job.JobResponseCode;
 import handong.whynot.dto.post.PostRequestDTO;
+import handong.whynot.dto.post.PostResponseCode;
 import handong.whynot.dto.post.PostResponseDTO;
 import handong.whynot.exception.job.JobNotFoundException;
+import handong.whynot.exception.post.PostNotFoundException;
 import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +24,8 @@ public class PostService {
     private final JobRepository jobRepository;
     private final JobPostRepository jobPostRepository;
     private final AccountRepository accountRepository;
+    private final PostFavoriteRepository postFavoriteRepository;
+    private final PostApplyRepository postApplyRepository;
     
     public List<PostResponseDTO> getPosts() {
 
@@ -38,7 +39,7 @@ public class PostService {
     }
 
     @Transactional
-    public void createPost(PostRequestDTO request, Account account) {
+    public Post createPost(PostRequestDTO request, Account account) {
 
         // 1. Post 저장
         Post post = Post.builder()
@@ -64,5 +65,65 @@ public class PostService {
                     jobPostRepository.save(jobPost);
                 }
         );
+
+        return newPost;
+    }
+
+    public PostResponseDTO getPost(Long id) {
+
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        return PostResponseDTO.of(post,
+                postQueryRepository.getJobs(post.getId()),
+                postQueryRepository.getApplicants(post.getId()));
+    }
+
+    public void deletePost(Long id, Account account) {
+        Post post = postRepository.findByIdAndCreatedBy(id, account)
+                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        // 1. job 삭제
+        deleteJobPosts(post);
+
+        // 2. favorite 삭제
+        deletePostFavorites(post);
+
+        // 3. apply 삭제
+        deletePostApplys(post);
+
+        postRepository.delete(post);
+    }
+
+    public void deleteJobPosts(Post post) {
+
+        List<JobPost> jobPosts = jobPostRepository.findAllByPost(post);
+        jobPosts.forEach(jobPost -> jobPostRepository.deleteById(jobPost.getId()));
+
+    }
+
+    public void deletePostFavorites(Post post) {
+
+        List<PostFavorite> postFavorites = postFavoriteRepository.findAllByPost(post);
+        postFavorites.forEach(postFavorite -> postFavoriteRepository.deleteById(postFavorite.getId()));
+
+    }
+
+    public void deletePostApplys(Post post) {
+
+        List<PostApply> postApplys = postApplyRepository.findAllByPost(post);
+        postApplys.forEach(postApply -> postApplyRepository.deleteById(postApply.getId()));
+
+    }
+
+    public void updatePost(Long postId, PostRequestDTO request, Account account) {
+
+        Post post = postRepository.findByIdAndCreatedBy(postId, account)
+                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        post.update(request);
+
+        postRepository.save(post);
+
     }
 }

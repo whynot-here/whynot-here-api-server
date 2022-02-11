@@ -35,4 +35,25 @@ public class PostController {
 
         return ResponseDTO.of(PostResponseCode.POST_CREATE_OK);
     }
+
+    @GetMapping("/{postId}")
+    public PostResponseDTO getPost(@PathVariable Long postId) {
+        return postService.getPost(postId);
+    }
+
+    @DeleteMapping("/{postId}")
+    public ResponseDTO deletePost(@PathVariable Long postId, @CurrentAccount Account account) {
+
+        postService.deletePost(postId, account);
+
+        return ResponseDTO.of(PostResponseCode.POST_DELETE_OK);
+    }
+
+    @PutMapping("/{postId}")
+    public ResponseDTO updatePost(@PathVariable Long postId, @RequestBody PostRequestDTO request, @CurrentAccount Account account) {
+
+        postService.updatePost(postId, request, account);
+
+        return ResponseDTO.of(PostResponseCode.POST_UPDATE_OK);
+    }
 }
