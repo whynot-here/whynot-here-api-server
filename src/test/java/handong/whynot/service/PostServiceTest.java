@@ -1,14 +1,14 @@
 package handong.whynot.service;
 
-import handong.whynot.domain.Account;
-import handong.whynot.domain.Job;
-import handong.whynot.domain.Post;
+import handong.whynot.domain.*;
+import handong.whynot.dto.account.AccountResponseCode;
 import handong.whynot.dto.job.JobResponseCode;
 import handong.whynot.dto.post.PostRequestDTO;
+import handong.whynot.dto.post.PostResponseCode;
 import handong.whynot.dto.post.PostResponseDTO;
-import handong.whynot.dto.account.AccountResponseCode;
-import handong.whynot.exception.job.JobNotFoundException;
 import handong.whynot.exception.account.AccountNotFoundException;
+import handong.whynot.exception.job.JobNotFoundException;
+import handong.whynot.exception.post.PostNotFoundException;
 import handong.whynot.repository.*;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -36,13 +36,16 @@ class PostServiceTest {
     @Mock private JobRepository jobRepository;
     @Mock private JobPostRepository jobPostRepository;
     @Mock private AccountRepository accountRepository;
+    @Mock private PostFavoriteRepository postFavoriteRepository;
+    @Mock private PostApplyRepository postApplyRepository;
+
 
     @InjectMocks
     private PostService postService;
 
-    @DisplayName("공고 전체 조회 테스트")
+    @DisplayName("공고 전체 조회 성공")
     @Test
-    void getPosts() {
+    void getPostsTest() {
 
         // given, 테스트를 위한 준비(mock 객체의 행위 정의, 반환값 같은거 만들어주기 등)
         Post post1 = Post.builder().content("content1").build();
@@ -103,5 +106,203 @@ class PostServiceTest {
                 assertThrows(JobNotFoundException.class, () -> postService.createPost(requestDTO, account));
         assertEquals(JobResponseCode.JOB_READ_FAIL, exception.getResponseCode());
         verify(postRepository, times(1)).save(any());
+    }
+
+    @DisplayName("공고 단건 조회 [실패] - 공고가 없는 경우")
+    @Test
+    void getPostNotFoundPostException() {
+
+        // given
+        Long notExistId = 12345L;
+        Post post = Post.builder().id(notExistId).build();
+        PostResponseDTO notExistResponse = PostResponseDTO.of(post, new ArrayList<>(), new ArrayList<>());
+        when(postRepository.findById(notExistId)).thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        // when, then
+        PostNotFoundException exception =
+                assertThrows(PostNotFoundException.class, () -> postService.getPost(notExistId));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
+    }
+
+    @DisplayName("공고 단건 조회 성공")
+    @Test
+    void getPostOK() {
+
+        // given
+        Post post = Post.builder().id(1L).build();
+        List<Job> jobs = new ArrayList<Job>();
+        List<Account> applicants = new ArrayList<Account>();
+
+        PostResponseDTO expectedResponse = PostResponseDTO.of(post, jobs, applicants);
+        when(postRepository.findById(post.getId())).thenReturn(Optional.of(post));
+        when(postQueryRepository.getJobs(post.getId())).thenReturn(jobs);
+        when(postQueryRepository.getApplicants(post.getId())).thenReturn(applicants);
+
+        // when
+        PostResponseDTO actualResponse = postService.getPost(post.getId());
+
+        // then
+        assertEquals(expectedResponse.getId(), actualResponse.getId());
+    }
+
+    @DisplayName("공고 단건 삭제 [실패1] - 본인 공고가 아닌 경우")
+    @Test
+    void deletePostNotFoundException1() {
+
+        // given
+        Long currentAccountId = 1L;
+        Long postOwnerAccountId = 2L;
+        Long postId = 1L;
+
+        Account currentAccount = Account.builder().id(currentAccountId).build();
+        Account postOwnerAccount = Account.builder().id(postOwnerAccountId).build();
+
+        Post post = Post.builder().id(postId).createdBy(postOwnerAccount).build();
+
+        // when, then
+        PostNotFoundException exception =
+                assertThrows(PostNotFoundException.class, () -> postService.deletePost(postId, currentAccount));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
+        verify(jobPostRepository, never()).findAllByPost(any());
+    }
+
+    @DisplayName("공고 단건 삭제 [실패2] - 본인 공고이나 존재하지 않는 공고인 경우")
+    @Test
+    void deletePostNotFoundException2() {
+
+        // given
+        Long currentAccountId = 1L;
+        Long postOwnerAccountId = currentAccountId;
+        Long postId = 1L;
+        Long notExistPostId = 12345L;
+
+        Account currentAccount = Account.builder().id(currentAccountId).build();
+        Account postOwnerAccount = Account.builder().id(postOwnerAccountId).build();
+
+        Post post = Post.builder().id(postId).createdBy(postOwnerAccount).build();
+
+        // when, then
+        PostNotFoundException exception =
+                assertThrows(PostNotFoundException.class, () -> postService.deletePost(notExistPostId, currentAccount));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
+        verify(jobPostRepository, never()).findAllByPost(any());
+    }
+
+    @DisplayName("공고 단건 업데이트 [실패1] - 본인 공고가 아닌 경우")
+    @Test
+    void updatePostNotFoundException1() {
+
+        // given
+        Long currentAccountId = 1L;
+        Long postId = 1L;
+
+        Account currentAccount = Account.builder().id(currentAccountId).build();
+
+        PostRequestDTO dto = PostRequestDTO.builder()
+                .title("제목 수정")
+                .content("내용 수정")
+                .postImg("http://image-edited.com")
+                .build();
+
+        when(postRepository.findByIdAndCreatedBy(postId, currentAccount))
+                .thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        // when, then
+        PostNotFoundException exception =
+                assertThrows(PostNotFoundException.class, () -> postService.updatePost(postId, dto, currentAccount));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
+        verify(postRepository, never()).save(any());
+
+    }
+
+    @DisplayName("공고 단건 업데이트 [실패2] - 본인 공고이나 존재하지 않는 공고인 경우")
+    @Test
+    void updatePostNotFoundException2() {
+
+        // given
+        Long currentAccountId = 1L;
+        Long notExistPostId = 12345L;
+
+        Account currentAccount = Account.builder().id(currentAccountId).build();
+
+        PostRequestDTO dto = PostRequestDTO.builder()
+                .title("제목 수정")
+                .content("내용 수정")
+                .postImg("http://image-edited.com")
+                .build();
+        when(postRepository.findByIdAndCreatedBy(notExistPostId, currentAccount))
+                .thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        // when, then
+        PostNotFoundException exception =
+                assertThrows(PostNotFoundException.class, () -> postService.updatePost(notExistPostId, dto, currentAccount));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
+        verify(postRepository, never()).save(any());
+    }
+
+    @DisplayName("공고에 해당되는 직군 제거")
+    @Test
+    void deleteJobPostsTest() {
+
+        // given
+        Post post = Post.builder().build();
+        JobPost jobPost1 = JobPost.builder().id(1L).post(post).build();
+        JobPost jobPost2 = JobPost.builder().id(2L).post(post).build();
+
+        List<JobPost> jobPosts =  Arrays.asList(jobPost1, jobPost2);
+
+        when(jobPostRepository.findAllByPost(post)).thenReturn(jobPosts);
+        doNothing().when(jobPostRepository).deleteById(any());
+
+        // when
+        postService.deleteJobPosts(post);
+
+        // then
+        verify(jobPostRepository, times(1)).findAllByPost(post);
+        verify(jobPostRepository, times(jobPosts.size())).deleteById(anyLong());
+    }
+
+    @DisplayName("공고에 해당되는 좋아요 정보 제거")
+    @Test
+    void deletePostFavoritesTest() {
+
+        // given
+        Post post = Post.builder().build();
+
+        PostFavorite postFavorite1 = PostFavorite.builder().id(1L).post(post).build();
+        PostFavorite postFavorite2 = PostFavorite.builder().id(2L).post(post).build();
+
+        List<PostFavorite> postFavorites = Arrays.asList(postFavorite1, postFavorite2);
+        when(postFavoriteRepository.findAllByPost(post)).thenReturn(postFavorites);
+        doNothing().when(postFavoriteRepository).deleteById(anyLong());
+
+        // when
+        postService.deletePostFavorites(post);
+
+        // then
+        verify(postFavoriteRepository, times(1)).findAllByPost(post);
+        verify(postFavoriteRepository, times(postFavorites.size())).deleteById(anyLong());
+    }
+
+    @DisplayName("공고에 해당되는 지원 정보 제거")
+    @Test
+    void deletePostApplysTest() {
+
+        // given
+        Post post = Post.builder().build();
+
+        PostApply postApply1 = PostApply.builder().id(1L).post(post).build();
+        PostApply postApply2 = PostApply.builder().id(2L).post(post).build();
+
+        List<PostApply> postApplys = Arrays.asList(postApply1, postApply2);
+        when(postApplyRepository.findAllByPost(post)).thenReturn(postApplys);
+        doNothing().when(postApplyRepository).deleteById(anyLong());
+
+        // when
+        postService.deletePostApplys(post);
+
+        // then
+        verify(postApplyRepository, times(1)).findAllByPost(post);
+        verify(postApplyRepository, times(postApplys.size())).deleteById(anyLong());
     }
 }
