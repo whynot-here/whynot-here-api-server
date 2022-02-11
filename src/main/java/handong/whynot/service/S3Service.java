@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 @Service
 @RequiredArgsConstructor
@@ -28,18 +29,16 @@ public class S3Service {
 
     private final AmazonS3Client amazonS3Client;
 
+    private static final BiFunction<String, File, String> FILE_NAME =
+            (dirName, uploadFile) -> dirName + '/' + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ssSS")) + '-' + uploadFile.getName();
+
     // S3 파일 업로드 수행
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
         File uploadFile = convert(multipartFile)
                 .orElseThrow(() -> new S3InvalidFileTypeException(S3ResponseCode.AWS_S3_UPLOAD_FAIL));
 
-        return uploadS3(uploadFile, dirName);
-    }
-
-    // S3로 파일 업로드
-    private String uploadS3(File uploadFile, String dirName) {
         // S3에 저장된 파일 이름
-        final String fileName = dirName + "/" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ssSS")) + "-" + uploadFile.getName();
+        final String fileName = FILE_NAME.apply(dirName, uploadFile);
 
         // s3로 업로드
         final String uploadImageUrl = putS3(uploadFile, fileName);
