@@ -20,6 +20,7 @@ public class PostQueryRepository {
     private final QJob qJob = QJob.job;
     private final QPostApply qPostApply = QPostApply.postApply;
     private final QAccount qAccount = QAccount.account;
+    private final QPostFavorite qPostFavorite = QPostFavorite.postFavorite;
 
     // Post Full info
     public List<Post> getPosts() {
@@ -45,6 +46,18 @@ public class PostQueryRepository {
                                         .where(qPostApply.post.id.eq(post_id))
                         )
                 )
+                .fetch();
+    }
+
+    public List<Post> getApplys(Account account) {
+
+        Long accountId = account.getId();
+
+        return queryFactory.selectFrom(qPost)
+                .where(qPost.id.in(
+                        select(qPostApply.post.id).from(qPostApply)
+                                .where(qPostApply.account.id.eq(accountId))
+                ))
                 .fetch();
     }
 }
