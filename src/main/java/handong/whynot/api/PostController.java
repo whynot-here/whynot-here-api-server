@@ -60,7 +60,7 @@ public class PostController {
 
     @PostMapping("/apply/{postId}")
     @ResponseStatus(CREATED)
-    public ResponseDTO createFavorite(@PathVariable Long postId, @RequestBody PostApplyRequestDTO request, @CurrentAccount Account account) {
+    public ResponseDTO createApply(@PathVariable Long postId, @RequestBody PostApplyRequestDTO request, @CurrentAccount Account account) {
 
         postService.createApply(postId, request, account);
 
