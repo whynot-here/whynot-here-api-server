@@ -8,6 +8,7 @@ import handong.whynot.dto.post.PostResponseCode;
 import handong.whynot.dto.post.PostResponseDTO;
 import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.job.JobNotFoundException;
+import handong.whynot.exception.post.PostAlreadyFavoriteOn;
 import handong.whynot.exception.post.PostNotFoundException;
 import handong.whynot.repository.*;
 import org.junit.jupiter.api.Disabled;
@@ -304,5 +305,40 @@ class PostServiceTest {
         // then
         verify(postApplyRepository, times(1)).findAllByPost(post);
         verify(postApplyRepository, times(postApplys.size())).deleteById(anyLong());
+    }
+
+    @DisplayName("좋아요 on [실패1] - 없는 공고인 경우")
+    @Test
+    void createFavoriteNotFoundPostException() {
+
+        // given
+        Account account = Account.builder().build();
+        Long notExistId = 12345L;
+        when(postRepository.findById(notExistId)).thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        // when, then
+        PostNotFoundException exception =
+                assertThrows(PostNotFoundException.class, () -> postService.createFavorite(notExistId, account));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
+
+    }
+
+    @DisplayName("좋아요 on [실패2] - 이미 좋아요 누른 공고인 경우")
+    @Test
+    void createFavoriteAlreadyOnException() {
+
+        // given
+        Account account = Account.builder().build();
+        Post post = Post.builder().id(1L).build();
+        PostFavorite postFavorite = PostFavorite.builder().build();
+
+        when(postRepository.findById(anyLong())).thenReturn(Optional.ofNullable(post));
+        when(postQueryRepository.getFavoriteByPostId(post, account)).thenReturn(Arrays.asList(postFavorite));
+
+
+        // when, then
+        PostAlreadyFavoriteOn exception =
+                assertThrows(PostAlreadyFavoriteOn.class, () -> postService.createFavorite(post.getId(), account));
+        assertEquals(PostResponseCode.POST_CREATE_FAVORITE_FAIL, exception.getResponseCode());
     }
 }
