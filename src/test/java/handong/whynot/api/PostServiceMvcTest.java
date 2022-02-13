@@ -171,4 +171,21 @@ public class PostServiceMvcTest {
                 .andExpect(jsonPath("statusCode").value(20005))
         ;
     }
+  
+    @DisplayName("공고 신청 성공")
+    @Test
+    @WithMockCustomUser
+    void createApplyTest() throws Exception {
+
+        PostApplyRequestDTO requestDTO = PostApplyRequestDTO.builder().job(1L).build();
+
+        mockMvc.perform(post("/v1/posts/apply/{postId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("statusCode").value(20009))
+        ;
+    }
 }
