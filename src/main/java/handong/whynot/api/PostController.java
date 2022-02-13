@@ -1,6 +1,7 @@
 package handong.whynot.api;
 
 import handong.whynot.domain.Account;
+import handong.whynot.domain.Post;
 import handong.whynot.dto.account.CurrentAccount;
 import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.dto.post.PostRequestDTO;
@@ -78,5 +79,11 @@ public class PostController {
         postService.deleteFavorite(postId, account);
 
         return ResponseDTO.of(PostResponseCode.POST_DELETE_FAVORITE_OK);
+    }
+  
+    @GetMapping("/apply")
+    public List<PostResponseDTO> getApplys(@CurrentAccount Account account) {
+
+        return postService.getApplys(account);
     }
 }

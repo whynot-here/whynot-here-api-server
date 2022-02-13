@@ -48,7 +48,7 @@ public class PostQueryRepository {
                 )
                 .fetch();
     }
-  
+
     public List<Post> getFavorites(Account account) {
         Long accountId = account.getId();
 
@@ -71,6 +71,18 @@ public class PostQueryRepository {
                 .where(qPostFavorite.account.id.eq(accountId)
                         .and(qPostFavorite.post.id.eq(postId)))
 
+                .fetch();
+    }
+  
+    public List<Post> getApplys(Account account) {
+
+        Long accountId = account.getId();
+
+        return queryFactory.selectFrom(qPost)
+                .where(qPost.id.in(
+                        select(qPostApply.post.id).from(qPostApply)
+                                .where(qPostApply.account.id.eq(accountId))
+                ))
                 .fetch();
     }
 }
