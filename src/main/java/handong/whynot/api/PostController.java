@@ -1,6 +1,7 @@
 package handong.whynot.api;
 
 import handong.whynot.domain.Account;
+import handong.whynot.domain.Post;
 import handong.whynot.dto.account.CurrentAccount;
 import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.dto.post.PostRequestDTO;
@@ -56,7 +57,46 @@ public class PostController {
 
         return ResponseDTO.of(PostResponseCode.POST_UPDATE_OK);
     }
+  
+    @GetMapping("/favorite")
+    public List<PostResponseDTO> getFavorite(@CurrentAccount Account account) {
 
+        return postService.getFavorites(account);
+    }
+
+    @PostMapping("/favorite/{postId}")
+    @ResponseStatus(CREATED)
+    public ResponseDTO createFavorite(@PathVariable Long postId, @CurrentAccount Account account) {
+
+        postService.createFavorite(postId, account);
+
+        return ResponseDTO.of(PostResponseCode.POST_CREATE_FAVORITE_OK);
+    }
+  
+    @DeleteMapping("/favorite/{postId}")
+    public ResponseDTO deleteFavorite(@PathVariable Long postId, @CurrentAccount Account account) {
+
+        postService.deleteFavorite(postId, account);
+
+        return ResponseDTO.of(PostResponseCode.POST_DELETE_FAVORITE_OK);
+    }
+  
+    @GetMapping("/apply")
+    public List<PostResponseDTO> getApplys(@CurrentAccount Account account) {
+
+        return postService.getApplys(account);
+    }
+
+  
+    @PostMapping("/apply/{postId}")
+    @ResponseStatus(CREATED)
+    public ResponseDTO createApply(@PathVariable Long postId, @RequestBody PostApplyRequestDTO request, @CurrentAccount Account account) {
+
+        postService.createApply(postId, request, account);
+
+        return ResponseDTO.of(PostResponseCode.POST_CREATE_APPLY_OK);
+    }
+  
     @DeleteMapping("/apply/{postId}")
     public ResponseDTO deleteApply(@PathVariable Long postId, @CurrentAccount Account account) {
 
