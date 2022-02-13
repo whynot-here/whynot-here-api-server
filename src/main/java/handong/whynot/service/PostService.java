@@ -129,6 +129,7 @@ public class PostService {
 
     }
 
+
     public List<PostResponseDTO> getFavorites(Account account) {
 
         List<Post> posts = postQueryRepository.getFavorites(account);
@@ -171,5 +172,17 @@ public class PostService {
 
         postFavoriteRepository.deleteById(favorite.get(0).getId());
 
+    }
+  
+    public List<PostResponseDTO> getApplys(Account account) {
+
+        List<Post> posts = postQueryRepository.getApplys(account);
+
+        return posts.stream()
+                .map(post ->
+                        PostResponseDTO.of(post,
+                                postQueryRepository.getJobs(post.getId()),
+                                postQueryRepository.getApplicants(post.getId())))
+                .collect(Collectors.toList());
     }
 }

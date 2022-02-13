@@ -308,6 +308,8 @@ class PostServiceTest {
         verify(postApplyRepository, times(postApplys.size())).deleteById(anyLong());
     }
   
+  
+  
   @DisplayName("좋아요 공고 전체 조회")
     @Test
     void getFavoritesTest() {
@@ -400,5 +402,29 @@ class PostServiceTest {
         PostAlreadyFavoriteOff exception =
                 assertThrows(PostAlreadyFavoriteOff.class, () -> postService.deleteFavorite(post.getId(), account));
         assertEquals(PostResponseCode.POST_DELETE_FAVORITE_FAIL, exception.getResponseCode());
+    }
+  
+    @DisplayName("좋아요 공고 전체 조회")
+    @Test
+    void getApplysTest() {
+
+        // given
+        Account account = Account.builder().build();
+
+        Post post1 = Post.builder().content("content1").build();
+        Post post2 = Post.builder().content("content2").build();
+        Post post3 = Post.builder().content("content3").build();
+        List<Post> posts = Arrays.asList(post1, post2, post3);
+        final int totalPostCount = posts.size();
+
+        when(postQueryRepository.getApplys(account)).thenReturn(posts);
+        when(postQueryRepository.getJobs(any())).thenReturn(new ArrayList<>());
+        when(postQueryRepository.getApplicants(any())).thenReturn(new ArrayList<>());
+
+        // when
+        List<PostResponseDTO> postResponseDTOList = postService.getApplys(account);
+
+        // then
+        assertEquals(totalPostCount, postResponseDTOList.size());
     }
 }
