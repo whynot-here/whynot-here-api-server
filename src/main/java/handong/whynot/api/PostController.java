@@ -71,4 +71,12 @@ public class PostController {
 
         return ResponseDTO.of(PostResponseCode.POST_CREATE_FAVORITE_OK);
     }
+  
+    @DeleteMapping("/favorite/{postId}")
+    public ResponseDTO deleteFavorite(@PathVariable Long postId, @CurrentAccount Account account) {
+
+        postService.deleteFavorite(postId, account);
+
+        return ResponseDTO.of(PostResponseCode.POST_DELETE_FAVORITE_OK);
+    }
 }

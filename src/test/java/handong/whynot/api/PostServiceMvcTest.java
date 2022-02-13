@@ -144,6 +144,16 @@ public class PostServiceMvcTest {
 
     }
 
+    @DisplayName("공고 좋아요 취소 삭제")
+    @Test
+    @WithMockCustomUser
+    void deleteFavoriteTest() throws Exception {
+
+        mockMvc.perform(delete("/v1/posts/favorite/{postId}", 1L))
+                .andDo(print())
+                .andExpect(jsonPath("statusCode").value(20006));
+    }
+
     @DisplayName("좋아요 누르기 성공")
     @Test
     @WithMockCustomUser

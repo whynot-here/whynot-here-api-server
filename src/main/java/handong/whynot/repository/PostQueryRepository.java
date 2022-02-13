@@ -60,6 +60,7 @@ public class PostQueryRepository {
                 .fetch();
     }
 
+
     public List<PostFavorite> getFavoriteByPostId(Post post, Account account) {
 
         Long postId = post.getId();
@@ -69,6 +70,7 @@ public class PostQueryRepository {
                 .from(qPost, qPostFavorite)
                 .where(qPostFavorite.account.id.eq(accountId)
                         .and(qPostFavorite.post.id.eq(postId)))
+
+                .fetch();
     }
-    
 }
