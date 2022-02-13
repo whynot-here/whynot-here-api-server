@@ -8,6 +8,8 @@ import handong.whynot.dto.post.PostResponseCode;
 import handong.whynot.dto.post.PostResponseDTO;
 import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.job.JobNotFoundException;
+import handong.whynot.exception.post.PostAlreadyFavoriteOff;
+import handong.whynot.exception.post.PostAlreadyFavoriteOn;
 import handong.whynot.exception.post.PostNotFoundException;
 import handong.whynot.repository.*;
 import org.junit.jupiter.api.Disabled;
@@ -305,7 +307,248 @@ class PostServiceTest {
         verify(postApplyRepository, times(1)).findAllByPost(post);
         verify(postApplyRepository, times(postApplys.size())).deleteById(anyLong());
     }
+  
+  
+  
+  @DisplayName("좋아요 공고 전체 조회")
+    @Test
+    void getFavoritesTest() {
 
+        // given
+        Account account = Account.builder().build();
+
+        Post post1 = Post.builder().content("content1").build();
+        Post post2 = Post.builder().content("content2").build();
+        Post post3 = Post.builder().content("content3").build();
+        List<Post> posts = Arrays.asList(post1, post2, post3);
+        final int totalPostCount = posts.size();
+
+        when(postQueryRepository.getFavorites(account)).thenReturn(posts);
+        when(postQueryRepository.getJobs(any())).thenReturn(new ArrayList<>());
+        when(postQueryRepository.getApplicants(any())).thenReturn(new ArrayList<>());
+
+        // when
+        List<PostResponseDTO> postResponseDTOList = postService.getFavorites(account);
+
+        // then
+        assertEquals(totalPostCount, postResponseDTOList.size());
+    }
+
+    @DisplayName("좋아요 on [실패1] - 없는 공고인 경우")
+    @Test
+    void createFavoriteNotFoundPostException() {
+
+        // given
+        Account account = Account.builder().build();
+        Long notExistId = 12345L;
+        when(postRepository.findById(notExistId)).thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        // when, then
+        PostNotFoundException exception =
+                assertThrows(PostNotFoundException.class, () -> postService.createFavorite(notExistId, account));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
+
+    }
+
+    @DisplayName("좋아요 on [실패2] - 이미 좋아요 누른 공고인 경우")
+    @Test
+    void createFavoriteAlreadyOnException() {
+
+        // given
+        Account account = Account.builder().build();
+        Post post = Post.builder().id(1L).build();
+        PostFavorite postFavorite = PostFavorite.builder().build();
+
+        when(postRepository.findById(anyLong())).thenReturn(Optional.ofNullable(post));
+        when(postQueryRepository.getFavoriteByPostId(post, account)).thenReturn(Arrays.asList(postFavorite));
+
+
+        // when, then
+        PostAlreadyFavoriteOn exception =
+                assertThrows(PostAlreadyFavoriteOn.class, () -> postService.createFavorite(post.getId(), account));
+        assertEquals(PostResponseCode.POST_CREATE_FAVORITE_FAIL, exception.getResponseCode());
+    }
+  
+    @DisplayName("좋아요 off [실패1] - 없는 공고인 경우")
+    @Test
+    void deleteFavoriteNotFoundPostException() {
+
+        // given
+        Account account = Account.builder().build();
+        Long notExistId = 12345L;
+        when(postRepository.findById(notExistId)).thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        // when, then
+        PostNotFoundException exception =
+                assertThrows(PostNotFoundException.class, () -> postService.deleteFavorite(notExistId, account));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
+
+    }
+
+    @DisplayName("좋아요 off [실패2] - 이미 좋아요 해제한 공고인 경우")
+    @Test
+    void deleteFavoriteAlreadyOffException() {
+
+        // given
+        Account account = Account.builder().build();
+        Post post = Post.builder().id(1L).build();
+        PostFavorite postFavorite = PostFavorite.builder().build();
+
+        when(postRepository.findById(anyLong())).thenReturn(Optional.ofNullable(post));
+        when(postQueryRepository.getFavoriteByPostId(post, account)).thenReturn(new ArrayList<>());
+
+
+        // when, then
+        PostAlreadyFavoriteOff exception =
+                assertThrows(PostAlreadyFavoriteOff.class, () -> postService.deleteFavorite(post.getId(), account));
+        assertEquals(PostResponseCode.POST_DELETE_FAVORITE_FAIL, exception.getResponseCode());
+    }
+  
+    @DisplayName("좋아요 공고 전체 조회")
+    @Test
+    void getApplysTest() {
+
+        // given
+        Account account = Account.builder().build();
+
+        Post post1 = Post.builder().content("content1").build();
+        Post post2 = Post.builder().content("content2").build();
+        Post post3 = Post.builder().content("content3").build();
+        List<Post> posts = Arrays.asList(post1, post2, post3);
+        final int totalPostCount = posts.size();
+
+        when(postQueryRepository.getApplys(account)).thenReturn(posts);
+        when(postQueryRepository.getJobs(any())).thenReturn(new ArrayList<>());
+        when(postQueryRepository.getApplicants(any())).thenReturn(new ArrayList<>());
+
+        // when
+        List<PostResponseDTO> postResponseDTOList = postService.getApplys(account);
+
+        // then
+        assertEquals(totalPostCount, postResponseDTOList.size());
+    }
+  
+  
+    @DisplayName("공고 신청 [실패1] - 없는 공고인 경우")
+    @Test
+    void createApplyNotFoundPostException1() {
+
+        // given
+        Account account = Account.builder().build();
+        Long notExistId = 12345L;
+        PostApplyRequestDTO requestDTO = PostApplyRequestDTO.builder().build();
+        when(postRepository.findById(notExistId)).thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        // when, then
+        PostNotFoundException exception =
+                assertThrows(PostNotFoundException.class, () -> postService.createApply(notExistId, requestDTO, account));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
+
+        verify(jobRepository, never()).findById(anyLong());
+        verify(postQueryRepository, never()).getApplyByPostId(any(), any());
+        verify(postApplyRepository, never()).save(any());
+        verify(emailService, never()).sendEmail(any());
+
+    }
+
+    @DisplayName("공고 신청 [실패2] - 없는 직군인 경우")
+    @Test
+    void createApplyNotFoundPostException2() {
+
+        // given
+        Account account = Account.builder().build();
+        Long postId = 1L;
+        Post post = Post.builder().id(postId).build();
+
+        Long notExistJobId = 12345L;
+        PostApplyRequestDTO requestDTO = PostApplyRequestDTO.builder().job(notExistJobId).build();
+
+        when(postRepository.findById(anyLong())).thenReturn(Optional.ofNullable(post));
+        when(jobRepository.findById(notExistJobId)).thenThrow(new JobNotFoundException(JobResponseCode.JOB_READ_FAIL));
+
+        // when, then
+        JobNotFoundException exception =
+                assertThrows(JobNotFoundException.class, () -> postService.createApply(postId, requestDTO, account));
+        assertEquals(JobResponseCode.JOB_READ_FAIL, exception.getResponseCode());
+
+        verify(postQueryRepository, never()).getApplyByPostId(any(), any());
+        verify(postApplyRepository, never()).save(any());
+        verify(emailService, never()).sendEmail(any());
+
+    }
+
+    @DisplayName("공고 신청 [실패3] - 이미 신청한 공고인 경우")
+    @Test
+    void createApplyAlreadyOnException() {
+
+        // given
+        Account account = Account.builder().build();
+
+        Post post = Post.builder().id(1L).build();
+        PostApplyRequestDTO requestDTO = PostApplyRequestDTO.builder().job(1L).build();
+
+        PostApply postApply = PostApply.builder().build();
+
+        Job job = Job.builder().id(1L).build();
+
+        when(postRepository.findById(anyLong())).thenReturn(Optional.ofNullable(post));
+        when(jobRepository.findById(anyLong())).thenReturn(Optional.ofNullable(job));
+        when(postQueryRepository.getApplyByPostId(post, account)).thenThrow(new PostAlreadyApplyOn(PostResponseCode.POST_CREATE_APPLY_FAIL));
+
+        // when, then
+        PostAlreadyApplyOn exception =
+                assertThrows(PostAlreadyApplyOn.class, () -> postService.createApply(post.getId(), requestDTO, account));
+        assertEquals(PostResponseCode.POST_CREATE_APPLY_FAIL, exception.getResponseCode());
+
+        verify(postApplyRepository, never()).save(any());
+        verify(emailService, never()).sendEmail(any());
+    }
+  
+    @DisplayName("공고 신청 취소 [실패1] - 없는 공고인 경우")
+    @Test
+    void deleteApplyNotFoundPostException() {
+
+        // given
+        Account account = Account.builder().build();
+        Long notExistId = 12345L;
+        when(postRepository.findById(notExistId)).thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        // when, then
+        PostNotFoundException exception =
+                assertThrows(PostNotFoundException.class, () -> postService.deleteApply(notExistId, account));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
+
+        verify(jobRepository, never()).findById(anyLong());
+        verify(postQueryRepository, never()).getApplyByPostId(any(), any());
+        verify(postApplyRepository, never()).save(any());
+        verify(emailService, never()).sendEmail(any());
+
+    }
+
+
+    @DisplayName("공고 신청 [실패2] - 이미 취소한 공고인 경우")
+    @Test
+    void deleteApplyAlreadyOffException() {
+
+        // given
+        Account account = Account.builder().build();
+
+        Post post = Post.builder().id(1L).build();
+
+        Job job = Job.builder().id(1L).build();
+
+        when(postRepository.findById(anyLong())).thenReturn(Optional.ofNullable(post));
+        when(postQueryRepository.getApplyByPostId(post, account)).thenThrow(new PostAlreadyApplyOff(PostResponseCode.POST_DELETE_APPLY_FAIL));
+
+        // when, then
+        PostAlreadyApplyOff exception =
+                assertThrows(PostAlreadyApplyOff.class, () -> postService.deleteApply(post.getId(), account));
+        assertEquals(PostResponseCode.POST_DELETE_APPLY_FAIL, exception.getResponseCode());
+
+        verify(postApplyRepository, never()).save(any());
+        verify(emailService, never()).sendEmail(any());
+    }
+  
     @DisplayName("공고 전체 조회 성공")
     @Test
     void getMyPostsTest() {

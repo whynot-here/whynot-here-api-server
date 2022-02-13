@@ -19,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -46,6 +47,7 @@ public class PostServiceMvcTest {
     @MockBean private AccountService accountService;
     @MockBean private AccountRepository accountRepository;
     @MockBean private PostQueryRepository postQueryRepository;
+    @MockBean private PasswordEncoder passwordEncoder;
 
     @Autowired MockMvc mockMvc;
     @Autowired ObjectMapper objectMapper;
@@ -140,5 +142,61 @@ public class PostServiceMvcTest {
                 .andExpect(jsonPath("statusCode").value(20003))
                 .andDo(print());
 
+    }
+
+    @DisplayName("공고 좋아요 취소 삭제")
+    @Test
+    @WithMockCustomUser
+    void deleteFavoriteTest() throws Exception {
+
+        mockMvc.perform(delete("/v1/posts/favorite/{postId}", 1L))
+                .andDo(print())
+                .andExpect(jsonPath("statusCode").value(20006));
+    }
+
+    @DisplayName("좋아요 누르기 성공")
+    @Test
+    @WithMockCustomUser
+    void createFavoriteTest() throws Exception {
+
+        Optional<Account> optionalAccount = accountRepository.findById(1L);
+        Account account = optionalAccount.orElse(null);
+
+        mockMvc.perform(post("/v1/posts/favorite/{postId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(account)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("statusCode").value(20005))
+        ;
+    }
+  
+    @DisplayName("공고 신청 성공")
+    @Test
+    @WithMockCustomUser
+    void createApplyTest() throws Exception {
+
+        PostApplyRequestDTO requestDTO = PostApplyRequestDTO.builder().job(1L).build();
+
+        mockMvc.perform(post("/v1/posts/apply/{postId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDTO)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("statusCode").value(20009))
+        ;
+    }
+  
+    @DisplayName("공고 취소 성공")
+    @Test
+    @WithMockCustomUser
+    void createApplyTest() throws Exception {
+
+        mockMvc.perform(delete("/v1/posts/apply/{postId}", 1L))
+                .andExpect(jsonPath("statusCode").value(20010))
+                .andDo(print())
+        ;
     }
 }
