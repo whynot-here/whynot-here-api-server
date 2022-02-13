@@ -6,6 +6,8 @@ import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseCode;
 import handong.whynot.dto.post.PostResponseDTO;
 import handong.whynot.exception.job.JobNotFoundException;
+import handong.whynot.exception.post.PostAlreadyFavoriteOff;
+import handong.whynot.exception.post.PostAlreadyFavoriteOn;
 import handong.whynot.exception.post.PostNotFoundException;
 import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -127,6 +129,126 @@ public class PostService {
 
     }
 
+
+    public List<PostResponseDTO> getFavorites(Account account) {
+
+        List<Post> posts = postQueryRepository.getFavorites(account);
+
+        return posts.stream()
+                .map(post ->
+                        PostResponseDTO.of(post,
+                                postQueryRepository.getJobs(post.getId()),
+                                postQueryRepository.getApplicants(post.getId())))
+                .collect(Collectors.toList());
+    }
+
+    public void createFavorite(Long postId, Account account) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        if (!postQueryRepository.getFavoriteByPostId(post, account).isEmpty()) {
+            throw new PostAlreadyFavoriteOn(PostResponseCode.POST_CREATE_FAVORITE_FAIL);
+        }
+
+        PostFavorite postFavorite = PostFavorite.builder()
+                .post(post)
+                .account(account)
+                .build();
+
+        postFavoriteRepository.save(postFavorite);
+
+    }
+  
+    public void deleteFavorite(Long postId, Account account) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        List<PostFavorite> favorite = postQueryRepository.getFavoriteByPostId(post, account);
+        if (favorite.isEmpty()) {
+            throw new PostAlreadyFavoriteOff(PostResponseCode.POST_DELETE_FAVORITE_FAIL);
+        }
+
+        postFavoriteRepository.deleteById(favorite.get(0).getId());
+
+    }
+  
+    public List<PostResponseDTO> getApplys(Account account) {
+
+        List<Post> posts = postQueryRepository.getApplys(account);
+
+        return posts.stream()
+                .map(post ->
+                        PostResponseDTO.of(post,
+                                postQueryRepository.getJobs(post.getId()),
+                                postQueryRepository.getApplicants(post.getId())))
+                .collect(Collectors.toList());
+    }
+  
+    public void createApply(Long postId, PostApplyRequestDTO request, Account account) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        Job job = jobRepository.findById(request.getJob())
+                .orElseThrow(() -> new JobNotFoundException(JobResponseCode.JOB_READ_FAIL));
+
+        if (!postQueryRepository.getApplyByPostId(post, account).isEmpty()) {
+            throw new PostAlreadyApplyOn(PostResponseCode.POST_CREATE_APPLY_FAIL);
+        }
+
+        PostApply postApply = PostApply.builder()
+                .post(post)
+                .job(job)
+                .account(account)
+                .build();
+
+        postApplyRepository.save(postApply);
+
+        // 이메일 전송
+        String message = account.getNickname() + " 님이"
+                + post.getTitle() + " 공고에 "
+                + job.getName() + " 직무로 지원 요청을 하였습니다.";
+
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(post.getCreatedBy().getEmail())
+                .subject("[공고 지원 알림] "+post.getTitle()+" by "+account.getNickname())
+                .message(message)
+                .build();
+
+        emailService.sendEmail(emailMessage);
+    }
+  
+    public void deleteApply(Long postId, Account account) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        List<PostApply> applies = postQueryRepository.getApplyByPostId(post, account);
+        if (applies.isEmpty()) {
+            throw new PostAlreadyApplyOff(PostResponseCode.POST_DELETE_APPLY_FAIL);
+        }
+
+        PostApply apply = applies.get(0);
+
+        postApplyRepository.deleteById(apply.getId());
+
+        // 이메일 전송
+        String message = account.getNickname() + " 님이"
+                + post.getTitle() + " 공고에 "
+                + apply.getJob().getName() + " 직무 지원 요청을 취소하였습니다.";
+
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(post.getCreatedBy().getEmail())
+                .subject("[공고 지원 취소 알림] "+post.getTitle()+" by "+account.getNickname())
+                .message(message)
+                .build();
+
+        emailService.sendEmail(emailMessage);
+
+    }
+  
     public List<PostResponseDTO> getMyPosts(Account account) {
 
         List<Post> posts = postRepository.findAllByCreatedBy(account);
