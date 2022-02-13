@@ -3,14 +3,14 @@ package handong.whynot.service;
 import handong.whynot.domain.*;
 import handong.whynot.dto.account.AccountResponseCode;
 import handong.whynot.dto.job.JobResponseCode;
+import handong.whynot.dto.post.PostApplyRequestDTO;
 import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseCode;
 import handong.whynot.dto.post.PostResponseDTO;
 import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.job.JobNotFoundException;
-import handong.whynot.exception.post.PostAlreadyFavoriteOff;
-import handong.whynot.exception.post.PostAlreadyFavoriteOn;
-import handong.whynot.exception.post.PostNotFoundException;
+import handong.whynot.exception.post.*;
+import handong.whynot.mail.EmailService;
 import handong.whynot.repository.*;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -40,6 +40,7 @@ class PostServiceTest {
     @Mock private AccountRepository accountRepository;
     @Mock private PostFavoriteRepository postFavoriteRepository;
     @Mock private PostApplyRepository postApplyRepository;
+    @Mock private EmailService emailService;
 
 
     @InjectMocks

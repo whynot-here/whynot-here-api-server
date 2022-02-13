@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import handong.whynot.common.WithMockCustomUser;
 import handong.whynot.domain.Account;
 import handong.whynot.domain.Post;
+import handong.whynot.dto.post.PostApplyRequestDTO;
 import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseDTO;
 import handong.whynot.repository.AccountRepository;
@@ -192,7 +193,7 @@ public class PostServiceMvcTest {
     @DisplayName("공고 취소 성공")
     @Test
     @WithMockCustomUser
-    void createApplyTest() throws Exception {
+    void deleteApplyTest() throws Exception {
 
         mockMvc.perform(delete("/v1/posts/apply/{postId}", 1L))
                 .andExpect(jsonPath("statusCode").value(20010))

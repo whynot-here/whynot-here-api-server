@@ -2,10 +2,7 @@ package handong.whynot.handler;
 
 import handong.whynot.dto.common.ErrorResponseDTO;
 import handong.whynot.dto.post.PostResponseCode;
-import handong.whynot.exception.post.PostAlreadyApplyOn;
-import handong.whynot.exception.post.PostAlreadyFavoriteOff;
-import handong.whynot.exception.post.PostAlreadyFavoriteOn;
-import handong.whynot.exception.post.PostNotFoundException;
+import handong.whynot.exception.post.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -24,6 +21,7 @@ public class PostExceptionHandler {
         return ErrorResponseDTO.of(PostResponseCode.POST_READ_FAIL, null);
     }
 
+    @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(PostAlreadyFavoriteOn.class)
     public ErrorResponseDTO postAlreadyFavoriteOn() {
         return ErrorResponseDTO.of(PostResponseCode.POST_CREATE_FAVORITE_FAIL, null);
@@ -37,13 +35,13 @@ public class PostExceptionHandler {
   
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(PostAlreadyApplyOn.class)
-    public ErrorResponseDTO postAlreadyFavoriteOn() {
+    public ErrorResponseDTO postAlreadyApplyOn() {
         return ErrorResponseDTO.of(PostResponseCode.POST_CREATE_APPLY_FAIL, null);
     }
   
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(PostAlreadyApplyOff.class)
-    public ErrorResponseDTO postAlreadyFavoriteOff() {
+    public ErrorResponseDTO postAlreadyApplyOff() {
         return ErrorResponseDTO.of(PostResponseCode.POST_DELETE_APPLY_FAIL, null);
     }
 }

@@ -2,13 +2,14 @@ package handong.whynot.service;
 
 import handong.whynot.domain.*;
 import handong.whynot.dto.job.JobResponseCode;
+import handong.whynot.dto.post.PostApplyRequestDTO;
 import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseCode;
 import handong.whynot.dto.post.PostResponseDTO;
 import handong.whynot.exception.job.JobNotFoundException;
-import handong.whynot.exception.post.PostAlreadyFavoriteOff;
-import handong.whynot.exception.post.PostAlreadyFavoriteOn;
-import handong.whynot.exception.post.PostNotFoundException;
+import handong.whynot.exception.post.*;
+import handong.whynot.mail.EmailMessage;
+import handong.whynot.mail.EmailService;
 import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class PostService {
     private final AccountRepository accountRepository;
     private final PostFavoriteRepository postFavoriteRepository;
     private final PostApplyRepository postApplyRepository;
+    private final EmailService emailService;
     
     public List<PostResponseDTO> getPosts() {
 
