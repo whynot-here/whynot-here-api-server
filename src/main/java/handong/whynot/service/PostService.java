@@ -2,15 +2,13 @@ package handong.whynot.service;
 
 import handong.whynot.domain.*;
 import handong.whynot.dto.job.JobResponseCode;
-import handong.whynot.dto.post.PostApplyRequestDTO;
 import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseCode;
 import handong.whynot.dto.post.PostResponseDTO;
 import handong.whynot.exception.job.JobNotFoundException;
-import handong.whynot.exception.post.PostAlreadyApplyOn;
+import handong.whynot.exception.post.PostAlreadyFavoriteOff;
+import handong.whynot.exception.post.PostAlreadyFavoriteOn;
 import handong.whynot.exception.post.PostNotFoundException;
-import handong.whynot.mail.EmailMessage;
-import handong.whynot.mail.EmailService;
 import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,7 +28,6 @@ public class PostService {
     private final AccountRepository accountRepository;
     private final PostFavoriteRepository postFavoriteRepository;
     private final PostApplyRepository postApplyRepository;
-    private final EmailService emailService;
     
     public List<PostResponseDTO> getPosts() {
 
@@ -132,6 +129,63 @@ public class PostService {
 
     }
 
+
+    public List<PostResponseDTO> getFavorites(Account account) {
+
+        List<Post> posts = postQueryRepository.getFavorites(account);
+
+        return posts.stream()
+                .map(post ->
+                        PostResponseDTO.of(post,
+                                postQueryRepository.getJobs(post.getId()),
+                                postQueryRepository.getApplicants(post.getId())))
+                .collect(Collectors.toList());
+    }
+
+    public void createFavorite(Long postId, Account account) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        if (!postQueryRepository.getFavoriteByPostId(post, account).isEmpty()) {
+            throw new PostAlreadyFavoriteOn(PostResponseCode.POST_CREATE_FAVORITE_FAIL);
+        }
+
+        PostFavorite postFavorite = PostFavorite.builder()
+                .post(post)
+                .account(account)
+                .build();
+
+        postFavoriteRepository.save(postFavorite);
+
+    }
+  
+    public void deleteFavorite(Long postId, Account account) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        List<PostFavorite> favorite = postQueryRepository.getFavoriteByPostId(post, account);
+        if (favorite.isEmpty()) {
+            throw new PostAlreadyFavoriteOff(PostResponseCode.POST_DELETE_FAVORITE_FAIL);
+        }
+
+        postFavoriteRepository.deleteById(favorite.get(0).getId());
+
+    }
+  
+    public List<PostResponseDTO> getApplys(Account account) {
+
+        List<Post> posts = postQueryRepository.getApplys(account);
+
+        return posts.stream()
+                .map(post ->
+                        PostResponseDTO.of(post,
+                                postQueryRepository.getJobs(post.getId()),
+                                postQueryRepository.getApplicants(post.getId())))
+                .collect(Collectors.toList());
+    }
+  
     public void createApply(Long postId, PostApplyRequestDTO request, Account account) {
 
         Post post = postRepository.findById(postId)
