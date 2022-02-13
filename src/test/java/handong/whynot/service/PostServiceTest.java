@@ -548,4 +548,28 @@ class PostServiceTest {
         verify(postApplyRepository, never()).save(any());
         verify(emailService, never()).sendEmail(any());
     }
+  
+    @DisplayName("공고 전체 조회 성공")
+    @Test
+    void getMyPostsTest() {
+
+        // given
+        Account account = Account.builder().build();
+
+        Post post1 = Post.builder().content("content1").build();
+        Post post2 = Post.builder().content("content2").build();
+        Post post3 = Post.builder().content("content3").build();
+        List<Post> posts = Arrays.asList(post1, post2, post3);
+        final int totalPostCount = posts.size();
+
+        when(postRepository.findAllByCreatedBy(account)).thenReturn(posts);
+        when(postQueryRepository.getJobs(any())).thenReturn(new ArrayList<>());
+        when(postQueryRepository.getApplicants(any())).thenReturn(new ArrayList<>());
+
+        // when
+        List<PostResponseDTO> postResponseDTOList = postService.getMyPosts(account);
+
+        // then
+        assertEquals(totalPostCount, postResponseDTOList.size());
+    }
 }

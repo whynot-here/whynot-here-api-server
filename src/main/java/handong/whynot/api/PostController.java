@@ -104,4 +104,10 @@ public class PostController {
 
         return ResponseDTO.of(PostResponseCode.POST_DELETE_APPLY_OK);
     }
+  
+    @GetMapping("/own")
+    public List<PostResponseDTO> getMyPosts(@CurrentAccount Account account) {
+
+        return postService.getMyPosts(account);
+    }
 }
