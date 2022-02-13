@@ -21,7 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .authorizeRequests()
                 .antMatchers("/", "/login", "/sign-up", "/check-email-token",
                         "/email-login", "/login-by-email").permitAll()
-                .antMatchers("/v1/posts/favorite/**").hasRole("USER")
+                .antMatchers("/v1/posts/favorite/**", "/v1/posts/apply/**").hasRole("USER")
                 .antMatchers(HttpMethod.GET,"/v1/posts/**").permitAll()
                 .anyRequest().authenticated()
         .and()

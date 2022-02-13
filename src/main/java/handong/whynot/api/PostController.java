@@ -86,4 +86,14 @@ public class PostController {
 
         return postService.getApplys(account);
     }
+
+  
+    @PostMapping("/apply/{postId}")
+    @ResponseStatus(CREATED)
+    public ResponseDTO createApply(@PathVariable Long postId, @RequestBody PostApplyRequestDTO request, @CurrentAccount Account account) {
+
+        postService.createApply(postId, request, account);
+
+        return ResponseDTO.of(PostResponseCode.POST_CREATE_APPLY_OK);
+    }
 }

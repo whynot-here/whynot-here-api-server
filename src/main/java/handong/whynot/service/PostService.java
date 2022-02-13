@@ -185,4 +185,38 @@ public class PostService {
                                 postQueryRepository.getApplicants(post.getId())))
                 .collect(Collectors.toList());
     }
+  
+    public void createApply(Long postId, PostApplyRequestDTO request, Account account) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        Job job = jobRepository.findById(request.getJob())
+                .orElseThrow(() -> new JobNotFoundException(JobResponseCode.JOB_READ_FAIL));
+
+        if (!postQueryRepository.getApplyByPostId(post, account).isEmpty()) {
+            throw new PostAlreadyApplyOn(PostResponseCode.POST_CREATE_APPLY_FAIL);
+        }
+
+        PostApply postApply = PostApply.builder()
+                .post(post)
+                .job(job)
+                .account(account)
+                .build();
+
+        postApplyRepository.save(postApply);
+
+        // 이메일 전송
+        String message = account.getNickname() + " 님이"
+                + post.getTitle() + " 공고에 "
+                + job.getName() + " 직무로 지원 요청을 하였습니다.";
+
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(post.getCreatedBy().getEmail())
+                .subject("[공고 지원 알림] "+post.getTitle()+" by "+account.getNickname())
+                .message(message)
+                .build();
+
+        emailService.sendEmail(emailMessage);
+    }
 }
