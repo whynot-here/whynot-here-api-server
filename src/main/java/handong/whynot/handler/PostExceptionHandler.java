@@ -40,4 +40,10 @@ public class PostExceptionHandler {
     public ErrorResponseDTO postAlreadyFavoriteOn() {
         return ErrorResponseDTO.of(PostResponseCode.POST_CREATE_APPLY_FAIL, null);
     }
+  
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(PostAlreadyApplyOff.class)
+    public ErrorResponseDTO postAlreadyFavoriteOff() {
+        return ErrorResponseDTO.of(PostResponseCode.POST_DELETE_APPLY_FAIL, null);
+    }
 }
