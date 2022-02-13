@@ -4,6 +4,7 @@ import handong.whynot.domain.Account;
 import handong.whynot.domain.Post;
 import handong.whynot.dto.account.CurrentAccount;
 import handong.whynot.dto.common.ResponseDTO;
+import handong.whynot.dto.post.PostApplyRequestDTO;
 import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseCode;
 import handong.whynot.dto.post.PostResponseDTO;
