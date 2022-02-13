@@ -8,6 +8,8 @@ import handong.whynot.dto.post.PostResponseCode;
 import handong.whynot.dto.post.PostResponseDTO;
 import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.job.JobNotFoundException;
+import handong.whynot.exception.post.PostAlreadyFavoriteOff;
+import handong.whynot.exception.post.PostAlreadyFavoriteOn;
 import handong.whynot.exception.post.PostNotFoundException;
 import handong.whynot.repository.*;
 import org.junit.jupiter.api.Disabled;
@@ -305,7 +307,103 @@ class PostServiceTest {
         verify(postApplyRepository, times(1)).findAllByPost(post);
         verify(postApplyRepository, times(postApplys.size())).deleteById(anyLong());
     }
+  
+  
+  
+  @DisplayName("좋아요 공고 전체 조회")
+    @Test
+    void getFavoritesTest() {
 
+        // given
+        Account account = Account.builder().build();
+
+        Post post1 = Post.builder().content("content1").build();
+        Post post2 = Post.builder().content("content2").build();
+        Post post3 = Post.builder().content("content3").build();
+        List<Post> posts = Arrays.asList(post1, post2, post3);
+        final int totalPostCount = posts.size();
+
+        when(postQueryRepository.getFavorites(account)).thenReturn(posts);
+        when(postQueryRepository.getJobs(any())).thenReturn(new ArrayList<>());
+        when(postQueryRepository.getApplicants(any())).thenReturn(new ArrayList<>());
+
+        // when
+        List<PostResponseDTO> postResponseDTOList = postService.getFavorites(account);
+
+        // then
+        assertEquals(totalPostCount, postResponseDTOList.size());
+    }
+
+    @DisplayName("좋아요 on [실패1] - 없는 공고인 경우")
+    @Test
+    void createFavoriteNotFoundPostException() {
+
+        // given
+        Account account = Account.builder().build();
+        Long notExistId = 12345L;
+        when(postRepository.findById(notExistId)).thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        // when, then
+        PostNotFoundException exception =
+                assertThrows(PostNotFoundException.class, () -> postService.createFavorite(notExistId, account));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
+
+    }
+
+    @DisplayName("좋아요 on [실패2] - 이미 좋아요 누른 공고인 경우")
+    @Test
+    void createFavoriteAlreadyOnException() {
+
+        // given
+        Account account = Account.builder().build();
+        Post post = Post.builder().id(1L).build();
+        PostFavorite postFavorite = PostFavorite.builder().build();
+
+        when(postRepository.findById(anyLong())).thenReturn(Optional.ofNullable(post));
+        when(postQueryRepository.getFavoriteByPostId(post, account)).thenReturn(Arrays.asList(postFavorite));
+
+
+        // when, then
+        PostAlreadyFavoriteOn exception =
+                assertThrows(PostAlreadyFavoriteOn.class, () -> postService.createFavorite(post.getId(), account));
+        assertEquals(PostResponseCode.POST_CREATE_FAVORITE_FAIL, exception.getResponseCode());
+    }
+  
+    @DisplayName("좋아요 off [실패1] - 없는 공고인 경우")
+    @Test
+    void deleteFavoriteNotFoundPostException() {
+
+        // given
+        Account account = Account.builder().build();
+        Long notExistId = 12345L;
+        when(postRepository.findById(notExistId)).thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        // when, then
+        PostNotFoundException exception =
+                assertThrows(PostNotFoundException.class, () -> postService.deleteFavorite(notExistId, account));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
+
+    }
+
+    @DisplayName("좋아요 off [실패2] - 이미 좋아요 해제한 공고인 경우")
+    @Test
+    void deleteFavoriteAlreadyOffException() {
+
+        // given
+        Account account = Account.builder().build();
+        Post post = Post.builder().id(1L).build();
+        PostFavorite postFavorite = PostFavorite.builder().build();
+
+        when(postRepository.findById(anyLong())).thenReturn(Optional.ofNullable(post));
+        when(postQueryRepository.getFavoriteByPostId(post, account)).thenReturn(new ArrayList<>());
+
+
+        // when, then
+        PostAlreadyFavoriteOff exception =
+                assertThrows(PostAlreadyFavoriteOff.class, () -> postService.deleteFavorite(post.getId(), account));
+        assertEquals(PostResponseCode.POST_DELETE_FAVORITE_FAIL, exception.getResponseCode());
+    }
+  
     @DisplayName("좋아요 공고 전체 조회")
     @Test
     void getApplysTest() {
