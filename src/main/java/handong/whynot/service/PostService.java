@@ -6,6 +6,7 @@ import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseCode;
 import handong.whynot.dto.post.PostResponseDTO;
 import handong.whynot.exception.job.JobNotFoundException;
+import handong.whynot.exception.post.PostAlreadyFavoriteOn;
 import handong.whynot.exception.post.PostNotFoundException;
 import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -126,7 +127,7 @@ public class PostService {
         postRepository.save(post);
 
     }
-
+  
     public List<PostResponseDTO> getFavorites(Account account) {
 
         List<Post> posts = postQueryRepository.getFavorites(account);
@@ -138,4 +139,22 @@ public class PostService {
                                 postQueryRepository.getApplicants(post.getId())))
                 .collect(Collectors.toList());
     }
+
+    public void createFavorite(Long postId, Account account) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        if (!postQueryRepository.getFavoriteByPostId(post, account).isEmpty()) {
+            throw new PostAlreadyFavoriteOn(PostResponseCode.POST_CREATE_FAVORITE_FAIL);
+        }
+
+        PostFavorite postFavorite = PostFavorite.builder()
+                .post(post)
+                .account(account)
+                .build();
+
+        postFavoriteRepository.save(postFavorite);
+
+    }      
 }

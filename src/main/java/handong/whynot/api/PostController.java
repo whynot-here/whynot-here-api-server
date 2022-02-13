@@ -56,10 +56,19 @@ public class PostController {
 
         return ResponseDTO.of(PostResponseCode.POST_UPDATE_OK);
     }
-
+  
     @GetMapping("/favorite")
     public List<PostResponseDTO> getFavorite(@CurrentAccount Account account) {
 
         return postService.getFavorites(account);
+    }
+
+    @PostMapping("/favorite/{postId}")
+    @ResponseStatus(CREATED)
+    public ResponseDTO createFavorite(@PathVariable Long postId, @CurrentAccount Account account) {
+
+        postService.createFavorite(postId, account);
+
+        return ResponseDTO.of(PostResponseCode.POST_CREATE_FAVORITE_OK);
     }
 }
