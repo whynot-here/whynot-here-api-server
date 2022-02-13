@@ -4,10 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import handong.whynot.common.WithMockCustomUser;
 import handong.whynot.domain.Account;
 import handong.whynot.domain.Post;
-import handong.whynot.dto.post.PostApplyRequestDTO;
 import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseDTO;
-import handong.whynot.mail.EmailService;
 import handong.whynot.repository.AccountRepository;
 import handong.whynot.repository.PostQueryRepository;
 import handong.whynot.repository.PostRepository;
@@ -16,7 +14,6 @@ import handong.whynot.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -51,7 +48,6 @@ public class PostServiceMvcTest {
     @MockBean private AccountRepository accountRepository;
     @MockBean private PostQueryRepository postQueryRepository;
     @MockBean private PasswordEncoder passwordEncoder;
-    @MockBean private EmailService emailService;
 
     @Autowired MockMvc mockMvc;
     @Autowired ObjectMapper objectMapper;
@@ -148,6 +144,34 @@ public class PostServiceMvcTest {
 
     }
 
+    @DisplayName("공고 좋아요 취소 삭제")
+    @Test
+    @WithMockCustomUser
+    void deleteFavoriteTest() throws Exception {
+
+        mockMvc.perform(delete("/v1/posts/favorite/{postId}", 1L))
+                .andDo(print())
+                .andExpect(jsonPath("statusCode").value(20006));
+    }
+
+    @DisplayName("좋아요 누르기 성공")
+    @Test
+    @WithMockCustomUser
+    void createFavoriteTest() throws Exception {
+
+        Optional<Account> optionalAccount = accountRepository.findById(1L);
+        Account account = optionalAccount.orElse(null);
+
+        mockMvc.perform(post("/v1/posts/favorite/{postId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(account)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("statusCode").value(20005))
+        ;
+    }
+  
     @DisplayName("공고 신청 성공")
     @Test
     @WithMockCustomUser
