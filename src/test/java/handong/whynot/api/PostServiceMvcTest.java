@@ -150,8 +150,25 @@ public class PostServiceMvcTest {
     void deleteFavoriteTest() throws Exception {
 
         mockMvc.perform(delete("/v1/posts/favorite/{postId}", 1L))
-                .andExpect(jsonPath("statusCode").value(20006))
-                .andDo(print());
+                .andDo(print())
+                .andExpect(jsonPath("statusCode").value(20006));
+    }
 
+    @DisplayName("좋아요 누르기 성공")
+    @Test
+    @WithMockCustomUser
+    void createFavoriteTest() throws Exception {
+
+        Optional<Account> optionalAccount = accountRepository.findById(1L);
+        Account account = optionalAccount.orElse(null);
+
+        mockMvc.perform(post("/v1/posts/favorite/{postId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(account)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("statusCode").value(20005))
+        ;
     }
 }
