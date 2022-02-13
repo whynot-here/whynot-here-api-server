@@ -306,6 +306,30 @@ class PostServiceTest {
         verify(postApplyRepository, times(1)).findAllByPost(post);
         verify(postApplyRepository, times(postApplys.size())).deleteById(anyLong());
     }
+  
+    @DisplayName("좋아요 공고 전체 조회")
+    @Test
+    void getFavoritesTest() {
+
+        // given
+        Account account = Account.builder().build();
+
+        Post post1 = Post.builder().content("content1").build();
+        Post post2 = Post.builder().content("content2").build();
+        Post post3 = Post.builder().content("content3").build();
+        List<Post> posts = Arrays.asList(post1, post2, post3);
+        final int totalPostCount = posts.size();
+
+        when(postQueryRepository.getFavorites(account)).thenReturn(posts);
+        when(postQueryRepository.getJobs(any())).thenReturn(new ArrayList<>());
+        when(postQueryRepository.getApplicants(any())).thenReturn(new ArrayList<>());
+
+        // when
+        List<PostResponseDTO> postResponseDTOList = postService.getFavorites(account);
+
+        // then
+        assertEquals(totalPostCount, postResponseDTOList.size());
+    }
 
     @DisplayName("좋아요 on [실패1] - 없는 공고인 경우")
     @Test
@@ -341,4 +365,6 @@ class PostServiceTest {
                 assertThrows(PostAlreadyFavoriteOn.class, () -> postService.createFavorite(post.getId(), account));
         assertEquals(PostResponseCode.POST_CREATE_FAVORITE_FAIL, exception.getResponseCode());
     }
+      
+    
 }

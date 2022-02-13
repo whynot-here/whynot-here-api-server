@@ -127,6 +127,18 @@ public class PostService {
         postRepository.save(post);
 
     }
+  
+    public List<PostResponseDTO> getFavorites(Account account) {
+
+        List<Post> posts = postQueryRepository.getFavorites(account);
+
+        return posts.stream()
+                .map(post ->
+                        PostResponseDTO.of(post,
+                                postQueryRepository.getJobs(post.getId()),
+                                postQueryRepository.getApplicants(post.getId())))
+                .collect(Collectors.toList());
+    }
 
     public void createFavorite(Long postId, Account account) {
 
@@ -143,5 +155,6 @@ public class PostService {
                 .build();
 
         postFavoriteRepository.save(postFavorite);
-    }
+
+    }      
 }
