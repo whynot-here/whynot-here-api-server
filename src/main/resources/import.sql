@@ -11,3 +11,9 @@ insert into `job_post`(job_id, post_id) values(1, 1);
 insert into `job_post`(job_id, post_id) values(2, 1);
 
 insert into `post_apply`(job_id, post_id, account_id) values(1, 1, 1);
+
+insert into `comment`(id, created_dt, content, account_id, parent_id, post_id) values(1, '2021-01-11 22:00', "1번 댓글", 1, 1, 1);
+insert into `comment`(id, created_dt, content, account_id, parent_id, post_id) values(2, '2021-01-11 22:01', "2번 댓글", 1, 2, 1);
+insert into `comment`(id, created_dt, content, account_id, parent_id, post_id) values(3, '2021-01-11 22:02', "1-1번 댓글", 1, 1, 1);
+insert into `comment`(id, created_dt, content, account_id, parent_id, post_id) values(4, '2021-01-11 22:03', "1-2번 댓글", 1, 1, 1);
+insert into `comment`(id, created_dt, content, account_id, parent_id, post_id) values(5, '2021-01-11 22:04', "2-1번 댓글", 1, 2, 1);
