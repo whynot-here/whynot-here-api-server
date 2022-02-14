@@ -105,6 +105,16 @@ public class PostQueryRepository {
                 .fetch();
     }
 
+    public List<Post> getPostByStatusAndJob(Boolean isRecruiting, List<Job> jobs) {
+
+        return queryFactory.select(qPost)
+                .from(qPost, qJobPost)
+                .where(qPost.isRecruiting.eq(isRecruiting)
+                        .and(qJobPost.job.in(jobs))
+                )
+                .fetch();
+    }
+
     public List<Post> getEnabledPost(Long postId) {
 
         return queryFactory.selectFrom(qPost)
@@ -112,4 +122,5 @@ public class PostQueryRepository {
                         .and(qPost.isRecruiting))
                 .fetch();
     }
+
 }
