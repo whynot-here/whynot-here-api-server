@@ -16,7 +16,7 @@ public enum PostStatus {
     private final String status;
     private final Boolean isRecruiting;
 
-    public static Optional<PostStatus> findBy(String type) {
+    public static Optional<PostStatus> getStatusBy(String type) {
 
         if (Arrays.stream(PostStatus.values())
                 .anyMatch(it -> it.getStatus().equals(type))) {

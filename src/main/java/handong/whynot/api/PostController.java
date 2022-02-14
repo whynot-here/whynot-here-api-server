@@ -1,12 +1,10 @@
 package handong.whynot.api;
 
 import handong.whynot.domain.Account;
-import handong.whynot.domain.Post;
+import handong.whynot.domain.Job;
 import handong.whynot.dto.account.CurrentAccount;
 import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.dto.post.*;
-import handong.whynot.exception.post.PostInvalidQueryStringException;
-import handong.whynot.exception.post.PostNotFoundException;
 import handong.whynot.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+import static handong.whynot.dto.job.JobEnum.getJobInfoBy;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
@@ -24,13 +23,9 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("")
-    public List<PostResponseDTO> getPosts(String recruit) {
+    public List<PostResponseDTO> getPosts(String recruit, String jobs) {
 
-        Optional<PostStatus> status = PostStatus.findBy(recruit);
-        if (status.isPresent()) {
-            return postService.getPostByStatus(status.get().getIsRecruiting());
-        }
-        return postService.getPosts();
+        return postService.getPostsByParam(recruit, jobs);
     }
 
     @PostMapping("")
