@@ -2,10 +2,7 @@ package handong.whynot.service;
 
 import handong.whynot.domain.*;
 import handong.whynot.dto.job.JobResponseCode;
-import handong.whynot.dto.post.PostApplyRequestDTO;
-import handong.whynot.dto.post.PostRequestDTO;
-import handong.whynot.dto.post.PostResponseCode;
-import handong.whynot.dto.post.PostResponseDTO;
+import handong.whynot.dto.post.*;
 import handong.whynot.exception.job.JobNotFoundException;
 import handong.whynot.exception.post.*;
 import handong.whynot.mail.EmailMessage;
@@ -51,6 +48,7 @@ public class PostService {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .postImg(request.getPostImg())
+                .isRecruiting(true)
                 .build();
         Post newPost = postRepository.save(post);
 
@@ -262,4 +260,26 @@ public class PostService {
                                 postQueryRepository.getApplicants(post.getId())))
                 .collect(Collectors.toList());
     }
+
+    public List<PostResponseDTO> getPostByStatus(Boolean isRecruiting) {
+
+        List<Post> posts = postQueryRepository.getPostByStatus(isRecruiting);
+
+        return posts.stream()
+                .map(post ->
+                        PostResponseDTO.of(post,
+                                postQueryRepository.getJobs(post.getId()),
+                                postQueryRepository.getApplicants(post.getId())))
+                .collect(Collectors.toList());
+    }
+
+    public void changeRecruiting(Long postId, PostRecruitDTO dto, Account account) {
+
+        Post post = postRepository.findByIdAndCreatedBy(postId, account)
+                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        post.setRecruiting(dto.getIsRecruit());
+        postRepository.save(post);
+    }
+
 }
