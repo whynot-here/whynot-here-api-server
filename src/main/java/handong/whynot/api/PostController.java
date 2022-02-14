@@ -23,12 +23,6 @@ public class PostController {
 
     private final PostService postService;
 
-//    @GetMapping("")
-//    public List<PostResponseDTO> getPosts() {
-//
-//        return postService.getPosts();
-//    }
-
     @GetMapping("")
     public List<PostResponseDTO> getPosts(String recruit) {
 
