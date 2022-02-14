@@ -438,7 +438,7 @@ class PostServiceTest {
         Account account = Account.builder().build();
         Long notExistId = 12345L;
         PostApplyRequestDTO requestDTO = PostApplyRequestDTO.builder().build();
-        when(postRepository.findById(notExistId)).thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+        when(postQueryRepository.getEnabledPost(notExistId)).thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
 
         // when, then
         PostNotFoundException exception =
@@ -464,7 +464,7 @@ class PostServiceTest {
         Long notExistJobId = 12345L;
         PostApplyRequestDTO requestDTO = PostApplyRequestDTO.builder().job(notExistJobId).build();
 
-        when(postRepository.findById(anyLong())).thenReturn(Optional.ofNullable(post));
+        when(postQueryRepository.getEnabledPost(anyLong())).thenReturn(Arrays.asList(post));
         when(jobRepository.findById(notExistJobId)).thenThrow(new JobNotFoundException(JobResponseCode.JOB_READ_FAIL));
 
         // when, then
@@ -492,7 +492,7 @@ class PostServiceTest {
 
         Job job = Job.builder().id(1L).build();
 
-        when(postRepository.findById(anyLong())).thenReturn(Optional.ofNullable(post));
+        when(postQueryRepository.getEnabledPost(anyLong())).thenReturn(Arrays.asList(post));
         when(jobRepository.findById(anyLong())).thenReturn(Optional.ofNullable(job));
         when(postQueryRepository.getApplyByPostId(post, account)).thenThrow(new PostAlreadyApplyOn(PostResponseCode.POST_CREATE_APPLY_FAIL));
 
@@ -512,7 +512,7 @@ class PostServiceTest {
         // given
         Account account = Account.builder().build();
         Long notExistId = 12345L;
-        when(postRepository.findById(notExistId)).thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+        when(postQueryRepository.getEnabledPost(notExistId)).thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
 
         // when, then
         PostNotFoundException exception =
@@ -538,7 +538,7 @@ class PostServiceTest {
 
         Job job = Job.builder().id(1L).build();
 
-        when(postRepository.findById(anyLong())).thenReturn(Optional.ofNullable(post));
+        when(postQueryRepository.getEnabledPost(anyLong())).thenReturn(Arrays.asList(post));
         when(postQueryRepository.getApplyByPostId(post, account)).thenThrow(new PostAlreadyApplyOff(PostResponseCode.POST_DELETE_APPLY_FAIL));
 
         // when, then

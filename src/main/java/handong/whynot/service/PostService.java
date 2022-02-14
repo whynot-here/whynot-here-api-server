@@ -185,11 +185,13 @@ public class PostService {
                                 postQueryRepository.getApplicants(post.getId())))
                 .collect(Collectors.toList());
     }
-  
+
+    @Transactional
     public void createApply(Long postId, PostApplyRequestDTO request, Account account) {
 
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+        List<Post> posts = postQueryRepository.getEnabledPost(postId);
+        Post post = posts.stream().findFirst()
+                .orElseThrow(() -> new PostAlreadyApplyOn(PostResponseCode.POST_CREATE_APPLY_FAIL));
 
         Job job = jobRepository.findById(request.getJob())
                 .orElseThrow(() -> new JobNotFoundException(JobResponseCode.JOB_READ_FAIL));
@@ -219,11 +221,13 @@ public class PostService {
 
         emailService.sendEmail(emailMessage);
     }
-  
+
+    @Transactional
     public void deleteApply(Long postId, Account account) {
 
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+        List<Post> posts = postQueryRepository.getEnabledPost(postId);
+        Post post = posts.stream().findFirst()
+                .orElseThrow(() -> new PostAlreadyApplyOn(PostResponseCode.POST_CREATE_APPLY_FAIL));
 
         List<PostApply> applies = postQueryRepository.getApplyByPostId(post, account);
         if (applies.isEmpty()) {
