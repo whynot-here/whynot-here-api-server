@@ -4,15 +4,15 @@ import handong.whynot.domain.Account;
 import handong.whynot.domain.Post;
 import handong.whynot.dto.account.CurrentAccount;
 import handong.whynot.dto.common.ResponseDTO;
-import handong.whynot.dto.post.PostApplyRequestDTO;
-import handong.whynot.dto.post.PostRequestDTO;
-import handong.whynot.dto.post.PostResponseCode;
-import handong.whynot.dto.post.PostResponseDTO;
+import handong.whynot.dto.post.*;
+import handong.whynot.exception.post.PostInvalidQueryStringException;
+import handong.whynot.exception.post.PostNotFoundException;
 import handong.whynot.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -23,9 +23,19 @@ public class PostController {
 
     private final PostService postService;
 
-    @GetMapping("")
-    public List<PostResponseDTO> getPosts() {
+//    @GetMapping("")
+//    public List<PostResponseDTO> getPosts() {
+//
+//        return postService.getPosts();
+//    }
 
+    @GetMapping("")
+    public List<PostResponseDTO> getPosts(String recruit) {
+
+        Optional<PostStatus> status = PostStatus.findBy(recruit);
+        if (status.isPresent()) {
+            return postService.getPostByStatus(status.get().getIsRecruiting());
+        }
         return postService.getPosts();
     }
 
@@ -110,5 +120,13 @@ public class PostController {
     public List<PostResponseDTO> getMyPosts(@CurrentAccount Account account) {
 
         return postService.getMyPosts(account);
+    }
+
+    @PostMapping("/own/{postId}")
+    public ResponseDTO changeRecruiting(@PathVariable Long postId, @RequestBody PostRecruitDTO request, @CurrentAccount Account account) {
+
+        postService.changeRecruiting(postId, request, account);
+
+        return ResponseDTO.of(PostResponseCode.POST_END_RECRUIT_OK);
     }
 }

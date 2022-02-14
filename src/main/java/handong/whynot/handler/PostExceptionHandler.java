@@ -44,4 +44,10 @@ public class PostExceptionHandler {
     public ErrorResponseDTO postAlreadyApplyOff() {
         return ErrorResponseDTO.of(PostResponseCode.POST_DELETE_APPLY_FAIL, null);
     }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(PostInvalidQueryStringException.class)
+    public ErrorResponseDTO postInvalidQueryStringHandle() {
+        return ErrorResponseDTO.of(PostResponseCode.POST_INVALID_QUERY_STRING, null);
+    }
 }

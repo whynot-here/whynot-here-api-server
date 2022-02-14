@@ -97,4 +97,11 @@ public class PostQueryRepository {
                         .and(qPostApply.post.id.eq(postId)))
                 .fetch();
     }
+
+    public List<Post> getPostByStatus(Boolean isRecruiting) {
+
+        return queryFactory.selectFrom(qPost)
+                .where(qPost.isRecruiting.eq(isRecruiting))
+                .fetch();
+    }
 }
