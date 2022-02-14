@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(PostController.class)
 @MockBean(JpaMetamodelMappingContext.class)
-public class PostServiceMvcTest {
+public class PostControllerTest {
 
     @MockBean private PostService postService;
     @MockBean private PostRepository postRepository;
