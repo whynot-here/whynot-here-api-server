@@ -5,6 +5,7 @@ import handong.whynot.common.WithMockCustomUser;
 import handong.whynot.domain.Account;
 import handong.whynot.domain.Post;
 import handong.whynot.dto.post.PostApplyRequestDTO;
+import handong.whynot.dto.post.PostRecruitDTO;
 import handong.whynot.dto.post.PostRequestDTO;
 import handong.whynot.dto.post.PostResponseDTO;
 import handong.whynot.repository.AccountRepository;
@@ -196,8 +197,25 @@ public class PostServiceMvcTest {
     void deleteApplyTest() throws Exception {
 
         mockMvc.perform(delete("/v1/posts/apply/{postId}", 1L))
-                .andExpect(jsonPath("statusCode").value(20010))
                 .andDo(print())
+                .andExpect(jsonPath("statusCode").value(20010))
+        ;
+    }
+
+    @DisplayName("공고 상태 변경 성공")
+    @Test
+    @WithMockCustomUser
+    void changeRecruitingTest() throws Exception {
+
+        PostRecruitDTO dto = PostRecruitDTO.builder().isRecruit(true).build();
+
+        mockMvc.perform(post("/v1/posts/own/{postId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andDo(print())
+                .andExpect(jsonPath("statusCode").value(20011))
+
         ;
     }
 }

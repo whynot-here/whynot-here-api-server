@@ -3,10 +3,7 @@ package handong.whynot.service;
 import handong.whynot.domain.*;
 import handong.whynot.dto.account.AccountResponseCode;
 import handong.whynot.dto.job.JobResponseCode;
-import handong.whynot.dto.post.PostApplyRequestDTO;
-import handong.whynot.dto.post.PostRequestDTO;
-import handong.whynot.dto.post.PostResponseCode;
-import handong.whynot.dto.post.PostResponseDTO;
+import handong.whynot.dto.post.*;
 import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.job.JobNotFoundException;
 import handong.whynot.exception.post.*;
@@ -572,5 +569,26 @@ class PostServiceTest {
 
         // then
         assertEquals(totalPostCount, postResponseDTOList.size());
+    }
+
+    @DisplayName("공고 상태 변경 [실패] - 존재하지 않는 공고인 경우")
+    @Test
+    void changeRecruitingNotFoundException1 () {
+
+        // given
+        Account account = Account.builder().build();
+        Long notExistId = 12345L;
+        PostRecruitDTO dto = PostRecruitDTO.builder().build();
+
+        when(postRepository.findByIdAndCreatedBy(notExistId, account)).thenThrow(
+                new PostNotFoundException(PostResponseCode.POST_READ_FAIL)
+        );
+
+        // when, then
+        PostNotFoundException exception =
+                assertThrows(PostNotFoundException.class, () -> postService.changeRecruiting(notExistId, dto, account));
+        assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
+        verify(postRepository, never()).save(any());
+
     }
 }
