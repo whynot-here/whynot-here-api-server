@@ -98,14 +98,14 @@ public class PostQueryRepository {
                 .fetch();
     }
 
-    public List<Post> getPostByStatus(Boolean isRecruiting) {
+    public List<Post> getPostByRecruit(Boolean isRecruiting) {
 
         return queryFactory.selectFrom(qPost)
                 .where(qPost.isRecruiting.eq(isRecruiting))
                 .fetch();
     }
 
-    public List<Post> getPostByStatusAndJob(Boolean isRecruiting, List<Job> jobs) {
+    public List<Post> getPostByRecruitAndJob(Boolean isRecruiting, List<Job> jobs) {
 
         return queryFactory.select(qPost)
                 .from(qPost, qJobPost)
@@ -123,4 +123,11 @@ public class PostQueryRepository {
                 .fetch();
     }
 
+    public List<Post> getPostByJob(List<Job> jobs) {
+
+        return queryFactory.select(qPost)
+                .from(qPost, qJobPost)
+                .where(qJobPost.job.in(jobs))
+                .fetch();
+    }
 }
