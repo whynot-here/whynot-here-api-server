@@ -1,6 +1,7 @@
 package handong.whynot.service;
 
 import handong.whynot.domain.*;
+import handong.whynot.dto.job.JobEnum;
 import handong.whynot.dto.job.JobResponseCode;
 import handong.whynot.dto.post.*;
 import handong.whynot.exception.job.JobNotFoundException;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static handong.whynot.dto.job.JobEnum.getJobInfoBy;
@@ -31,25 +31,40 @@ public class PostService {
     private final PostApplyRepository postApplyRepository;
     private final EmailService emailService;
 
-    public List<PostResponseDTO> getPostsByParam(String recruit, String jobs) {
+    public List<PostResponseDTO> getPostsByParam(RecruitEnum recruitEnum, List<JobEnum> jobEnumList) {
 
-        Optional<PostStatus> status = PostStatus.getStatusBy(recruit);
-        if (status.isPresent()) {
-            Boolean isRecruiting = status.get().getIsRecruiting();
-            List<Job> jobList = getJobInfoBy(jobs);
+        // recruit, jobs 모두 있는 경우
+        if (recruitEnum != null & !jobEnumList.isEmpty()) {
 
-            if (!jobList.isEmpty()) {
-                getPostByStatusAndJob(isRecruiting, jobList);
-            }
+            Boolean isRecruiting = recruitEnum.getIsRecruiting();
+            List<Job> jobs = getJobInfoBy(jobEnumList);
 
-            return getPostByStatus(isRecruiting);
+            return getPostByRecruitAndJob(isRecruiting, jobs);
         }
+
+        // recruit만 있는 경우
+        if (recruitEnum != null) {
+
+            Boolean isRecruiting = recruitEnum.getIsRecruiting();
+
+            return getPostByRecruit(isRecruiting);
+        }
+
+        // jobs만 있는 경우
+        if (!jobEnumList.isEmpty()) {
+
+            List<Job> jobs = getJobInfoBy(jobEnumList);
+
+            return getPostByJob(jobs);
+        }
+
+        // 모두 없는 경우
         return getPosts();
     }
 
-    public List<PostResponseDTO> getPostByStatus(Boolean isRecruiting) {
+    public List<PostResponseDTO> getPostByRecruitAndJob(Boolean isRecruiting, List<Job> jobList) {
 
-        List<Post> posts = postQueryRepository.getPostByStatus(isRecruiting);
+        List<Post> posts = postQueryRepository.getPostByRecruitAndJob(isRecruiting, jobList);
 
         return posts.stream()
                 .map(post ->
@@ -59,9 +74,21 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    public List<PostResponseDTO> getPostByStatusAndJob(Boolean isRecruiting, List<Job> jobList) {
+    public List<PostResponseDTO> getPostByRecruit(Boolean isRecruiting) {
 
-        List<Post> posts = postQueryRepository.getPostByStatusAndJob(isRecruiting, jobList);
+        List<Post> posts = postQueryRepository.getPostByRecruit(isRecruiting);
+
+        return posts.stream()
+                .map(post ->
+                        PostResponseDTO.of(post,
+                                postQueryRepository.getJobs(post.getId()),
+                                postQueryRepository.getApplicants(post.getId())))
+                .collect(Collectors.toList());
+    }
+
+    public List<PostResponseDTO> getPostByJob(List<Job> jobs) {
+
+        List<Post> posts = postQueryRepository.getPostByJob(jobs);
 
         return posts.stream()
                 .map(post ->

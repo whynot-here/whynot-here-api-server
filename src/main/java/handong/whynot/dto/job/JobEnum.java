@@ -1,48 +1,31 @@
 package handong.whynot.dto.job;
 
 import handong.whynot.domain.Job;
-import handong.whynot.dto.post.PostStatus;
-import handong.whynot.exception.job.JobNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
 public enum JobEnum {
-    DEVELOPER("developer", 1),
-    DESIGNER("designer", 2),
-    PROMOTER("promoter", 3),
-    ETC("etc", 4);
+    DEVELOPER("developer", 1L),
+    DESIGNER("designer", 2L),
+    PROMOTER("promoter", 3L),
+    ETC("etc", 4L);
 
     private final String jobName;
-    private final Integer code;
+    private final Long code;
 
-    public static List<Job> getJobInfoBy(String jobStr) {
+    public static List<Job> getJobInfoBy(List<JobEnum> jobEnumList) {
 
-        List<Job> jobList = new ArrayList<Job>();
-
-        try{
-            String[] jobs = jobStr.split(",");
-            for(String job: jobs) {
-                JobEnum jobEnum = findBy(job)
-                        .orElseThrow(() -> new JobNotFoundException(JobResponseCode.JOB_READ_FAIL));
-
-            }
-
-            return Arrays.asList();
-        } catch (Exception e) {
-            return jobList;
-        }
-    }
-
-    private static Optional<JobEnum> findBy(String job) {
-
-        if (Arrays.stream(JobEnum.values())
-                .anyMatch(it -> it.getJobName().equals(job))) {
-            return Optional.of(JobEnum.valueOf(job.toUpperCase()));
-        }
-        return Optional.empty();
+        return jobEnumList.stream()
+                .map(jobEnum -> Job.builder()
+                        .id(jobEnum.getCode())
+                        .name(jobEnum.getJobName())
+                        .build()
+                )
+                .collect(Collectors.toList());
     }
 }
