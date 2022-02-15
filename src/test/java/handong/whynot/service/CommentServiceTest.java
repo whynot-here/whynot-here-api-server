@@ -39,7 +39,7 @@ public class CommentServiceTest {
 
         // given
         Long notExistId = 12345L;
-
+        when(postRepository.findById(notExistId)).thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
 
         // when, then
         PostNotFoundException exception =
