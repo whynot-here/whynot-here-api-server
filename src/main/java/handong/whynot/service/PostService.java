@@ -1,11 +1,9 @@
 package handong.whynot.service;
 
 import handong.whynot.domain.*;
+import handong.whynot.dto.job.JobEnum;
 import handong.whynot.dto.job.JobResponseCode;
-import handong.whynot.dto.post.PostApplyRequestDTO;
-import handong.whynot.dto.post.PostRequestDTO;
-import handong.whynot.dto.post.PostResponseCode;
-import handong.whynot.dto.post.PostResponseDTO;
+import handong.whynot.dto.post.*;
 import handong.whynot.exception.job.JobNotFoundException;
 import handong.whynot.exception.post.*;
 import handong.whynot.mail.EmailMessage;
@@ -17,6 +15,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static handong.whynot.dto.job.JobEnum.getJobInfoBy;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +30,73 @@ public class PostService {
     private final PostFavoriteRepository postFavoriteRepository;
     private final PostApplyRepository postApplyRepository;
     private final EmailService emailService;
+
+    public List<PostResponseDTO> getPostsByParam(RecruitEnum recruitEnum, List<JobEnum> jobEnumList) {
+
+        // recruit, jobs 모두 있는 경우
+        if (recruitEnum != null & !jobEnumList.isEmpty()) {
+
+            Boolean isRecruiting = recruitEnum.getIsRecruiting();
+            List<Job> jobs = getJobInfoBy(jobEnumList);
+
+            return getPostByRecruitAndJob(isRecruiting, jobs);
+        }
+
+        // recruit만 있는 경우
+        if (recruitEnum != null) {
+
+            Boolean isRecruiting = recruitEnum.getIsRecruiting();
+
+            return getPostByRecruit(isRecruiting);
+        }
+
+        // jobs만 있는 경우
+        if (!jobEnumList.isEmpty()) {
+
+            List<Job> jobs = getJobInfoBy(jobEnumList);
+
+            return getPostByJob(jobs);
+        }
+
+        // 모두 없는 경우
+        return getPosts();
+    }
+
+    public List<PostResponseDTO> getPostByRecruitAndJob(Boolean isRecruiting, List<Job> jobList) {
+
+        List<Post> posts = postQueryRepository.getPostByRecruitAndJob(isRecruiting, jobList);
+
+        return posts.stream()
+                .map(post ->
+                        PostResponseDTO.of(post,
+                                postQueryRepository.getJobs(post.getId()),
+                                postQueryRepository.getApplicants(post.getId())))
+                .collect(Collectors.toList());
+    }
+
+    public List<PostResponseDTO> getPostByRecruit(Boolean isRecruiting) {
+
+        List<Post> posts = postQueryRepository.getPostByRecruit(isRecruiting);
+
+        return posts.stream()
+                .map(post ->
+                        PostResponseDTO.of(post,
+                                postQueryRepository.getJobs(post.getId()),
+                                postQueryRepository.getApplicants(post.getId())))
+                .collect(Collectors.toList());
+    }
+
+    public List<PostResponseDTO> getPostByJob(List<Job> jobs) {
+
+        List<Post> posts = postQueryRepository.getPostByJob(jobs);
+
+        return posts.stream()
+                .map(post ->
+                        PostResponseDTO.of(post,
+                                postQueryRepository.getJobs(post.getId()),
+                                postQueryRepository.getApplicants(post.getId())))
+                .collect(Collectors.toList());
+    }
     
     public List<PostResponseDTO> getPosts() {
 
@@ -51,6 +118,7 @@ public class PostService {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .postImg(request.getPostImg())
+                .isRecruiting(true)
                 .build();
         Post newPost = postRepository.save(post);
 
@@ -187,11 +255,13 @@ public class PostService {
                                 postQueryRepository.getApplicants(post.getId())))
                 .collect(Collectors.toList());
     }
-  
+
+    @Transactional
     public void createApply(Long postId, PostApplyRequestDTO request, Account account) {
 
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+        List<Post> posts = postQueryRepository.getEnabledPost(postId);
+        Post post = posts.stream().findFirst()
+                .orElseThrow(() -> new PostAlreadyApplyOn(PostResponseCode.POST_CREATE_APPLY_FAIL));
 
         Job job = jobRepository.findById(request.getJob())
                 .orElseThrow(() -> new JobNotFoundException(JobResponseCode.JOB_READ_FAIL));
@@ -221,11 +291,13 @@ public class PostService {
 
         emailService.sendEmail(emailMessage);
     }
-  
+
+    @Transactional
     public void deleteApply(Long postId, Account account) {
 
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+        List<Post> posts = postQueryRepository.getEnabledPost(postId);
+        Post post = posts.stream().findFirst()
+                .orElseThrow(() -> new PostAlreadyApplyOn(PostResponseCode.POST_CREATE_APPLY_FAIL));
 
         List<PostApply> applies = postQueryRepository.getApplyByPostId(post, account);
         if (applies.isEmpty()) {
@@ -261,5 +333,14 @@ public class PostService {
                                 postQueryRepository.getJobs(post.getId()),
                                 postQueryRepository.getApplicants(post.getId())))
                 .collect(Collectors.toList());
+    }
+
+    public void changeRecruiting(Long postId, PostRecruitDTO dto, Account account) {
+
+        Post post = postRepository.findByIdAndCreatedBy(postId, account)
+                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        post.setRecruiting(dto.getIsRecruit());
+        postRepository.save(post);
     }
 }
