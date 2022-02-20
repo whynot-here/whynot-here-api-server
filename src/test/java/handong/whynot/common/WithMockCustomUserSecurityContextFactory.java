@@ -1,7 +1,6 @@
 package handong.whynot.common;
 
 import handong.whynot.domain.Account;
-import handong.whynot.dto.account.SignUpDTO;
 import handong.whynot.dto.account.UserAccount;
 import handong.whynot.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;

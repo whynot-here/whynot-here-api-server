@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Getter
 @RequiredArgsConstructor
-public enum RecruitEnum {
+public enum RecruitStatus {
 
     OPEN("open", true),
     CLOSE("close", false);
@@ -16,11 +16,11 @@ public enum RecruitEnum {
     private final String status;
     private final Boolean isRecruiting;
 
-    public static Optional<RecruitEnum> getStatusBy(String type) {
+    public static Optional<RecruitStatus> getStatusBy(String type) {
 
-        if (Arrays.stream(RecruitEnum.values())
+        if (Arrays.stream(values())
                 .anyMatch(it -> it.getStatus().equals(type))) {
-            return Optional.of(RecruitEnum.valueOf(type.toUpperCase()));
+            return Optional.of(valueOf(type.toUpperCase()));
         }
         return Optional.empty();
     }

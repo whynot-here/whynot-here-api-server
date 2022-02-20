@@ -24,7 +24,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -130,8 +129,8 @@ class PostServiceTest {
 
         // given
         Post post = Post.builder().id(1L).build();
-        List<Job> jobs = new ArrayList<Job>();
-        List<Account> applicants = new ArrayList<Account>();
+        List<Job> jobs = new ArrayList<>();
+        List<Account> applicants = new ArrayList<>();
 
         PostResponseDTO expectedResponse = PostResponseDTO.of(post, jobs, applicants);
         when(postRepository.findById(post.getId())).thenReturn(Optional.of(post));
@@ -358,7 +357,7 @@ class PostServiceTest {
         PostFavorite postFavorite = PostFavorite.builder().build();
 
         when(postRepository.findById(anyLong())).thenReturn(Optional.ofNullable(post));
-        when(postQueryRepository.getFavoriteByPostId(post, account)).thenReturn(Arrays.asList(postFavorite));
+        when(postQueryRepository.getFavoriteByPostId(post, account)).thenReturn(List.of(postFavorite));
 
 
         // when, then
@@ -461,7 +460,7 @@ class PostServiceTest {
         Long notExistJobId = 12345L;
         PostApplyRequestDTO requestDTO = PostApplyRequestDTO.builder().job(notExistJobId).build();
 
-        when(postQueryRepository.getEnabledPost(anyLong())).thenReturn(Arrays.asList(post));
+        when(postQueryRepository.getEnabledPost(anyLong())).thenReturn(List.of(post));
         when(jobRepository.findById(notExistJobId)).thenThrow(new JobNotFoundException(JobResponseCode.JOB_READ_FAIL));
 
         // when, then
@@ -489,7 +488,7 @@ class PostServiceTest {
 
         Job job = Job.builder().id(1L).build();
 
-        when(postQueryRepository.getEnabledPost(anyLong())).thenReturn(Arrays.asList(post));
+        when(postQueryRepository.getEnabledPost(anyLong())).thenReturn(List.of(post));
         when(jobRepository.findById(anyLong())).thenReturn(Optional.ofNullable(job));
         when(postQueryRepository.getApplyByPostId(post, account)).thenThrow(new PostAlreadyApplyOn(PostResponseCode.POST_CREATE_APPLY_FAIL));
 
@@ -535,7 +534,7 @@ class PostServiceTest {
 
         Job job = Job.builder().id(1L).build();
 
-        when(postQueryRepository.getEnabledPost(anyLong())).thenReturn(Arrays.asList(post));
+        when(postQueryRepository.getEnabledPost(anyLong())).thenReturn(List.of(post));
         when(postQueryRepository.getApplyByPostId(post, account)).thenThrow(new PostAlreadyApplyOff(PostResponseCode.POST_DELETE_APPLY_FAIL));
 
         // when, then
