@@ -13,7 +13,7 @@ public class ResponseDTO {
     private String message;
 
     public static ResponseDTO of(ResponseCode responseCode) {
-        return ResponseDTO.builder()
+        return builder()
                 .statusCode(responseCode.getStatusCode())
                 .message(responseCode.getMessage())
                 .build();

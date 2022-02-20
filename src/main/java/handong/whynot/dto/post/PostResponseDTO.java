@@ -40,10 +40,10 @@ public class PostResponseDTO {
     private boolean isRecruiting;
 
     @Builder.Default
-    private List<Job> jobs = new ArrayList<Job>();
+    private List<Job> jobs = new ArrayList<>();
 
     @Builder.Default
-    private List<Account> applicants = new ArrayList<Account>();
+    private List<Account> applicants = new ArrayList<>();
 
     public static PostResponseDTO of(Post post, List<Job> jobs, List<Account> applicants) {
         return builder()
