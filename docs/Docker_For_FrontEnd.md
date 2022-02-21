@@ -36,7 +36,7 @@
        networks:
          - springboot-mysql-net
      api-server:
-       image: a6881e274b30
+       image: whynot:0.0.1-SNAPSHOT
        container_name: "api-server"
        ports:
          - "9000:9000"
