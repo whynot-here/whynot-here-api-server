@@ -1,15 +1,31 @@
 package handong.whynot.dto.job;
 
-import lombok.NoArgsConstructor;
+import handong.whynot.domain.Job;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Getter
+@RequiredArgsConstructor
 public enum JobEnum {
-    developer(1), designer(2), promoter(3), etc(4);
+    DEVELOPER("developer", 1L),
+    DESIGNER("designer", 2L),
+    PROMOTER("promoter", 3L),
+    ETC("etc", 4L);
 
-    private int code;
+    private final String jobName;
+    private final Long code;
 
-    JobEnum(int code) {
-        this.code = code;
+    public static List<Job> getJobInfoBy(List<JobEnum> jobEnumList) {
+
+        return jobEnumList.stream()
+                .map(jobEnum -> Job.builder()
+                        .id(jobEnum.getCode())
+                        .name(jobEnum.getJobName())
+                        .build()
+                )
+                .collect(Collectors.toList());
     }
-
-
 }

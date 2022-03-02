@@ -30,7 +30,11 @@ public enum PostResponseCode implements ResponseCode {
     POST_CREATE_APPLY_FAIL(40009, "신청한 공고 [생성]에 실패하였습니다. - 이미 신청한 공고입니다."),
   
     POST_DELETE_APPLY_OK(20010, "신청한 공고 [삭제]에 성공하였습니다."),
-    POST_DELETE_APPLY_FAIL(40010, "신청한 공고 [삭제]에 실패하였습니다. - 이미 취소 신청하였습니다.");
+    POST_DELETE_APPLY_FAIL(40010, "신청한 공고 [삭제]에 실패하였습니다. - 이미 취소 신청하였습니다."),
+
+    POST_INVALID_QUERY_STRING(40011, "입력값이 올바르지 않습니다."),
+
+    POST_END_RECRUIT_OK(20011, "공고 모집상태 변경 완료되었습니다.");
 
     private final Integer statusCode;
     private final String message;
