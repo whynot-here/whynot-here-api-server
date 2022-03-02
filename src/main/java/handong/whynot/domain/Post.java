@@ -51,7 +51,7 @@ public class Post extends BaseTimeEntity {
         this.title = title;
         this.content = content;
         this.postImg = postImg;
-        this.isRecruiting = true;
+        isRecruiting = true;
     }
 
     public void addJobs(List<JobPost> jobPosts) {
@@ -59,8 +59,8 @@ public class Post extends BaseTimeEntity {
     }
 
     public void update(PostRequestDTO request) {
-        this.title = request.getTitle();
-        this.content = request.getContent();
-        this.postImg = request.getPostImg();
+        title = request.getTitle();
+        content = request.getContent();
+        postImg = request.getPostImg();
     }
 }

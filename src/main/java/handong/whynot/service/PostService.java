@@ -1,7 +1,7 @@
 package handong.whynot.service;
 
 import handong.whynot.domain.*;
-import handong.whynot.dto.job.JobEnum;
+import handong.whynot.dto.job.JobType;
 import handong.whynot.dto.job.JobResponseCode;
 import handong.whynot.dto.post.*;
 import handong.whynot.exception.job.JobNotFoundException;
@@ -16,7 +16,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static handong.whynot.dto.job.JobEnum.getJobInfoBy;
+import static handong.whynot.dto.job.JobType.getJobInfoBy;
 
 @Service
 @RequiredArgsConstructor
@@ -31,29 +31,29 @@ public class PostService {
     private final PostApplyRepository postApplyRepository;
     private final EmailService emailService;
 
-    public List<PostResponseDTO> getPostsByParam(RecruitEnum recruitEnum, List<JobEnum> jobEnumList) {
+    public List<PostResponseDTO> getPostsByParam(RecruitStatus recruitStatus, List<JobType> jobTypeList) {
 
         // recruit, jobs 모두 있는 경우
-        if (recruitEnum != null & !jobEnumList.isEmpty()) {
+        if (recruitStatus != null & !jobTypeList.isEmpty()) {
 
-            Boolean isRecruiting = recruitEnum.getIsRecruiting();
-            List<Job> jobs = getJobInfoBy(jobEnumList);
+            Boolean isRecruiting = recruitStatus.getIsRecruiting();
+            List<Job> jobs = getJobInfoBy(jobTypeList);
 
             return getPostByRecruitAndJob(isRecruiting, jobs);
         }
 
         // recruit만 있는 경우
-        if (recruitEnum != null) {
+        if (recruitStatus != null) {
 
-            Boolean isRecruiting = recruitEnum.getIsRecruiting();
+            Boolean isRecruiting = recruitStatus.getIsRecruiting();
 
             return getPostByRecruit(isRecruiting);
         }
 
         // jobs만 있는 경우
-        if (!jobEnumList.isEmpty()) {
+        if (!jobTypeList.isEmpty()) {
 
-            List<Job> jobs = getJobInfoBy(jobEnumList);
+            List<Job> jobs = getJobInfoBy(jobTypeList);
 
             return getPostByJob(jobs);
         }
