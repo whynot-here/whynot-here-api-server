@@ -80,8 +80,7 @@ public class AccountService implements UserDetailsService {
     }
 
     public void sendSignUpConfirmEmail(Account newAccount) {
-        String message = "http://localhost:9000/check-email-token?token=" + newAccount.getEmailCheckToken() +
-                "&email=" + newAccount.getEmail();
+        String message = "인증 코드 8자리 = " + newAccount.getEmailCheckToken();
 
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(newAccount.getEmail())

@@ -44,7 +44,7 @@ public class Account {
     private LocalDateTime joinedAt;
 
     public void generateEmailCheckToken() {
-        emailCheckToken = UUID.randomUUID().toString();
+        emailCheckToken = UUID.randomUUID().toString().split("-")[0];
         emailCheckTokenGeneratedAt = LocalDateTime.now();
     }
 
