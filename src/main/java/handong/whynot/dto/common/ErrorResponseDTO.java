@@ -15,7 +15,7 @@ public class ErrorResponseDTO {
     private List<String> errors;
 
     public static ErrorResponseDTO of(ResponseCode responseCode, List<String> errors) {
-        return ErrorResponseDTO.builder()
+        return builder()
                 .message(responseCode.getMessage())
                 .statusCode(responseCode.getStatusCode())
                 .errors(errors)

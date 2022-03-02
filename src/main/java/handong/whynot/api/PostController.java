@@ -3,15 +3,12 @@ package handong.whynot.api;
 import handong.whynot.domain.Account;
 import handong.whynot.dto.account.CurrentAccount;
 import handong.whynot.dto.common.ResponseDTO;
-import handong.whynot.dto.job.JobEnum;
+import handong.whynot.dto.job.JobType;
 import handong.whynot.dto.post.*;
 import handong.whynot.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -25,10 +22,10 @@ public class PostController {
 
     @GetMapping("")
     public List<PostResponseDTO> getPosts(
-            @RequestParam(name = "recruit", required = false) RecruitEnum status,
-            @RequestParam(name = "jobs", required = false, defaultValue = "") List<JobEnum> jobEnumList) {
+            @RequestParam(name = "recruit", required = false) RecruitStatus status,
+            @RequestParam(name = "jobTypeList", required = false, defaultValue = "") List<JobType> jobTypeList) {
 
-        return postService.getPostsByParam(status, jobEnumList);
+        return postService.getPostsByParam(status, jobTypeList);
     }
 
     @PostMapping("")
