@@ -14,3 +14,18 @@ services:
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
+    networks:
+      - springboot-mysql-net
+  api-server:
+    image: 1f4cf4f27088
+    container_name: "api-server"
+    ports:
+      - "9000:9000"
+    depends_on:
+      - db
+    networks:
+      - springboot-mysql-net
+
+networks:
+  springboot-mysql-net:
+    driver: bridge

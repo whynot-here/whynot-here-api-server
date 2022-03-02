@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.querydsl.jpa.JPAExpressions.select;
 
@@ -25,7 +26,6 @@ public class PostQueryRepository {
     // Post Full info
     public List<Post> getPosts() {
 
-        // dto 하나더 만들기는 그래서 이렇게 fields로 넣었음.
         return queryFactory.selectFrom(qPost)
                 .fetch();
     }
@@ -95,6 +95,39 @@ public class PostQueryRepository {
                 .from(qPost, qPostApply)
                 .where(qPostApply.account.id.eq(accountId)
                         .and(qPostApply.post.id.eq(postId)))
+                .fetch();
+    }
+
+    public List<Post> getPostByRecruit(Boolean isRecruiting) {
+
+        return queryFactory.selectFrom(qPost)
+                .where(qPost.isRecruiting.eq(isRecruiting))
+                .fetch();
+    }
+
+    public List<Post> getPostByRecruitAndJob(Boolean isRecruiting, List<Job> jobs) {
+
+        return queryFactory.select(qPost)
+                .from(qPost, qJobPost)
+                .where(qPost.isRecruiting.eq(isRecruiting)
+                        .and(qJobPost.job.in(jobs))
+                )
+                .fetch();
+    }
+
+    public List<Post> getEnabledPost(Long postId) {
+
+        return queryFactory.selectFrom(qPost)
+                .where(qPost.id.eq(postId)
+                        .and(qPost.isRecruiting))
+                .fetch();
+    }
+
+    public List<Post> getPostByJob(List<Job> jobs) {
+
+        return queryFactory.select(qPost)
+                .from(qPost, qJobPost)
+                .where(qJobPost.job.in(jobs))
                 .fetch();
     }
 }
