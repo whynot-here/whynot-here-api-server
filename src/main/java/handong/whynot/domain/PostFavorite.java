@@ -11,6 +11,15 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@Table(
+        name="post_favorite",
+        uniqueConstraints={
+                @UniqueConstraint(
+                        name= "constPostFavorite",
+                        columnNames={"post_id", "account_id"}
+                )
+        }
+)
 public class PostFavorite {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

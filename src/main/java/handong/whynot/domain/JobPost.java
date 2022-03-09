@@ -1,12 +1,6 @@
 package handong.whynot.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +16,15 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@Table(
+        name="job_post",
+        uniqueConstraints={
+                @UniqueConstraint(
+                        name= "constJobPost",
+                        columnNames={"job_id", "post_id"}
+                )
+        }
+)
 public class JobPost {
 
     @Id
