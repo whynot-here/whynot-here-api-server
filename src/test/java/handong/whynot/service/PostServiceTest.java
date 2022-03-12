@@ -548,16 +548,16 @@ class PostServiceTest {
         verify(emailService, never()).sendEmail(any());
     }
   
-    @DisplayName("공고 전체 조회 성공")
+    @DisplayName("본인 공고 전체 조회 성공")
     @Test
     void getMyPostsTest() {
 
         // given
-        Account account = Account.builder().build();
+        Account account = Account.builder().id(1L).build();
 
-        Post post1 = Post.builder().content("content1").build();
-        Post post2 = Post.builder().content("content2").build();
-        Post post3 = Post.builder().content("content3").build();
+        Post post1 = Post.builder().createdBy(account).content("content1").build();
+        Post post2 = Post.builder().createdBy(account).content("content2").build();
+        Post post3 = Post.builder().createdBy(account).content("content3").build();
         List<Post> posts = Arrays.asList(post1, post2, post3);
         final int totalPostCount = posts.size();
 
