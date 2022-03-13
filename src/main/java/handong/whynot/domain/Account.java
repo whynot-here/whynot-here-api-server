@@ -60,10 +60,10 @@ public class Account {
 
     public AccountResponseDTO getAccountDTO() {
         return AccountResponseDTO.builder()
-                .id(this.id)
-                .email(this.email)
-                .nickname(this.nickname)
-                .profileImg(this.profileImg)
+                .id(id)
+                .email(email)
+                .nickname(nickname)
+                .profileImg(profileImg)
                 .build();
     }
 }
