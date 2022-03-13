@@ -2,6 +2,7 @@ package handong.whynot.service;
 
 import handong.whynot.domain.*;
 import handong.whynot.dto.account.AccountResponseCode;
+import handong.whynot.dto.account.AccountResponseDTO;
 import handong.whynot.dto.job.JobResponseCode;
 import handong.whynot.dto.post.*;
 import handong.whynot.exception.account.AccountNotFoundException;
@@ -38,7 +39,6 @@ class PostServiceTest {
     @Mock private PostApplyRepository postApplyRepository;
     @Mock private EmailService emailService;
 
-
     @InjectMocks
     private PostService postService;
 
@@ -47,40 +47,22 @@ class PostServiceTest {
     void getPostsTest() {
 
         // given, 테스트를 위한 준비(mock 객체의 행위 정의, 반환값 같은거 만들어주기 등)
-        Post post1 = Post.builder().content("content1").build();
-        Post post2 = Post.builder().content("content2").build();
-        Post post3 = Post.builder().content("content3").build();
+        Account account = Account.builder().build();
+
+        Post post1 = Post.builder().createdBy(account).content("content1").build();
+        Post post2 = Post.builder().createdBy(account).content("content2").build();
+        Post post3 = Post.builder().createdBy(account).content("content3").build();
         List<Post> posts = Arrays.asList(post1, post2, post3);
         final int totalPostCount = posts.size();
 
         when(postQueryRepository.getPosts()).thenReturn(posts);
         when(postQueryRepository.getJobs(any())).thenReturn(new ArrayList<>());
-        when(postQueryRepository.getApplicants(any())).thenReturn(new ArrayList<>());
 
         // when, 내가 테스트하고 싶은 메서드를 실행
         List<PostResponseDTO> postResponseDTOList = postService.getPosts();
 
         // then, 테스트 결과에 대한 검증
         assertEquals(totalPostCount, postResponseDTOList.size());
-    }
-
-    @DisplayName("공고생성 [실패1] - 등록되지 않은 사용자")
-    @Test
-    @Disabled
-    void createPostWithAccountNotFoundException() {
-        // given
-        Long notExistAccountId = 123456789L;
-//        PostRequestDTO requestDTO = PostRequestDTO.builder()
-//                .accountId(notExistAccountId).build();
-        when(accountRepository.findById(notExistAccountId))
-                .thenThrow(new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
-
-        // when, then
-//        AccountNotFoundException exception =
-//                assertThrows(AccountNotFoundException.class, () -> postService.createPost(requestDTO));
-//        assertEquals(AccountResponseCode.ACCOUNT_READ_FAIL, exception.getResponseCode());
-//        verify(accountRepository, times(1)).findById(notExistAccountId);
-//        verify(jobRepository, never()).findById(any());
     }
 
     @DisplayName("공고생성 [실패2] - 등록되지 않은 직군")
@@ -112,8 +94,10 @@ class PostServiceTest {
     void getPostNotFoundPostException() {
 
         // given
+        Account account = Account.builder().build();
+
         Long notExistId = 12345L;
-        Post post = Post.builder().id(notExistId).build();
+        Post post = Post.builder().id(notExistId).createdBy(account).build();
         PostResponseDTO notExistResponse = PostResponseDTO.of(post, new ArrayList<>(), new ArrayList<>());
         when(postRepository.findById(notExistId)).thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
 
@@ -128,14 +112,15 @@ class PostServiceTest {
     void getPostOK() {
 
         // given
-        Post post = Post.builder().id(1L).build();
+        Account account = Account.builder().build();
+
+        Post post = Post.builder().id(1L).createdBy(account).build();
         List<Job> jobs = new ArrayList<>();
-        List<Account> applicants = new ArrayList<>();
+        List<AccountResponseDTO> applicants = new ArrayList<>();
 
         PostResponseDTO expectedResponse = PostResponseDTO.of(post, jobs, applicants);
         when(postRepository.findById(post.getId())).thenReturn(Optional.of(post));
         when(postQueryRepository.getJobs(post.getId())).thenReturn(jobs);
-        when(postQueryRepository.getApplicants(post.getId())).thenReturn(applicants);
 
         // when
         PostResponseDTO actualResponse = postService.getPost(post.getId());
@@ -314,15 +299,14 @@ class PostServiceTest {
         // given
         Account account = Account.builder().build();
 
-        Post post1 = Post.builder().content("content1").build();
-        Post post2 = Post.builder().content("content2").build();
-        Post post3 = Post.builder().content("content3").build();
+        Post post1 = Post.builder().createdBy(account).content("content1").build();
+        Post post2 = Post.builder().createdBy(account).content("content2").build();
+        Post post3 = Post.builder().createdBy(account).content("content3").build();
         List<Post> posts = Arrays.asList(post1, post2, post3);
         final int totalPostCount = posts.size();
 
         when(postQueryRepository.getFavorites(account)).thenReturn(posts);
         when(postQueryRepository.getJobs(any())).thenReturn(new ArrayList<>());
-        when(postQueryRepository.getApplicants(any())).thenReturn(new ArrayList<>());
 
         // when
         List<PostResponseDTO> postResponseDTOList = postService.getFavorites(account);
@@ -408,15 +392,14 @@ class PostServiceTest {
         // given
         Account account = Account.builder().build();
 
-        Post post1 = Post.builder().content("content1").build();
-        Post post2 = Post.builder().content("content2").build();
-        Post post3 = Post.builder().content("content3").build();
+        Post post1 = Post.builder().createdBy(account).content("content1").build();
+        Post post2 = Post.builder().createdBy(account).content("content2").build();
+        Post post3 = Post.builder().createdBy(account).content("content3").build();
         List<Post> posts = Arrays.asList(post1, post2, post3);
         final int totalPostCount = posts.size();
 
         when(postQueryRepository.getApplys(account)).thenReturn(posts);
         when(postQueryRepository.getJobs(any())).thenReturn(new ArrayList<>());
-        when(postQueryRepository.getApplicants(any())).thenReturn(new ArrayList<>());
 
         // when
         List<PostResponseDTO> postResponseDTOList = postService.getApplys(account);
@@ -546,22 +529,21 @@ class PostServiceTest {
         verify(emailService, never()).sendEmail(any());
     }
   
-    @DisplayName("공고 전체 조회 성공")
+    @DisplayName("본인 공고 전체 조회 성공")
     @Test
     void getMyPostsTest() {
 
         // given
-        Account account = Account.builder().build();
+        Account account = Account.builder().id(1L).build();
 
-        Post post1 = Post.builder().content("content1").build();
-        Post post2 = Post.builder().content("content2").build();
-        Post post3 = Post.builder().content("content3").build();
+        Post post1 = Post.builder().createdBy(account).content("content1").build();
+        Post post2 = Post.builder().createdBy(account).content("content2").build();
+        Post post3 = Post.builder().createdBy(account).content("content3").build();
         List<Post> posts = Arrays.asList(post1, post2, post3);
         final int totalPostCount = posts.size();
 
         when(postRepository.findAllByCreatedBy(account)).thenReturn(posts);
         when(postQueryRepository.getJobs(any())).thenReturn(new ArrayList<>());
-        when(postQueryRepository.getApplicants(any())).thenReturn(new ArrayList<>());
 
         // when
         List<PostResponseDTO> postResponseDTOList = postService.getMyPosts(account);

@@ -1,5 +1,6 @@
 package handong.whynot.domain;
 
+import handong.whynot.dto.account.AccountResponseDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -55,5 +56,14 @@ public class Account {
 
     public boolean isValidToken(String token) {
         return emailCheckToken.equals(token);
+    }
+
+    public AccountResponseDTO getAccountDTO() {
+        return AccountResponseDTO.builder()
+                .id(id)
+                .email(email)
+                .nickname(nickname)
+                .profileImg(profileImg)
+                .build();
     }
 }
