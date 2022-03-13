@@ -2,6 +2,7 @@ package handong.whynot.api;
 
 import handong.whynot.domain.Account;
 import handong.whynot.dto.account.AccountResponseCode;
+import handong.whynot.dto.account.ResendTokenDTO;
 import handong.whynot.dto.account.SignUpDTO;
 import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.exception.account.AccountNotValidFormException;
@@ -41,5 +42,13 @@ public class AccountController {
         accountService.checkEmail(token, email);
 
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_VERIFY_OK);
+    }
+
+    @PostMapping("/resendToken")
+    public ResponseDTO resendToken(@RequestBody ResendTokenDTO dto) {
+
+        accountService.resendToken(dto.getEmail());
+
+        return ResponseDTO.of(AccountResponseCode.ACCOUNT_CREATE_TOKEN_OK);
     }
 }
