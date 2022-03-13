@@ -23,7 +23,7 @@ public class AccountController {
 
     @PostMapping("/sign-up")
     public ResponseDTO signUp(@Valid @RequestBody SignUpDTO signUpDTO, Errors errors) {
-        // TODO: 22.02.20. seokjae.lee, MethodArgumentNotValidException 을 ExceptionHandler로 처리
+        // TODO: 22.02.20. MethodArgumentNotValidException 을 ExceptionHandler로 처리
         // 입력 검증 (사용자)
         if(errors.hasErrors()) {
             throw new AccountNotValidFormException(AccountResponseCode.ACCOUNT_NOT_VALID_FROM);
