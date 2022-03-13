@@ -1,6 +1,7 @@
 package handong.whynot.service;
 
 import handong.whynot.domain.*;
+import handong.whynot.dto.account.AccountResponseDTO;
 import handong.whynot.dto.job.JobType;
 import handong.whynot.dto.job.JobResponseCode;
 import handong.whynot.dto.post.*;
@@ -70,7 +71,13 @@ public class PostService {
                 .map(post ->
                         PostResponseDTO.of(post,
                                 postQueryRepository.getJobs(post.getId()),
-                                postQueryRepository.getApplicants(post.getId())))
+                                getApplicants(post.getId())))
+                .collect(Collectors.toList());
+    }
+
+    public List<AccountResponseDTO> getApplicants(Long postId) {
+        return postQueryRepository.getApplicants(postId).stream()
+                .map(account -> account.getAccountDTO())
                 .collect(Collectors.toList());
     }
 
@@ -82,7 +89,7 @@ public class PostService {
                 .map(post ->
                         PostResponseDTO.of(post,
                                 postQueryRepository.getJobs(post.getId()),
-                                postQueryRepository.getApplicants(post.getId())))
+                                getApplicants(post.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -94,7 +101,7 @@ public class PostService {
                 .map(post ->
                         PostResponseDTO.of(post,
                                 postQueryRepository.getJobs(post.getId()),
-                                postQueryRepository.getApplicants(post.getId())))
+                                getApplicants(post.getId())))
                 .collect(Collectors.toList());
     }
     
@@ -105,7 +112,7 @@ public class PostService {
                 .map(post ->
                         PostResponseDTO.of(post,
                                 postQueryRepository.getJobs(post.getId()),
-                                postQueryRepository.getApplicants(post.getId())))
+                                getApplicants(post.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -148,7 +155,7 @@ public class PostService {
 
         return PostResponseDTO.of(post,
                 postQueryRepository.getJobs(post.getId()),
-                postQueryRepository.getApplicants(post.getId()));
+                getApplicants(post.getId()));
     }
 
     public void deletePost(Long id, Account account) {
@@ -208,7 +215,7 @@ public class PostService {
                 .map(post ->
                         PostResponseDTO.of(post,
                                 postQueryRepository.getJobs(post.getId()),
-                                postQueryRepository.getApplicants(post.getId())))
+                                getApplicants(post.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -252,7 +259,7 @@ public class PostService {
                 .map(post ->
                         PostResponseDTO.of(post,
                                 postQueryRepository.getJobs(post.getId()),
-                                postQueryRepository.getApplicants(post.getId())))
+                                getApplicants(post.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -331,7 +338,7 @@ public class PostService {
                 .map(post ->
                         PostResponseDTO.of(post,
                                 postQueryRepository.getJobs(post.getId()),
-                                postQueryRepository.getApplicants(post.getId())))
+                                getApplicants(post.getId())))
                 .collect(Collectors.toList());
     }
 

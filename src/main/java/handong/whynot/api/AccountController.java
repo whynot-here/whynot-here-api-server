@@ -22,6 +22,7 @@ public class AccountController {
 
     @PostMapping("/sign-up")
     public ResponseDTO signUp(@Valid @RequestBody SignUpDTO signUpDTO) {
+
         // Account 저장
         Account account = accountService.createAccount(signUpDTO);
 
