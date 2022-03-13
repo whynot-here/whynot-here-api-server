@@ -65,25 +65,6 @@ class PostServiceTest {
         assertEquals(totalPostCount, postResponseDTOList.size());
     }
 
-    @DisplayName("공고생성 [실패1] - 등록되지 않은 사용자")
-    @Test
-    @Disabled
-    void createPostWithAccountNotFoundException() {
-        // given
-        Long notExistAccountId = 123456789L;
-//        PostRequestDTO requestDTO = PostRequestDTO.builder()
-//                .accountId(notExistAccountId).build();
-        when(accountRepository.findById(notExistAccountId))
-                .thenThrow(new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
-
-        // when, then
-//        AccountNotFoundException exception =
-//                assertThrows(AccountNotFoundException.class, () -> postService.createPost(requestDTO));
-//        assertEquals(AccountResponseCode.ACCOUNT_READ_FAIL, exception.getResponseCode());
-//        verify(accountRepository, times(1)).findById(notExistAccountId);
-//        verify(jobRepository, never()).findById(any());
-    }
-
     @DisplayName("공고생성 [실패2] - 등록되지 않은 직군")
     @Test
     void createPostWithJobNotFoundException() {
