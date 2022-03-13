@@ -19,7 +19,7 @@ public class JobController {
 
     private final JobService jobService;
 
-    // TODO: 22.02.20. seokjae.lee, DTO로 변환하는 작업을 하는 layer를 통일할 것
+    // TODO: 22.02.20. DTO로 변환하는 작업을 하는 layer를 통일할 것
     @GetMapping("")
     public List<JobResponseDTO> getJobs() {
 

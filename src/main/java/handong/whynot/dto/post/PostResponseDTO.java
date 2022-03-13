@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import handong.whynot.domain.Account;
 import handong.whynot.domain.Job;
 import handong.whynot.domain.Post;
+import handong.whynot.dto.account.AccountResponseDTO;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -33,7 +34,7 @@ public class PostResponseDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = "Asia/Seoul")
     private LocalDateTime updatedDt;
 
-    private Account createdBy;
+    private AccountResponseDTO owner;
 
     private String content;
 
@@ -43,16 +44,16 @@ public class PostResponseDTO {
     private List<Job> jobs = new ArrayList<>();
 
     @Builder.Default
-    private List<Account> applicants = new ArrayList<>();
+    private List<AccountResponseDTO> applicants = new ArrayList<>();
 
-    public static PostResponseDTO of(Post post, List<Job> jobs, List<Account> applicants) {
+    public static PostResponseDTO of(Post post, List<Job> jobs, List<AccountResponseDTO> applicants) {
         return builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .postImg(post.getPostImg())
                 .createdDt(post.getCreatedDt())
                 .updatedDt(post.getUpdatedDt())
-                .createdBy(post.getCreatedBy())
+                .owner(post.getCreatedBy().getAccountDTO())
                 .content(post.getContent())
                 .isRecruiting(post.isRecruiting())
                 .jobs(jobs)

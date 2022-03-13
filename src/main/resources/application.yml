@@ -15,7 +15,7 @@ spring:
     database: MYSQL
     showSql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     properties.hibernate:
       dialect: org.hibernate.dialect.MySQL5InnoDBDialect
       format_sql: true
@@ -50,3 +50,13 @@ cloud:
       static: ${aws.s3.staticName}
     stack:
       auto: false
+
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    filter: true
+    operationsSorter: method
+    tagsSorter: alpha
+    defaultModelsExpandDepth: 0
+    docExpansion: none
