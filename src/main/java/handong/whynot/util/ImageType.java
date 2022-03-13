@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-// TODO: 22.02.20. seokjae.lee, 패키지 위치 재고려
+// TODO: 22.02.20. 패키지 위치 재고려
 public final class ImageType {
 
     public static final List<String> IMAGE_MIME_TYPES = new ArrayList<>(
