@@ -60,3 +60,8 @@ springdoc:
     tagsSorter: alpha
     defaultModelsExpandDepth: 0
     docExpansion: none
+
+logging:
+  config: 'classpath:logback-spring.xml'
+  level:
+    root: INFO
