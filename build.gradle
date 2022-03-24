@@ -57,6 +57,9 @@ dependencies {
     // utils
     implementation 'org.apache.tika:tika-parsers:1.11'  // contents 를 parsing 하는 라이브러리
 
+    // logging
+    implementation 'org.springframework.boot:spring-boot-starter-logging:2.1.8.RELEASE'
+
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
