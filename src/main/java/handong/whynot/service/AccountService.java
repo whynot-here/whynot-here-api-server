@@ -115,4 +115,16 @@ public class AccountService implements UserDetailsService {
 
         SecurityContextHolder.getContext().setAuthentication(token);
     }
+
+    public void resendToken(String email) {
+
+        if (!accountRepository.existsByEmail(email)) {
+            throw new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL);
+        }
+
+        Account account = accountRepository.findByEmail(email);
+        account.generateEmailCheckToken();
+
+        sendSignUpConfirmEmail(account);
+    }
 }

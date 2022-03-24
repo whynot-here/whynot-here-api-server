@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import handong.whynot.domain.Account;
 import handong.whynot.dto.account.AccountResponseCode;
+import handong.whynot.dto.account.ResendTokenDTO;
 import handong.whynot.dto.account.SignUpDTO;
 import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.service.AccountService;
@@ -35,5 +36,13 @@ public class AccountController {
         accountService.checkEmail(token, email);
 
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_VERIFY_OK);
+    }
+
+    @PostMapping("/resend-token")
+    public ResponseDTO resendToken(@RequestBody ResendTokenDTO dto) {
+
+        accountService.resendToken(dto.getEmail());
+
+        return ResponseDTO.of(AccountResponseCode.ACCOUNT_CREATE_TOKEN_OK);
     }
 }
