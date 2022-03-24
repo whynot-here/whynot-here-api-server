@@ -44,7 +44,7 @@ public class AccountController {
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_VERIFY_OK);
     }
 
-    @PostMapping("/resendToken")
+    @PostMapping("/resend-token")
     public ResponseDTO resendToken(@RequestBody ResendTokenDTO dto) {
 
         accountService.resendToken(dto.getEmail());
