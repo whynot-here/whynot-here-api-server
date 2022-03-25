@@ -10,6 +10,7 @@ import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.account.AccountNotValidToken;
 import handong.whynot.mail.EmailMessage;
 import handong.whynot.mail.EmailService;
+import handong.whynot.repository.AccountQueryRepository;
 import handong.whynot.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,55 +32,58 @@ public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final AccountQueryRepository accountQueryRepository;
 
     @Override
     public UserDetails loadUserByUsername(String emailOrNickname) throws UsernameNotFoundException {
 
-        Account account = accountRepository.findByEmail(emailOrNickname);
+        Account account = findByEmailOrNickname(emailOrNickname, emailOrNickname);
 
         if (account == null) {
-            account = accountRepository.findByNickname(emailOrNickname);
-        }
-
-        if (account == null) {
-            // todo: 여기 Exception들은 filter로 처리하도록 수정필요
             throw new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL);
-        }
-
-        if (!account.getEmailVerified()) {
-            // todo: 여기 Exception들은 filter로 처리하도록 수정필요
-            throw new AccountNotValidToken(AccountResponseCode.ACCOUNT_NOT_VALID_TOKEN);
         }
 
         return new UserAccount(account);
     }
 
+    // email인증을 한 사용자를 email 혹은 nickname으로 검색. (없으면 Null 반환)
+    private Account findByEmailOrNickname(String email, String nickname) {
+
+        Account account = accountQueryRepository.findByVerifiedEmail(email);
+
+        if (account == null) {
+            account = accountQueryRepository.findByVerifiedNickname(nickname);
+        }
+
+        return account;
+    }
+
     @Transactional
     public Account createAccount(SignUpDTO signUpDTO) {
 
-        // 중복 검증 (이메일)
-        if (accountRepository.existsByEmail(signUpDTO.getEmail())) {
+        Account account = accountQueryRepository.findByVerifiedEmail(signUpDTO.getEmail());
+
+        if(account == null) {
+            throw new AccountNotValidToken(AccountResponseCode.ACCOUNT_NOT_VALID_TOKEN);
+        }
+
+        if(account.getPassword() != null) {
             throw new AccountAlreadyExistEmailException(AccountResponseCode.ACCOUNT_ALREADY_EXIST_EMAIL);
         }
-        // 중복 검증 (닉네임)
-        if (accountRepository.existsByNickname(signUpDTO.getNickname())) {
-            throw new AccountAlreadyExistNicknameException(AccountResponseCode.ACCOUNT_ALREADY_EXIST_NICKNAME);
-        }
+        account.setNickname(signUpDTO.getNickname());
+        account.setPassword(passwordEncoder.encode(signUpDTO.getPassword()));
 
-        Account account = Account.builder()
-                .email(signUpDTO.getEmail())
-                .nickname(signUpDTO.getNickname())
-                .password(passwordEncoder.encode(signUpDTO.getPassword()))
-                .build();
-        Account newAccount = accountRepository.save(account);
+        account.completeSignUp();
 
-        newAccount.generateEmailCheckToken();
+        Account savedAccount = accountRepository.save(account);
 
-        sendSignUpConfirmEmail(newAccount);
-        return newAccount;
+        login(account);
+
+        return savedAccount;
     }
 
     public void sendSignUpConfirmEmail(Account newAccount) {
+
         String message = "인증 코드 8자리 = " + newAccount.getEmailCheckToken();
 
         EmailMessage emailMessage = EmailMessage.builder()
@@ -104,7 +108,6 @@ public class AccountService implements UserDetailsService {
 
         account.completeSignUp();
         accountRepository.save(account);
-        login(account);
     }
 
     public void login(Account account) {
@@ -116,15 +119,40 @@ public class AccountService implements UserDetailsService {
         SecurityContextHolder.getContext().setAuthentication(token);
     }
 
-    public void resendToken(String email) {
+    @Transactional
+    public void checkEmailDuplicateAndGenerateAccountAndSendEmail(String email) {
 
-        if (!accountRepository.existsByEmail(email)) {
-            throw new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL);
+        Account account = accountQueryRepository.findByVerifiedEmail(email);
+
+        // email인증도 완료된 경우는 중복 처리
+        if (account != null) {
+            throw new AccountAlreadyExistEmailException(AccountResponseCode.ACCOUNT_ALREADY_EXIST_EMAIL);
         }
 
-        Account account = accountRepository.findByEmail(email);
-        account.generateEmailCheckToken();
+        // 동일한 email은 있지만, email 인증이 되지 않은 사용자
+        Account savedAccount = accountRepository.findByEmail(email);
 
-        sendSignUpConfirmEmail(account);
+        if(savedAccount == null) {
+
+            // 동일한 email도 없는 경우 새로운 사용자
+            Account newAccount = Account.builder()
+                    .email(email)
+                    .emailVerified(false)
+                    .build();
+
+            savedAccount = accountRepository.save(newAccount);
+        }
+
+        savedAccount.generateEmailCheckToken();
+        sendSignUpConfirmEmail(savedAccount);
+    }
+
+    public void checkNicknameDuplicate(String nickname) {
+
+        Account account = accountQueryRepository.findByVerifiedNickname(nickname);
+
+        if (account != null) {
+            throw new AccountAlreadyExistNicknameException(AccountResponseCode.ACCOUNT_ALREADY_EXIST_NICKNAME);
+        }
     }
 }

@@ -34,7 +34,7 @@ public class PostResponseDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = "Asia/Seoul")
     private LocalDateTime updatedDt;
 
-    private AccountResponseDTO owner;
+    private AccountResponseDTO writer;
 
     private String content;
 
@@ -53,7 +53,7 @@ public class PostResponseDTO {
                 .postImg(post.getPostImg())
                 .createdDt(post.getCreatedDt())
                 .updatedDt(post.getUpdatedDt())
-                .owner(post.getCreatedBy().getAccountDTO())
+                .writer(post.getCreatedBy().getAccountDTO())
                 .content(post.getContent())
                 .isRecruiting(post.isRecruiting())
                 .jobs(jobs)

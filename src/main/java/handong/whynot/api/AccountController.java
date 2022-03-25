@@ -2,21 +2,17 @@ package handong.whynot.api;
 
 import javax.validation.Valid;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import handong.whynot.dto.account.*;
+import org.springframework.web.bind.annotation.*;
 
 import handong.whynot.domain.Account;
-import handong.whynot.dto.account.AccountResponseCode;
-import handong.whynot.dto.account.ResendTokenDTO;
-import handong.whynot.dto.account.SignUpDTO;
 import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.service.AccountService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/v1")
 public class AccountController {
 
     private final AccountService accountService;
@@ -27,7 +23,7 @@ public class AccountController {
         // Account 저장
         Account account = accountService.createAccount(signUpDTO);
 
-        return ResponseDTO.of(AccountResponseCode.ACCOUNT_CREATE_TOKEN_OK);
+        return ResponseDTO.of(AccountResponseCode.ACCOUNT_CREATE_OK);
     }
 
     @GetMapping("/check-email-token")
@@ -38,11 +34,19 @@ public class AccountController {
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_VERIFY_OK);
     }
 
-    @PostMapping("/resend-token")
-    public ResponseDTO resendToken(@RequestBody ResendTokenDTO dto) {
+    @PostMapping("/check-email-duplicate")
+    public ResponseDTO checkEmailDuplicate(@RequestBody EmailDTO dto) {
 
-        accountService.resendToken(dto.getEmail());
+        accountService.checkEmailDuplicateAndGenerateAccountAndSendEmail(dto.getEmail());
 
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_CREATE_TOKEN_OK);
+    }
+
+    @PostMapping("/check-nickname-duplicate")
+    public ResponseDTO checkNicknameDuplicate(@RequestBody NicknameDTO dto) {
+
+        accountService.checkNicknameDuplicate(dto.getNickname());
+
+        return ResponseDTO.of(AccountResponseCode.ACCOUNT_VALID_DUPLICATE);
     }
 }
