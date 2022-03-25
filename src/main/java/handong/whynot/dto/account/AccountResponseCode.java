@@ -25,7 +25,9 @@ public enum AccountResponseCode implements ResponseCode {
     ACCOUNT_NOT_VALID_TOKEN(40008, "사용자 [이메일 토큰검증]에 실패하였습니다."),
     ACCOUNT_CREATE_TOKEN_OK(20005, "사용자 [토큰생성]에 성공하였습니다."),
     ACCOUNT_VERIFY_OK(20006, "사용자 [이메일 토큰검증]에 성공하였습니다."),
-    ACCOUNT_FORBIDDEN(40009, "사용자 인증이 필요합니다.");
+    ACCOUNT_FORBIDDEN(40009, "사용자 인증이 필요합니다."),
+
+    ACCOUNT_VALID_DUPLICATE(20007, "사용 가능한 인자입니다.");
 
     private final Integer statusCode;
     private final String message;
