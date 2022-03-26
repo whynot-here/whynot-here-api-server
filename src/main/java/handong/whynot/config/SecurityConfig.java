@@ -23,8 +23,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         http
                 .csrf().disable()   // 개발 단계에서만 허용
                 .authorizeRequests()
-                .antMatchers("/", "/login", "/sign-up", "/check-email-token", "/resend-token",
-                        "/email-login", "/login-by-email").permitAll()
+                .antMatchers("/", "/v1/login", "/v1/sign-up", "/v1/check-email-token", "/v1/resend-token",
+                        "/v1/check-email-duplicate", "/v1/check-nickname-duplicate").permitAll()
                 .antMatchers("/v1/posts/favorite/**", "/v1/posts/apply/**", "/v1/posts/own/**").hasRole("USER")
                 .antMatchers(HttpMethod.GET,"/v1/posts/**", "/v1/comments/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated()
