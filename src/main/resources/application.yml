@@ -54,6 +54,7 @@ cloud:
 springdoc:
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
+  show-login-endpoint: true
   swagger-ui:
     filter: true
     operationsSorter: method
