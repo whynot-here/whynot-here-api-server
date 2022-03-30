@@ -30,6 +30,7 @@ dependencies {
 
     // swagger
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
+    implementation 'org.springdoc:springdoc-openapi-security:1.6.6'
 
     // database
     runtimeOnly 'mysql:mysql-connector-java'
