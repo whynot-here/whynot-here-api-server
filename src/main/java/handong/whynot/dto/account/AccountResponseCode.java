@@ -27,7 +27,8 @@ public enum AccountResponseCode implements ResponseCode {
     ACCOUNT_VERIFY_OK(20006, "사용자 [이메일 토큰검증]에 성공하였습니다."),
     ACCOUNT_FORBIDDEN(40009, "사용자 인증이 필요합니다."),
 
-    ACCOUNT_VALID_DUPLICATE(20007, "사용 가능한 인자입니다.");
+    ACCOUNT_VALID_DUPLICATE(20007, "사용 가능한 인자입니다."),
+    ACCOUNT_FORM_DATA_SIGN_IN(40010, "form-data 로그인 형식을 지원하지 않습니다");
 
     private final Integer statusCode;
     private final String message;
