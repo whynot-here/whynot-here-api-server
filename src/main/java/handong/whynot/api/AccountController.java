@@ -3,6 +3,7 @@ package handong.whynot.api;
 import javax.validation.Valid;
 
 import handong.whynot.dto.account.*;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import handong.whynot.domain.Account;
@@ -26,10 +27,10 @@ public class AccountController {
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_CREATE_OK);
     }
 
-    @GetMapping("/check-email-token")
-    public ResponseDTO checkEmailToken(String token, String email) {
+    @PostMapping("/check-email-token")
+    public ResponseDTO checkEmailToken(@Valid @RequestBody TokenCheckRequestDTO requestDTO) {
 
-        accountService.checkEmail(token, email);
+        accountService.checkEmail(requestDTO.getToken(), requestDTO.getEmail());
 
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_VERIFY_OK);
     }
