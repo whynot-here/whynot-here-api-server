@@ -16,6 +16,6 @@ public class WebConfig implements WebMvcConfigurer {
                         "http://localhost:9000"
                 )
                 .allowedMethods("*")
-        ;
+                .exposedHeaders("*");
     }
 }
