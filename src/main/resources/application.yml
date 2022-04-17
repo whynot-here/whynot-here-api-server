@@ -2,6 +2,12 @@ server:
   port: 9000
   error:
     include-stacktrace: never
+  servlet:
+    session:
+      cookie:
+        secure: true
+        same-site: NONE
+        http-only: true
 
 spring:
   datasource:
