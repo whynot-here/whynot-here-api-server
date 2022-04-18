@@ -5,7 +5,7 @@
     <springProperty scope="context" name="LOG_LEVEL" source="logging.level.root"/>
 
     <!-- 로그파일 경로 -->
-    <property name="LOG_PATH" value="./log/app"/>
+    <property name="LOG_PATH" value="/log/app"/>
 
     <!-- 로그파일 이름 -->
     <property name="LOG_FILE_NAME" value="deploy"/>
