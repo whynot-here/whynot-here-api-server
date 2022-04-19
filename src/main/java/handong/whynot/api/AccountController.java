@@ -26,10 +26,10 @@ public class AccountController {
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_CREATE_OK);
     }
 
-    @GetMapping("/check-email-token")
-    public ResponseDTO checkEmailToken(String token, String email) {
+    @PostMapping("/check-email-token")
+    public ResponseDTO checkEmailToken(@RequestBody TokenCheckDTO tokenCheckDTO) {
 
-        accountService.checkEmail(token, email);
+        accountService.checkEmail(tokenCheckDTO.getToken(), tokenCheckDTO.getEmail());
 
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_VERIFY_OK);
     }
@@ -48,5 +48,15 @@ public class AccountController {
         accountService.checkNicknameDuplicate(dto.getNickname());
 
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_VALID_DUPLICATE);
+    }
+
+    @GetMapping("/account/info")
+    public AccountResponseDTO getAccountInfo(@CurrentAccount Account account) {
+        return AccountResponseDTO.builder()
+                .id(account.getId())
+                .email(account.getEmail())
+                .nickname(account.getNickname())
+                .profileImg(account.getProfileImg())
+                .build();
     }
 }
