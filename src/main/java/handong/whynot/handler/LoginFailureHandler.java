@@ -17,6 +17,7 @@ import java.io.IOException;
 
 import static org.apache.commons.compress.utils.CharsetNames.UTF_8;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Slf4j
 @Component
@@ -32,10 +33,12 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(UTF_8);
 
+        response.setStatus(BAD_REQUEST.value());
+
         try{
             response.getWriter().write(objectMapper.writeValueAsString(responseMessage));
-            response.setStatus(BAD_REQUEST.value());
         } catch (IOException e) {
+            response.setStatus(INTERNAL_SERVER_ERROR.value());
             log.error("[ExceptionHandlerFilter] Json 생성에 실패하였습니다. {}", e.getMessage());
         }
     }

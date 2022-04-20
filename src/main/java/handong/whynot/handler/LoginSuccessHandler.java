@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -36,6 +38,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             writer.println(objectMapper.writeValueAsString(dto));
             writer.flush();
         } catch (Exception e) {
+            response.setStatus(INTERNAL_SERVER_ERROR.value());
             log.error("Json 응답에 실패했습니다.");
         }
     }
