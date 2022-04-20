@@ -20,8 +20,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import static org.apache.commons.compress.utils.CharsetNames.UTF_8;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @Component
@@ -39,10 +38,12 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(UTF_8);
 
+        response.setStatus(OK.value());
+
         try{
             response.getWriter().write(objectMapper.writeValueAsString(responseMessage));
-            response.setStatus(OK.value());
         } catch (IOException e) {
+            response.setStatus(INTERNAL_SERVER_ERROR.value());
             log.error("[ExceptionHandlerFilter] Json 생성에 실패하였습니다. {}", e.getMessage());
         }
     }
