@@ -1,0 +1,48 @@
+package handong.whynot.handler;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import handong.whynot.dto.account.AccountResponseCode;
+import handong.whynot.dto.common.ErrorResponseDTO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import static org.apache.commons.compress.utils.CharsetNames.UTF_8;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+    private final ObjectMapper objectMapper;
+
+    @Override
+    public void commence(HttpServletRequest request,
+                         HttpServletResponse response,
+                         AuthenticationException exception) throws IOException, ServletException {
+
+        ErrorResponseDTO responseMessage = ErrorResponseDTO.of(AccountResponseCode.ACCOUNT_FORBIDDEN, null);
+
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(UTF_8);
+
+        response.setStatus(BAD_REQUEST.value());
+
+        try{
+            response.getWriter().write(objectMapper.writeValueAsString(responseMessage));
+        } catch (IOException e) {
+            response.setStatus(INTERNAL_SERVER_ERROR.value());
+            log.error("[ExceptionHandlerFilter] Json 생성에 실패하였습니다. {}", e.getMessage());
+        }
+    }
+}
