@@ -1,5 +1,9 @@
 package handong.whynot.config;
 
+import handong.whynot.handler.CustomAuthenticationEntryPoint;
+import handong.whynot.handler.CustomLogoutSuccessHandler;
+import handong.whynot.handler.LoginFailureHandler;
+import handong.whynot.handler.LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +22,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
+    private final LoginSuccessHandler loginSuccessHandler;
+    private final LoginFailureHandler loginFailureHandler;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -30,17 +39,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .antMatchers("/v1/posts/favorite/**", "/v1/posts/apply/**", "/v1/posts/own/**").hasRole("USER")
                 .antMatchers(HttpMethod.GET,"/v1/posts/**", "/v1/comments/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated()
+                .and().exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint)
         .and()
                 .formLogin()
-//                .loginPage()  // 프론트 URL 지정 필요
+                .loginProcessingUrl("/v1/login")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .defaultSuccessUrl("/v1/posts")
+                .successHandler(loginSuccessHandler)
+                .failureHandler(loginFailureHandler)
                 .permitAll()
         .and()
                 .logout()
-//                .logoutUrl() // 프론트 URL 지정 필요
-                .logoutSuccessUrl("/v1/posts")
+                .logoutUrl("/v1/logout")
+                .logoutSuccessHandler(customLogoutSuccessHandler)
         ;
     }
 

@@ -5,7 +5,6 @@ server:
   servlet:
     session:
       cookie:
-        secure: true
         same-site: NONE
         http-only: true
 
