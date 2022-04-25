@@ -13,18 +13,21 @@ import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
+import javax.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping("/v1/posts")
 @RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
+    private final HttpSession httpSession;
 
     @GetMapping("")
     public List<PostResponseDTO> getPosts(
             @RequestParam(name = "recruit", required = false) RecruitStatus status,
             @RequestParam(name = "jobTypeList", required = false, defaultValue = "") List<JobType> jobTypeList) {
-
+        httpSession.setAttribute("testKey","testValue");
         return postService.getPostsByParam(status, jobTypeList);
     }
 
@@ -57,7 +60,7 @@ public class PostController {
 
         return ResponseDTO.of(PostResponseCode.POST_UPDATE_OK);
     }
-  
+
     @GetMapping("/favorite")
     public List<PostResponseDTO> getFavorite(@CurrentAccount Account account) {
 
@@ -72,7 +75,7 @@ public class PostController {
 
         return ResponseDTO.of(PostResponseCode.POST_CREATE_FAVORITE_OK);
     }
-  
+
     @DeleteMapping("/favorite/{postId}")
     public ResponseDTO deleteFavorite(@PathVariable Long postId, @CurrentAccount Account account) {
 
@@ -80,14 +83,14 @@ public class PostController {
 
         return ResponseDTO.of(PostResponseCode.POST_DELETE_FAVORITE_OK);
     }
-  
+
     @GetMapping("/apply")
     public List<PostResponseDTO> getApplys(@CurrentAccount Account account) {
 
         return postService.getApplys(account);
     }
 
-  
+
     @PostMapping("/apply/{postId}")
     @ResponseStatus(CREATED)
     public ResponseDTO createApply(@PathVariable Long postId, @RequestBody PostApplyRequestDTO request, @CurrentAccount Account account) {
@@ -96,7 +99,7 @@ public class PostController {
 
         return ResponseDTO.of(PostResponseCode.POST_CREATE_APPLY_OK);
     }
-  
+
     @DeleteMapping("/apply/{postId}")
     public ResponseDTO deleteApply(@PathVariable Long postId, @CurrentAccount Account account) {
 
@@ -104,7 +107,7 @@ public class PostController {
 
         return ResponseDTO.of(PostResponseCode.POST_DELETE_APPLY_OK);
     }
-  
+
     @GetMapping("/own")
     public List<PostResponseDTO> getMyPosts(@CurrentAccount Account account) {
 
