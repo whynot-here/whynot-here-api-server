@@ -30,35 +30,35 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()   // 개발 단계에서만 허용
-                .cors().configurationSource(corsConfigurationSource())
-                .and()
-                .authorizeRequests()
-                .antMatchers("/", "/v1/login", "/v1/sign-up", "/v1/check-email-token", "/v1/resend-token",
-                        "/v1/check-email-duplicate", "/v1/check-nickname-duplicate").permitAll()
-                .antMatchers("/v1/posts/favorite/**", "/v1/posts/apply/**", "/v1/posts/own/**").hasRole("USER")
-                .antMatchers(HttpMethod.GET,"/v1/posts/**", "/v1/comments/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
-                .anyRequest().authenticated()
-                .and().exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint)
-        .and()
-                .formLogin()
-                .loginProcessingUrl("/v1/login")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .successHandler(loginSuccessHandler)
-                .failureHandler(loginFailureHandler)
-                .permitAll()
-        .and()
-                .logout()
-                .logoutUrl("/v1/logout")
-                .logoutSuccessHandler(customLogoutSuccessHandler)
+            .csrf().disable()   // 개발 단계에서만 허용
+            .cors().configurationSource(corsConfigurationSource())
+            .and()
+            .authorizeRequests()
+            .antMatchers("/", "/v1/login", "/v1/sign-up", "/v1/check-email-token", "/v1/resend-token",
+                         "/v1/check-email-duplicate", "/v1/check-nickname-duplicate").permitAll()
+            .antMatchers("/v1/posts/favorite/**", "/v1/posts/apply/**", "/v1/posts/own/**").hasRole("USER")
+            .antMatchers(HttpMethod.GET,"/v1/posts/**", "/v1/comments/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
+            .anyRequest().authenticated()
+            .and().exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint)
+            .and()
+            .formLogin()
+            .loginProcessingUrl("/v1/login")
+            .usernameParameter("email")
+            .passwordParameter("password")
+            .successHandler(loginSuccessHandler)
+            .failureHandler(loginFailureHandler)
+            .permitAll()
+            .and()
+            .logout()
+            .logoutUrl("/v1/logout")
+            .logoutSuccessHandler(customLogoutSuccessHandler)
         ;
     }
 
     @Override
     public void configure(WebSecurity web) {
         web.ignoring()
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+           .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
     @Bean
@@ -68,6 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         configuration.addAllowedOrigin("https://whynot-here.github.io");
         configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedOrigin("http://localhost:9000");
+        configuration.addAllowedOrigin("https://whynot-here.netlify.app");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
