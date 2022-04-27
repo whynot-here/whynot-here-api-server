@@ -5,6 +5,7 @@ import handong.whynot.dto.cloud.S3ResponseDTO;
 import handong.whynot.exception.cloud.S3InvalidFileTypeException;
 import handong.whynot.exception.cloud.S3UploadFailException;
 import handong.whynot.service.S3Service;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,7 @@ public class S3Controller {
     private final S3Service s3Service;
 
     // S3에 업로드  ==>  파일 URI를 DTO에 담아서 반환
+    @Operation(summary = "이미지 업로드")
     @PostMapping("/{dirName}")
     public S3ResponseDTO upload(
             @PathVariable String dirName,
