@@ -2,11 +2,11 @@ package handong.whynot.dto.account;
 
 import lombok.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AccountResponseDTO {
 
     private Long id;

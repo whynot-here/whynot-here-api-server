@@ -59,4 +59,17 @@ public class AccountController {
                 .profileImg(account.getProfileImg())
                 .build();
     }
+
+
+    @GetMapping("/account/login-state")
+    public IsLoginDTO getLoginState(@CurrentAccount Account account) {
+
+        if(account != null) {
+            return IsLoginDTO.builder()
+                    .isLogin(true).build();
+        }
+
+        return IsLoginDTO.builder()
+                .isLogin(false).build();
+    }
 }

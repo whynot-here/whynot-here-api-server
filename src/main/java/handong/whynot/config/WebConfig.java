@@ -13,7 +13,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "https://whynot-here.github.io",
                         "http://localhost:8080",
-                        "http://localhost:9000"
+                        "http://localhost:9000",
+                        "https://whynot-here.netlify.app"
                 )
                 .allowedMethods("*")
                 .exposedHeaders("*");
