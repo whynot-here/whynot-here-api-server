@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .and()
                 .authorizeRequests()
                 .antMatchers("/", "/v1/login", "/v1/sign-up", "/v1/check-email-token", "/v1/resend-token",
-                        "/v1/check-email-duplicate", "/v1/check-nickname-duplicate").permitAll()
+                        "/v1/check-email-duplicate", "/v1/check-nickname-duplicate", "/v1/account/login-state").permitAll()
                 .antMatchers("/v1/posts/favorite/**", "/v1/posts/apply/**", "/v1/posts/own/**").hasRole("USER")
                 .antMatchers(HttpMethod.GET,"/v1/posts/**", "/v1/comments/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated()
@@ -68,6 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         configuration.addAllowedOrigin("https://whynot-here.github.io");
         configuration.addAllowedOrigin("http://localhost:8080");
         configuration.addAllowedOrigin("http://localhost:9000");
+        configuration.addAllowedOrigin("https://whynot-here.netlify.app");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
