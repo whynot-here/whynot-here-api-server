@@ -23,7 +23,7 @@ public class AccountController {
     public ResponseDTO signUp(@Valid @RequestBody SignUpDTO signUpDTO) {
 
         // Account 저장
-        Account account = accountService.createAccount(signUpDTO);
+        accountService.createAccount(signUpDTO);
 
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_CREATE_OK);
     }
@@ -37,7 +37,7 @@ public class AccountController {
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_VERIFY_OK);
     }
 
-    @Operation(summary = "")
+    @Operation(summary = "중복 이메일 체크")
     @PostMapping("/check-email-duplicate")
     public ResponseDTO checkEmailDuplicate(@RequestBody EmailDTO dto) {
 
@@ -46,7 +46,7 @@ public class AccountController {
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_CREATE_TOKEN_OK);
     }
 
-    @Operation(summary = "")
+    @Operation(summary = "중복 닉네임 체크")
     @PostMapping("/check-nickname-duplicate")
     public ResponseDTO checkNicknameDuplicate(@RequestBody NicknameDTO dto) {
 
@@ -55,7 +55,7 @@ public class AccountController {
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_VALID_DUPLICATE);
     }
 
-    @Operation(summary = "")
+    @Operation(summary = "계정 정보 조회")
     @GetMapping("/account/info")
     public AccountResponseDTO getAccountInfo(@CurrentAccount Account account) {
         return AccountResponseDTO.builder()
@@ -66,7 +66,7 @@ public class AccountController {
                 .build();
     }
 
-    @Operation(summary = "")
+    @Operation(summary = "로그인 상태 정보 조회")
     @GetMapping("/account/login-state")
     public IsLoginDTO getLoginState(@CurrentAccount Account account) {
 
