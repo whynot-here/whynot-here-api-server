@@ -1,26 +1,26 @@
 package handong.whynot.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import handong.whynot.dto.account.AccountResponseCode;
-import handong.whynot.dto.account.AccountResponseDTO;
-import handong.whynot.dto.account.UserAccount;
-import handong.whynot.dto.common.ErrorResponseDTO;
-import handong.whynot.dto.common.ResponseDTO;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import static org.apache.commons.compress.utils.CharsetNames.UTF_8;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.OK;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.apache.commons.compress.utils.CharsetNames.UTF_8;
-import static org.springframework.http.HttpStatus.*;
+import handong.whynot.dto.account.AccountResponseCode;
+import handong.whynot.dto.common.ResponseDTO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -40,7 +40,7 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
 
         response.setStatus(OK.value());
 
-        try{
+        try {
             response.getWriter().write(objectMapper.writeValueAsString(responseMessage));
         } catch (IOException e) {
             response.setStatus(INTERNAL_SERVER_ERROR.value());
