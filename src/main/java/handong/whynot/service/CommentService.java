@@ -34,7 +34,7 @@ public class CommentService {
 
         List<Comment> comments = commentQueryRepository.findCommentsByPostId(postId);
         return comments.stream()
-                .map(comment -> CommentResponseDTO.of(comment))
+                .map(CommentResponseDTO::of)
                 .collect(Collectors.toList());
     }
 

@@ -1,7 +1,6 @@
 package handong.whynot.api;
 
 import handong.whynot.domain.Account;
-import handong.whynot.domain.Comment;
 import handong.whynot.dto.account.CurrentAccount;
 import handong.whynot.dto.comment.CommentRequestDTO;
 import handong.whynot.dto.comment.CommentResponseCode;
