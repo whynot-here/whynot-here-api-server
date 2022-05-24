@@ -45,7 +45,7 @@ CREATE TABLE `post` (
   `created_dt` datetime DEFAULT NULL,
   `updated_dt` datetime DEFAULT NULL,
   `closed_dt` datetime DEFAULT NULL,
-  `content` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `content` varchar(2500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_recruiting` bit(1) DEFAULT NULL,
   `post_img` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -121,13 +121,11 @@ CREATE TABLE `comment` (
   `updated_dt` datetime DEFAULT NULL,
   `content` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `account_id` bigint DEFAULT NULL,
-  `parent_id` bigint DEFAULT NULL,
   `post_id` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKp41h5al2ajp1q0u6ox3i68w61` (`account_id`),
   KEY `FKde3rfu96lep00br5ov0mdieyt` (`parent_id`),
   KEY `FKs1slvnkuemjsq2kj4h3vhx7i1` (`post_id`),
-  CONSTRAINT `FKde3rfu96lep00br5ov0mdieyt` FOREIGN KEY (`parent_id`) REFERENCES `comment` (`id`),
   CONSTRAINT `FKp41h5al2ajp1q0u6ox3i68w61` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   CONSTRAINT `FKs1slvnkuemjsq2kj4h3vhx7i1` FOREIGN KEY (`post_id`) REFERENCES `post` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
