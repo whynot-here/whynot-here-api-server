@@ -1,22 +1,26 @@
 package handong.whynot.dto.post;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import handong.whynot.domain.Account;
-import handong.whynot.domain.Job;
-import handong.whynot.domain.Post;
-import handong.whynot.dto.account.AccountResponseDTO;
-import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import handong.whynot.domain.Job;
+import handong.whynot.domain.Post;
+import handong.whynot.dto.account.AccountResponseDTO;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PostResponseDTO {
 
     private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm";
@@ -48,16 +52,16 @@ public class PostResponseDTO {
 
     public static PostResponseDTO of(Post post, List<Job> jobs, List<AccountResponseDTO> applicants) {
         return builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .postImg(post.getPostImg())
-                .createdDt(post.getCreatedDt())
-                .updatedDt(post.getUpdatedDt())
-                .writer(post.getCreatedBy().getAccountDTO())
-                .content(post.getContent())
-                .isRecruiting(post.isRecruiting())
-                .jobs(jobs)
-                .applicants(applicants)
-                .build();
+            .id(post.getId())
+            .title(post.getTitle())
+            .postImg(post.getPostImg())
+            .createdDt(post.getCreatedDt())
+            .updatedDt(post.getUpdatedDt())
+            .writer(post.getCreatedBy().getAccountDTO())
+            .content(post.getContent())
+            .isRecruiting(post.isRecruiting())
+            .jobs(jobs)
+            .applicants(applicants)
+            .build();
     }
 }

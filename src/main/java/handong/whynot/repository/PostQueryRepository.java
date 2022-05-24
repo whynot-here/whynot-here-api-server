@@ -26,6 +26,10 @@ public class PostQueryRepository {
     public List<Post> getPosts() {
 
         return queryFactory.selectFrom(qPost)
+                .orderBy(
+                        qPost.id.desc(),
+                        qPost.createdDt.desc()
+                )
                 .fetch();
     }
 
@@ -101,6 +105,10 @@ public class PostQueryRepository {
 
         return queryFactory.selectFrom(qPost)
                 .where(qPost.isRecruiting.eq(isRecruiting))
+                .orderBy(
+                        qPost.id.desc(),
+                        qPost.createdDt.desc()
+                )
                 .fetch();
     }
 
@@ -111,6 +119,10 @@ public class PostQueryRepository {
                 .where(qPost.isRecruiting.eq(isRecruiting)
                         .and(qJobPost.job.in(jobs))
                 )
+                .orderBy(
+                        qPost.id.desc(),
+                        qPost.createdDt.desc()
+                )
                 .fetch();
     }
 
@@ -118,7 +130,7 @@ public class PostQueryRepository {
 
         return queryFactory.selectFrom(qPost)
                 .where(qPost.id.eq(postId)
-                        .and(qPost.isRecruiting))
+                        .and(qPost.isRecruiting.isTrue()))
                 .fetch();
     }
 
@@ -127,6 +139,9 @@ public class PostQueryRepository {
         return queryFactory.select(qPost)
                 .from(qPost, qJobPost)
                 .where(qJobPost.job.in(jobs))
+                .orderBy(
+                        qPost.createdDt.desc()
+                )
                 .fetch();
     }
 }

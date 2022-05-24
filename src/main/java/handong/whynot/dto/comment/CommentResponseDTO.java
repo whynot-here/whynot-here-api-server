@@ -27,5 +27,4 @@ public class CommentResponseDTO {
                 .createdDt(comment.getCreatedDt())
                 .build();
     }
-
 }

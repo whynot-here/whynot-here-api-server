@@ -77,7 +77,7 @@ public class PostService {
 
     public List<AccountResponseDTO> getApplicants(Long postId) {
         return postQueryRepository.getApplicants(postId).stream()
-                .map(account -> account.getAccountDTO())
+                .map(Account::getAccountDTO)
                 .collect(Collectors.toList());
     }
 
