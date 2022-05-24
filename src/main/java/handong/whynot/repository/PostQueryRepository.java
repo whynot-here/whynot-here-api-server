@@ -130,7 +130,7 @@ public class PostQueryRepository {
 
         return queryFactory.selectFrom(qPost)
                 .where(qPost.id.eq(postId)
-                        .and(qPost.isRecruiting))
+                        .and(qPost.isRecruiting.isTrue()))
                 .fetch();
     }
 
