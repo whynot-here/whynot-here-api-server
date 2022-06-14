@@ -1,7 +1,5 @@
 package handong.whynot.util;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,6 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.activation.MimetypesFileTypeMap;
+
+import org.apache.commons.lang3.StringUtils;
 
 // TODO: 22.02.20. 패키지 위치 재고려
 public final class ImageType {

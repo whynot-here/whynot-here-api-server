@@ -1,23 +1,25 @@
 package handong.whynot.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import handong.whynot.dto.account.AccountResponseCode;
-import handong.whynot.dto.common.ErrorResponseDTO;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import static org.apache.commons.codec.CharEncoding.UTF_8;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
-
-import static org.apache.commons.compress.utils.CharsetNames.UTF_8;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import handong.whynot.dto.account.AccountResponseCode;
+import handong.whynot.dto.common.ErrorResponseDTO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -27,7 +29,8 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
     private final ObjectMapper objectMapper;
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+                                        AuthenticationException exception) throws IOException {
         ErrorResponseDTO responseMessage = ErrorResponseDTO.of(AccountResponseCode.ACCOUNT_NOT_VALID, null);
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -35,7 +38,7 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
 
         response.setStatus(BAD_REQUEST.value());
 
-        try{
+        try {
             response.getWriter().write(objectMapper.writeValueAsString(responseMessage));
         } catch (IOException e) {
             response.setStatus(INTERNAL_SERVER_ERROR.value());
