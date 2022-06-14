@@ -4,8 +4,8 @@ import handong.whynot.dto.common.ResponseCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Getter
+@RequiredArgsConstructor
 public enum AccountResponseCode implements ResponseCode {
     ACCOUNT_CREATE_OK(20001, "사용자 [생성]에 성공하였습니다."),
     ACCOUNT_CREATE_FAIL_ALREADY_EXIST(40001, "사용자 [생성]에 실패하였습니다. - 이미 존재함"),
