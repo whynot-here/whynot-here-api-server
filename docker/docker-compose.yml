@@ -1,7 +1,7 @@
-version: "3"
+version: "3.9"
 services:
   db:
-    image: mysql:latest
+    image: mysql:8.0.29
     container_name: db
     restart: always
     ports:
@@ -15,17 +15,8 @@ services:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
     networks:
-      - springboot-mysql-net
-  api-server:
-    image: 1f4cf4f27088
-    container_name: "api-server"
-    ports:
-      - "9000:9000"
-    depends_on:
-      - db
-    networks:
-      - springboot-mysql-net
+      - default-net
 
 networks:
-  springboot-mysql-net:
+  default-net:
     driver: bridge
