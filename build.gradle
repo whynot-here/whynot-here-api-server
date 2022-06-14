@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.6.4'
+    id 'org.springframework.boot' version '2.6.8'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
@@ -29,8 +29,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     // swagger
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
-    implementation 'org.springdoc:springdoc-openapi-security:1.6.6'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
 
     // database
     runtimeOnly 'mysql:mysql-connector-java'
@@ -53,13 +52,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
     // cloud
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE'
-
-    // utils
-    implementation 'org.apache.tika:tika-parsers:1.11'  // contents 를 parsing 하는 라이브러리
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
     // logging
-    implementation 'org.springframework.boot:spring-boot-starter-logging:2.1.8.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-logging'
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
