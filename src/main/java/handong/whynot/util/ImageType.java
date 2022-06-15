@@ -14,13 +14,13 @@ import org.apache.commons.lang3.StringUtils;
 public final class ImageType {
 
     public static final List<String> IMAGE_MIME_TYPES = new ArrayList<>(
-        Arrays.asList("image/gif", "image/jpeg", "image/png", "image/bmp")   // 허용 타입들 여기서 선언
+        Arrays.asList("image/gif", "image/jpeg", "image/png")   // 허용 타입들 여기서 선언
     );
 
     private ImageType() {}
 
     // 허용한 파일 타입이 맞는지 검증
-    public static Boolean isValidFileMimeType(File file, List<String> MIME_TYPES) throws IOException {
+    public static Boolean isValidFileMimeType(File file, List<String> MIME_TYPES) {
         MimetypesFileTypeMap fileTypeMap = new MimetypesFileTypeMap();
         String fileMimeType = fileTypeMap.getContentType(file.getName());
         for (String mimeType : MIME_TYPES) {
