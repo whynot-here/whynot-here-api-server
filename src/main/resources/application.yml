@@ -1,3 +1,16 @@
 spring:
   profiles:
     active: local
+
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+    filter: true
+    operationsSorter: alpha
+    tagsSorter: alpha
+    defaultModelsExpandDepth: 0
+    docExpansion: none

@@ -1,6 +1,6 @@
 package handong.whynot.handler;
 
-import static org.apache.commons.compress.utils.CharsetNames.UTF_8;
+import static org.apache.commons.codec.CharEncoding.UTF_8;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
 
