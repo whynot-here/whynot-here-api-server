@@ -62,15 +62,10 @@ cloud:
       auto: false
 
 springdoc:
-  default-consumes-media-type: application/json
-  default-produces-media-type: application/json
-  show-login-endpoint: true
+  api-docs:
+    enabled: true
   swagger-ui:
-    filter: true
-    operationsSorter: method
-    tagsSorter: alpha
-    defaultModelsExpandDepth: 0
-    docExpansion: none
+    enabled: true
 
 logging:
   config: 'classpath:logback-spring-local.xml'

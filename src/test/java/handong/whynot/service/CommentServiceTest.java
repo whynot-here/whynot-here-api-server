@@ -60,9 +60,6 @@ public class CommentServiceTest {
         Comment comment1 = Comment.builder().post(post).createdBy(account).build();
         Comment comment2 = Comment.builder().post(post).createdBy(account).build();
         Comment comment3 = Comment.builder().post(post).createdBy(account).build();
-        comment1.setParent(comment1);
-        comment2.setParent(comment2);
-        comment3.setParent(comment3);
 
         List<Comment> comments = Arrays.asList(comment1, comment2, comment3);
         final int totalPostCount = comments.size();
