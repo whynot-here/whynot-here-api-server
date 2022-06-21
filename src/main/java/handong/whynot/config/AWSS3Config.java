@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class AWSs3Config {
+public class AWSS3Config {
 
     @Value("${cloud.aws.credentials.access-key}")   // IAM 사용자 엑세스 키
     private String accessKey;

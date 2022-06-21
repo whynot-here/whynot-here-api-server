@@ -71,3 +71,10 @@ logging:
   config: 'classpath:logback-spring-local.xml'
   level:
     root: INFO
+    com.amazonaws.util.EC2MetadataUtils: error
+
+jwt:
+  secretKey: ${jwt.token.secret}
+  expiredTime:
+    access-token: 30
+    refresh-token: 300

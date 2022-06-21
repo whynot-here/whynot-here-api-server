@@ -44,4 +44,10 @@ public class AccountExceptionHandler {
     public ErrorResponseDTO notValidTokenExceptionHandle() {
         return ErrorResponseDTO.of(AccountResponseCode.ACCOUNT_NOT_VALID_TOKEN, null);
     }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(AccountTokenExpiredException.class)
+    public ErrorResponseDTO expiredTokenExceptionHandle() {
+        return ErrorResponseDTO.of(AccountResponseCode.ACCOUNT_TOKEN_EXPIRED, null);
+    }
 }
