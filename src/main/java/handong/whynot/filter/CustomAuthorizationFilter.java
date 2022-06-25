@@ -4,11 +4,17 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import handong.whynot.dto.account.AccountResponseCode;
+import handong.whynot.dto.account.UserAccount;
 import handong.whynot.exception.account.AccountNotVerifiedException;
 import handong.whynot.exception.account.AccountTokenExpiredException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,6 +23,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -49,6 +58,13 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             if (tokenExpiredTime.isBefore(LocalDateTime.now())) {  // 지금보다 과거이면 true
                 throw new AccountTokenExpiredException(AccountResponseCode.ACCOUNT_TOKEN_EXPIRED);
             }
+
+            String accountId = jwtClaimsSet.getSubject();
+            UserAccount userAccount = new UserAccount(accountId);
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                    new UsernamePasswordAuthenticationToken(userAccount, null, Collections.singletonList(new SimpleGrantedAuthority("USER")));
+
+            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
             filterChain.doFilter(request, response);
 
