@@ -1,5 +1,6 @@
 package handong.whynot.config;
 
+import handong.whynot.filter.CustomAuthorizationFilter;
 import handong.whynot.handler.CustomAuthenticationEntryPoint;
 import handong.whynot.handler.CustomLogoutSuccessHandler;
 import handong.whynot.handler.LoginFailureHandler;
@@ -17,6 +18,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -32,6 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
     private final AccountService accountService;
     private final PasswordEncoder passwordEncoder;
+    private final CustomAuthorizationFilter customAuthorizationFilter;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -52,7 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .and()
                 .authorizeRequests()
                 .anyRequest().permitAll()
-                .and().exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint)
+        .and()
+                .addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint)
         .and()
                 .formLogin()
                 .loginProcessingUrl("/v1/login")
