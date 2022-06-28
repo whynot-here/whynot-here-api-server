@@ -58,18 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         .and()
                 .addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint)
-        .and()
-                .formLogin()
-                .loginProcessingUrl("/v1/login")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .successHandler(loginSuccessHandler)
-                .failureHandler(loginFailureHandler)
-                .permitAll()
-        .and()
-                .logout()
-                .logoutUrl("/v1/logout")
-                .logoutSuccessHandler(customLogoutSuccessHandler)
         ;
     }
 

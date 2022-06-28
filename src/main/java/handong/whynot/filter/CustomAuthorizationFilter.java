@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -85,7 +86,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         return StringUtils.equals(path, "/")
-                || StringUtils.equals(path, "/v1/posts")
+                || (StringUtils.equals(path, "/v2/posts") && HttpMethod.GET.matches(request.getMethod()))
                 || StringUtils.equals(path, "/v1/login")
                 || StringUtils.equals(path, "/v1/sign-up")
                 || StringUtils.equals(path, "/v1/check-email-token")
