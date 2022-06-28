@@ -86,9 +86,16 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         return StringUtils.equals(path, "/")
-                || (StringUtils.equals(path, "/v2/sign-in"))
+                // Account
+                || StringUtils.equals(path, "/v2/sign-in")
+
+                // Post
                 || (StringUtils.equals(path, "/v2/posts") && HttpMethod.GET.matches(request.getMethod()))
                 || (path.matches("^/v2/posts/\\d+$") && HttpMethod.GET.matches(request.getMethod()))
+
+                // Swagger
+                || path.matches("^/swagger-ui/.*")
+                || path.matches("^/v3/api-docs.*")
                 ;
     }
 }
