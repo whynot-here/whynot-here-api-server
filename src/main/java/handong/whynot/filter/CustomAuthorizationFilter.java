@@ -86,15 +86,9 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         return StringUtils.equals(path, "/")
+                || (StringUtils.equals(path, "/v2/sign-in"))
                 || (StringUtils.equals(path, "/v2/posts") && HttpMethod.GET.matches(request.getMethod()))
-                || StringUtils.equals(path, "/v1/login")
-                || StringUtils.equals(path, "/v1/sign-up")
-                || StringUtils.equals(path, "/v1/check-email-token")
-                || StringUtils.equals(path, "/v1/resend-token")
-                || StringUtils.equals(path, "/v1/check-email-duplicate")
-                || StringUtils.equals(path, "/v1/check-nickname-duplicate")
-                || StringUtils.equals(path, "/v1/account/login-state")
-                || StringUtils.equals(path, "/v2/sign-in")
+                || (path.matches("^/v2/posts/\\d+$") && HttpMethod.GET.matches(request.getMethod()))
                 ;
     }
 }
