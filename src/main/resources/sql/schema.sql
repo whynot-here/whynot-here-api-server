@@ -124,12 +124,7 @@ CREATE TABLE `comment` (
   `post_id` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKp41h5al2ajp1q0u6ox3i68w61` (`account_id`),
-  KEY `FKde3rfu96lep00br5ov0mdieyt` (`parent_id`),
   KEY `FKs1slvnkuemjsq2kj4h3vhx7i1` (`post_id`),
   CONSTRAINT `FKp41h5al2ajp1q0u6ox3i68w61` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   CONSTRAINT `FKs1slvnkuemjsq2kj4h3vhx7i1` FOREIGN KEY (`post_id`) REFERENCES `post` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-LOCK TABLES `comment` WRITE;
-INSERT INTO `comment` VALUES (1,'2021-01-11 22:00:00',NULL,'혹시 디자이너도 뽑나요?',3,1,1),(2,'2021-01-11 22:01:00',NULL,'저도 궁금합니다.',4,2,1),(3,'2021-01-11 22:02:00',NULL,'현재는 기획자와 개발자만 뽑고 있습니다.',1,1,1),(4,'2021-01-11 22:03:00',NULL,'넵, 답변 감사합니다.',3,1,1),(5,'2021-01-11 22:04:00',NULL,'위에 답변 달아두었습니다~!',1,2,1);
-UNLOCK TABLES;
