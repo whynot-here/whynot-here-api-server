@@ -1,6 +1,7 @@
 package handong.whynot.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import handong.whynot.api.v1.CommentController;
 import handong.whynot.repository.AccountRepository;
 import handong.whynot.service.CommentService;
 import org.junit.jupiter.api.DisplayName;

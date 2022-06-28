@@ -1,4 +1,4 @@
-package handong.whynot.api;
+package handong.whynot.api.v1;
 
 import javax.validation.Valid;
 
@@ -18,6 +18,7 @@ public class AccountController {
 
     private final AccountService accountService;
 
+    @Deprecated
     @Operation(summary = "회원 가입")
     @PostMapping("/sign-up")
     public ResponseDTO signUp(@Valid @RequestBody SignUpDTO signUpDTO) {
@@ -28,6 +29,7 @@ public class AccountController {
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_CREATE_OK);
     }
 
+    @Deprecated
     @Operation(summary = "이메일 토큰 인증")
     @PostMapping("/check-email-token")
     public ResponseDTO checkEmailToken(@RequestBody TokenCheckDTO tokenCheckDTO) {
@@ -37,6 +39,7 @@ public class AccountController {
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_VERIFY_OK);
     }
 
+    @Deprecated
     @Operation(summary = "중복 이메일 체크")
     @PostMapping("/check-email-duplicate")
     public ResponseDTO checkEmailDuplicate(@RequestBody EmailDTO dto) {
@@ -46,6 +49,7 @@ public class AccountController {
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_CREATE_TOKEN_OK);
     }
 
+    @Deprecated
     @Operation(summary = "중복 닉네임 체크")
     @PostMapping("/check-nickname-duplicate")
     public ResponseDTO checkNicknameDuplicate(@RequestBody NicknameDTO dto) {
@@ -55,6 +59,7 @@ public class AccountController {
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_VALID_DUPLICATE);
     }
 
+    @Deprecated
     @Operation(summary = "계정 정보 조회")
     @GetMapping("/account/info")
     public AccountResponseDTO getAccountInfo(@CurrentAccount Account account) {
@@ -66,6 +71,7 @@ public class AccountController {
                 .build();
     }
 
+    @Deprecated
     @Operation(summary = "로그인 상태 정보 조회")
     @GetMapping("/account/login-state")
     public IsLoginDTO getLoginState(@CurrentAccount Account account) {

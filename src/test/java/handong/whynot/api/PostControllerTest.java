@@ -1,6 +1,7 @@
 package handong.whynot.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import handong.whynot.api.v1.PostController;
 import handong.whynot.common.WithMockCustomUser;
 import handong.whynot.domain.Account;
 import handong.whynot.domain.Post;
