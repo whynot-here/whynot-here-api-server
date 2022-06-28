@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.querydsl.jpa.JPAExpressions.select;
+import static com.querydsl.jpa.JPAExpressions.selectDistinct;
 
 @Repository
 @RequiredArgsConstructor
@@ -123,7 +124,7 @@ public class PostQueryRepository {
         return queryFactory.selectFrom(qPost)
                 .where(qPost.isRecruiting.eq(isRecruiting)
                         .and(qPost.in(
-                                select(qJobPost.post).from(qJobPost)
+                                selectDistinct(qJobPost.post).from(qJobPost)
                                 .where(qJobPost.job.in(jobs))
                             ))
                 )
@@ -146,7 +147,7 @@ public class PostQueryRepository {
 
         return queryFactory.selectFrom(qPost)
                 .where(qPost.in(
-                                select(qJobPost.post).from(qJobPost)
+                                selectDistinct(qJobPost.post).from(qJobPost)
                                         .where(qJobPost.job.in(jobs))
                         )
                 )
