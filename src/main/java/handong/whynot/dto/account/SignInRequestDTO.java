@@ -1,4 +1,4 @@
-package handong.whynot.auth.dto;
+package handong.whynot.dto.account;
 
 import lombok.Getter;
 import lombok.Setter;

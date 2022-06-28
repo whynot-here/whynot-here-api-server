@@ -1,4 +1,4 @@
-package handong.whynot.auth.service;
+package handong.whynot.service;
 
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
