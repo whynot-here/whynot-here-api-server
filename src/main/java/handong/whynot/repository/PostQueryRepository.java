@@ -112,12 +112,20 @@ public class PostQueryRepository {
                 .fetch();
     }
 
+    /**
+     * select * from post where id in (
+     *       select post_id from job_post jp
+     *         where job_id in (1, 2, 3)
+     * );
+     */
     public List<Post> getPostByRecruitAndJob(Boolean isRecruiting, List<Job> jobs) {
 
-        return queryFactory.select(qPost)
-                .from(qPost, qJobPost)
+        return queryFactory.selectFrom(qPost)
                 .where(qPost.isRecruiting.eq(isRecruiting)
-                        .and(qJobPost.job.in(jobs))
+                        .and(qPost.in(
+                                select(qJobPost.post).from(qJobPost)
+                                .where(qJobPost.job.in(jobs))
+                            ))
                 )
                 .orderBy(
                         qPost.id.desc(),
@@ -136,10 +144,14 @@ public class PostQueryRepository {
 
     public List<Post> getPostByJob(List<Job> jobs) {
 
-        return queryFactory.select(qPost)
-                .from(qPost, qJobPost)
-                .where(qJobPost.job.in(jobs))
+        return queryFactory.selectFrom(qPost)
+                .where(qPost.in(
+                                select(qJobPost.post).from(qJobPost)
+                                        .where(qJobPost.job.in(jobs))
+                        )
+                )
                 .orderBy(
+                        qPost.id.desc(),
                         qPost.createdDt.desc()
                 )
                 .fetch();
