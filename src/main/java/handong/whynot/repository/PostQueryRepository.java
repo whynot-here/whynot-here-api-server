@@ -28,8 +28,7 @@ public class PostQueryRepository {
 
         return queryFactory.selectFrom(qPost)
                 .orderBy(
-                        qPost.id.desc(),
-                        qPost.createdDt.desc()
+                        qPost.id.desc()
                 )
                 .fetch();
     }
@@ -107,8 +106,7 @@ public class PostQueryRepository {
         return queryFactory.selectFrom(qPost)
                 .where(qPost.isRecruiting.eq(isRecruiting))
                 .orderBy(
-                        qPost.id.desc(),
-                        qPost.createdDt.desc()
+                        qPost.id.desc()
                 )
                 .fetch();
     }
@@ -129,8 +127,7 @@ public class PostQueryRepository {
                             ))
                 )
                 .orderBy(
-                        qPost.id.desc(),
-                        qPost.createdDt.desc()
+                        qPost.id.desc()
                 )
                 .fetch();
     }
@@ -152,8 +149,7 @@ public class PostQueryRepository {
                         )
                 )
                 .orderBy(
-                        qPost.id.desc(),
-                        qPost.createdDt.desc()
+                        qPost.id.desc()
                 )
                 .fetch();
     }
