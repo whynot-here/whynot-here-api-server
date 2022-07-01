@@ -70,6 +70,12 @@ cloud:
     stack:
       auto: false
 
+jwt:
+  secretKey: ${jwt.token.secret}
+  expiredTime:
+    access-token: 30
+    refresh-token: 300
+
 springdoc:
   api-docs:
     enabled: true
