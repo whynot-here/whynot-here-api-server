@@ -8,20 +8,6 @@ whynot-here 서비스 API 서버
 ## Link
 - Swagger: [http://localhost:9000/swagger-ui/index.html](http://localhost:9000/swagger-ui/index.html)
 
-
-
-<br />
-
-## Intelij 환경설정
-
-- Edit Configuration -> Environment Variables
-
-```
---spring.config.location=classpath:/whynot-config/env.yml,classpath:/application.yml
-```
-
-
-
 <br />
 
 ## 서브모듈
