@@ -1,18 +1,17 @@
 package handong.whynot.config;
 
+import handong.whynot.filter.CustomAuthorizationFilter;
+import handong.whynot.filter.ExceptionHandlerFilter;
 import handong.whynot.handler.CustomAuthenticationEntryPoint;
-import handong.whynot.handler.CustomLogoutSuccessHandler;
-import handong.whynot.handler.LoginFailureHandler;
-import handong.whynot.handler.LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -22,10 +21,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-    private final LoginSuccessHandler loginSuccessHandler;
-    private final LoginFailureHandler loginFailureHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
+    private final CustomAuthorizationFilter customAuthorizationFilter;
+    private final ExceptionHandlerFilter exceptionHandlerFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -34,25 +32,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .authorizeRequests()
-                .antMatchers("/", "/v1/login", "/v1/sign-up", "/v1/check-email-token", "/v1/resend-token",
-                        "/v1/check-email-duplicate", "/v1/check-nickname-duplicate", "/v1/account/login-state").permitAll()
-                .antMatchers("/v1/posts/favorite/**", "/v1/posts/apply/**", "/v1/posts/own/**").hasRole("USER")
-                .antMatchers(HttpMethod.GET,"/v1/posts/**", "/v1/comments/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
-                .anyRequest().authenticated()
-                .and().exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint)
-        .and()
-                .formLogin()
-                .loginProcessingUrl("/v1/login")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .successHandler(loginSuccessHandler)
-                .failureHandler(loginFailureHandler)
-                .permitAll()
-        .and()
-                .logout()
-                .logoutUrl("/v1/logout")
-                .logoutSuccessHandler(customLogoutSuccessHandler)
+                .anyRequest().permitAll()
+                .and()
+                .addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint)
         ;
+
+        // 예외처리 필터 등록
+        http.addFilterBefore(exceptionHandlerFilter, CustomAuthorizationFilter.class);
     }
 
     @Override
