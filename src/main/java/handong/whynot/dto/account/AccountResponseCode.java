@@ -29,7 +29,8 @@ public enum AccountResponseCode implements ResponseCode {
     ACCOUNT_NOT_VALID(40010, "사용자 아이디 혹은 비밀번호가 일치하지 않습니다."),
 
     ACCOUNT_VALID_DUPLICATE(20007, "사용 가능한 인자입니다."),
-    ACCOUNT_LOGOUT_SUCCESS(20008, "로그아웃 성공하였습니다.");
+    ACCOUNT_LOGOUT_SUCCESS(20008, "로그아웃 성공하였습니다."),
+    ACCOUNT_TOKEN_EXPIRED(40011, "만료된 토큰입니다.");
 
     private final Integer statusCode;
     private final String message;
