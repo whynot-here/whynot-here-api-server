@@ -67,7 +67,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
         } catch (Exception e) {
             // 비정상 토큰인 경우
-            throw new AccountTokenExpiredException(AccountResponseCode.ACCOUNT_TOKEN_EXPIRED);
+            throw new AccountNotVerifiedException(AccountResponseCode.ACCOUNT_TOKEN_EXPIRED);
         }
     }
 
