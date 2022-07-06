@@ -30,7 +30,7 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-                                        AuthenticationException exception) throws IOException {
+                                        AuthenticationException exception) {
         ErrorResponseDTO responseMessage = ErrorResponseDTO.of(AccountResponseCode.ACCOUNT_NOT_VALID, null);
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

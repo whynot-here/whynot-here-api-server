@@ -1,4 +1,4 @@
-package handong.whynot.api;
+package handong.whynot.api.v1;
 
 import handong.whynot.dto.cloud.S3ResponseCode;
 import handong.whynot.dto.cloud.S3ResponseDTO;

@@ -1,4 +1,4 @@
-package handong.whynot.api;
+package handong.whynot.api.v1;
 
 import javax.validation.Valid;
 

@@ -1,4 +1,4 @@
-package handong.whynot.api;
+package handong.whynot.api.v1;
 
 import handong.whynot.domain.Job;
 import handong.whynot.dto.job.JobResponseDTO;
