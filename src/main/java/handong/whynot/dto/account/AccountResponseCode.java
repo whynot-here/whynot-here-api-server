@@ -30,7 +30,8 @@ public enum AccountResponseCode implements ResponseCode {
 
     ACCOUNT_VALID_DUPLICATE(20007, "사용 가능한 인자입니다."),
     ACCOUNT_LOGOUT_SUCCESS(20008, "로그아웃 성공하였습니다."),
-    ACCOUNT_TOKEN_EXPIRED(40011, "만료된 토큰입니다.");
+    ACCOUNT_TOKEN_EXPIRED(40011, "만료된 토큰입니다."),
+    ACCOUNT_NOT_VALID_TOKEN_SECRET(40012, "올바르지 않은 jwt 토큰 시크릿입니다.");
 
     private final Integer statusCode;
     private final String message;
