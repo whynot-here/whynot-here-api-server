@@ -2,6 +2,7 @@ package handong.whynot.handler;
 
 import handong.whynot.dto.common.ErrorResponseDTO;
 import handong.whynot.dto.account.AccountResponseCode;
+import handong.whynot.dto.common.ResponseCode;
 import handong.whynot.exception.account.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -41,7 +42,7 @@ public class AccountExceptionHandler {
 
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(AccountNotValidToken.class)
-    public ErrorResponseDTO notValidTokenExceptionHandle() {
-        return ErrorResponseDTO.of(AccountResponseCode.ACCOUNT_NOT_VALID_TOKEN, null);
+    public ErrorResponseDTO notValidTokenExceptionHandle(ResponseCode code) {
+        return ErrorResponseDTO.of(code, null);
     }
 }
