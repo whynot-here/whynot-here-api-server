@@ -1,9 +1,7 @@
 package handong.whynot.service;
 
 import handong.whynot.domain.Account;
-import handong.whynot.dto.account.AccountResponseCode;
-import handong.whynot.dto.account.SignUpDTO;
-import handong.whynot.dto.account.UserAccount;
+import handong.whynot.dto.account.*;
 import handong.whynot.exception.account.AccountAlreadyExistEmailException;
 import handong.whynot.exception.account.AccountAlreadyExistNicknameException;
 import handong.whynot.exception.account.AccountNotFoundException;
@@ -13,6 +11,7 @@ import handong.whynot.mail.EmailService;
 import handong.whynot.repository.AccountQueryRepository;
 import handong.whynot.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +34,8 @@ public class AccountService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final AccountQueryRepository accountQueryRepository;
+    private final SignInTokenGenerator signInTokenGenerator;
+    private final AuthenticationManager authenticationManager;
 
     @Override
     public UserDetails loadUserByUsername(String emailOrNickname) throws UsernameNotFoundException {
@@ -162,5 +164,25 @@ public class AccountService implements UserDetailsService {
         Account account = accountRepository.findById(Long.valueOf(authentication.getName()))
                 .orElseThrow(() -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
         return account;
+    }
+
+    public TokenResponseDTO signIn(SignInRequestDTO signInRequest) {
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword());
+
+        // SecurityContextHolder 에 저장하는 것은 (UserDetailService -> Provider -> AuthenticationManager 로 전달되는) Authentication 객체
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        Account account = accountRepository.findByEmail(signInRequest.getEmail());
+        if (Objects.isNull(account)) {
+            throw new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL);
+        }
+
+        String accessToken = signInTokenGenerator.accessToken(account.getId());
+        String refreshToken = signInTokenGenerator.refreshToken(account.getId());
+
+        return TokenResponseDTO.of(account, accessToken, refreshToken);
     }
 }
