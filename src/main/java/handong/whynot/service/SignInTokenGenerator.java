@@ -6,6 +6,8 @@ import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import handong.whynot.dto.account.AccountResponseCode;
+import handong.whynot.exception.account.AccountNotValidToken;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -38,21 +40,24 @@ public class SignInTokenGenerator {
         return signInToken(String.valueOf(userId), Date.from(expirationTime.toInstant(ZoneOffset.UTC)), audience);
     }
 
-    @SneakyThrows
     private String signInToken(String userId, Date expirationTime, String audience) {
-        JWSSigner jwsSigner = new MACSigner(jwtSecret);
-        JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS256);
+        try {
+            JWSSigner jwsSigner = new MACSigner(jwtSecret);
+            JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS256);
 
-        JWTClaimsSet jwtClaimsSet = claimsSetForSignInToken(userId, expirationTime, audience);
+            JWTClaimsSet jwtClaimsSet = claimsSetForSignInToken(userId, expirationTime, audience);
 
 
-        SignedJWT signedJWT = new SignedJWT(
-                jwsHeader,
-                jwtClaimsSet
-        );
+            SignedJWT signedJWT = new SignedJWT(
+                    jwsHeader,
+                    jwtClaimsSet
+            );
 
-        signedJWT.sign(jwsSigner);
-        return signedJWT.serialize();
+            signedJWT.sign(jwsSigner);
+            return signedJWT.serialize();
+        } catch (Exception e) {
+            throw new AccountNotValidToken(AccountResponseCode.ACCOUNT_NOT_VALID_TOKEN_SECRET);
+        }
     }
 
     private JWTClaimsSet claimsSetForSignInToken(String userId, Date expirationTime, String audience) {
