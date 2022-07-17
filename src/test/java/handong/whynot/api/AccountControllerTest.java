@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -30,7 +29,6 @@ import handong.whynot.repository.AccountRepository;
 import handong.whynot.service.AccountService;
 
 @WebMvcTest(AccountController.class)
-@MockBean(JpaMetamodelMappingContext.class)
 @Import({ SecurityConfig.class, AppConfig.class })
 class AccountControllerTest {
 
