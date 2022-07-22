@@ -18,6 +18,16 @@ server:
         http-only: true
 
 spring:
+  security:
+    oauth2:
+      redirect-uri: http://localhost:3000  # todo: 프론트 주소 나오면 변경
+      client:
+        registration:
+          google:
+            client-id: ${google.client.id}
+            client-secret: ${google.client.secret}
+            scope: ${google.client.scope}
+
   config:
     import: classpath:/whynot-config/env-dev.yml
     activate:
