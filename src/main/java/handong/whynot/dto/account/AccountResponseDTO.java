@@ -1,6 +1,7 @@
 package handong.whynot.dto.account;
 
 import handong.whynot.domain.Account;
+import handong.whynot.domain.AuthType;
 import lombok.*;
 
 @Getter
@@ -14,6 +15,7 @@ public class AccountResponseDTO {
     private String email;
     private String nickname;
     private String profileImg;
+    private AuthType authType;
 
     public static AccountResponseDTO of(Account account) {
         return AccountResponseDTO.builder()
@@ -21,6 +23,7 @@ public class AccountResponseDTO {
                 .email(account.getEmail())
                 .nickname(account.getNickname())
                 .profileImg(account.getProfileImg())
+                .authType(account.getAuthType())
                 .build();
     }
 }
