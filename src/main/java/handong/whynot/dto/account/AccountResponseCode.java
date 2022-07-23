@@ -32,7 +32,8 @@ public enum AccountResponseCode implements ResponseCode {
     ACCOUNT_LOGOUT_SUCCESS(20008, "로그아웃 성공하였습니다."),
     ACCOUNT_TOKEN_EXPIRED(40011, "만료된 토큰입니다."),
     ACCOUNT_NOT_VALID_TOKEN_SECRET(40012, "올바르지 않은 jwt 토큰 시크릿입니다."),
-    ACCOUNT_OAUTH2_PROCESS_FAILED(40013, "OAuth2 처리 실패하였습니다.");
+    ACCOUNT_OAUTH2_PROCESS_FAILED(40013, "OAuth2 처리 실패하였습니다."),
+    ACCOUNT_OAUTH2_INVALID_REGISTRATION(40014, "지원하지 않는 OAuth2 서버입니다.");
 
     private final Integer statusCode;
     private final String message;
