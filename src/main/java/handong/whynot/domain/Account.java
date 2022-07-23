@@ -20,10 +20,10 @@ public class Account {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email")
     private String email;
 
-    @Column(name = "nickname", unique = true)
+    @Column(name = "nickname")
     private String nickname;
 
     @Column(name = "password")
@@ -68,6 +68,7 @@ public class Account {
                 .email(email)
                 .nickname(nickname)
                 .profileImg(profileImg)
+                .authType(authType)
                 .build();
     }
 }

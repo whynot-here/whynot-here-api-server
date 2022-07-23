@@ -26,7 +26,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${db.url}/whynot?characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://${db.url}/whynot?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
     username: ${db.username}
     password: ${db.password}
 
