@@ -20,10 +20,10 @@ public class Account {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "nickname")
+    @Column(name = "nickname", unique = true)
     private String nickname;
 
     @Column(name = "password")
