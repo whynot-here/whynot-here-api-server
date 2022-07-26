@@ -20,6 +20,8 @@ CREATE TABLE `account`
     `profile_img`                    varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
     `auth_type`                      varchar(255),
     PRIMARY KEY (`id`)
+    UNIQUE KEY `UK_q0uja26qgu1atulenwup9rxyr` (`email`),
+    UNIQUE KEY `UK_s2a5omeaik0sruawqpvs18qfk` (`nickname`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 7
   DEFAULT CHARSET = utf8mb4
