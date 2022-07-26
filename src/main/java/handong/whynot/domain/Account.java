@@ -41,6 +41,10 @@ public class Account {
     @Column(name = "email_check_token_generated_at")
     private LocalDateTime emailCheckTokenGeneratedAt;
 
+    @Column(name = "auth_type")
+    @Enumerated(EnumType.STRING)
+    private AuthType authType;
+
     @Column(name = "joined_at")
     private LocalDateTime joinedAt;
 
@@ -64,6 +68,7 @@ public class Account {
                 .email(email)
                 .nickname(nickname)
                 .profileImg(profileImg)
+                .authType(authType)
                 .build();
     }
 }

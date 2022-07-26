@@ -18,6 +18,16 @@ server:
         http-only: true
 
 spring:
+  security:
+    oauth2:
+      redirect-uri: http://localhost:3000  # todo: 프론트 주소 나오면 변경
+      client:
+        registration:
+          google:
+            client-id: ${google.client.id}
+            client-secret: ${google.client.secret}
+            scope: ${google.client.scope}
+
   config:
     import: classpath:/whynot-config/env-dev.yml
     activate:
@@ -25,7 +35,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${db.url}/whynot?characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://${db.url}/whynot?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
     username: ${db.username}
     password: ${db.password}
 
