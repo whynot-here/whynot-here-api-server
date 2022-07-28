@@ -43,6 +43,7 @@ public class AccountControllerV2 {
                 .email(account.getEmail())
                 .nickname(account.getNickname())
                 .profileImg(account.getProfileImg())
+                .authType(account.getAuthType())
                 .build();
     }
 }
