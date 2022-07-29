@@ -1,4 +1,4 @@
-package handong.whynot.handler;
+package handong.whynot.handler.security;
 
 import static org.apache.commons.codec.CharEncoding.UTF_8;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
