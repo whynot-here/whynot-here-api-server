@@ -1,4 +1,4 @@
-package handong.whynot.handler;
+package handong.whynot.handler.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import handong.whynot.dto.account.AccountResponseDTO;

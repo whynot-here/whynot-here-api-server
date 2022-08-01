@@ -1,44 +1,42 @@
-package handong.whynot.handler;
+package handong.whynot.handler.security;
 
 import static org.apache.commons.codec.CharEncoding.UTF_8;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.OK;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import handong.whynot.dto.account.AccountResponseCode;
-import handong.whynot.dto.common.ResponseDTO;
+import handong.whynot.dto.common.ErrorResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
+public class LoginFailureHandler implements AuthenticationFailureHandler {
 
     private final ObjectMapper objectMapper;
 
     @Override
-    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
-                                Authentication authentication) throws IOException, ServletException {
-
-        ResponseDTO responseMessage = ResponseDTO.of(AccountResponseCode.ACCOUNT_LOGOUT_SUCCESS);
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+                                        AuthenticationException exception) {
+        ErrorResponseDTO responseMessage = ErrorResponseDTO.of(AccountResponseCode.ACCOUNT_NOT_VALID, null);
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(UTF_8);
 
-        response.setStatus(OK.value());
+        response.setStatus(BAD_REQUEST.value());
 
         try {
             response.getWriter().write(objectMapper.writeValueAsString(responseMessage));

@@ -2,7 +2,11 @@ package handong.whynot.config;
 
 import handong.whynot.filter.CustomAuthorizationFilter;
 import handong.whynot.filter.ExceptionHandlerFilter;
-import handong.whynot.handler.CustomAuthenticationEntryPoint;
+import handong.whynot.handler.security.CustomAuthenticationEntryPoint;
+import handong.whynot.handler.security.oauth2.OAuth2FailureHandler;
+import handong.whynot.handler.security.oauth2.OAuth2SuccessHandler;
+import handong.whynot.repository.HttpCookieOAuth2AuthorizationRequestRepository;
+import handong.whynot.service.oauth2.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +31,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     private final CustomAuthorizationFilter customAuthorizationFilter;
     private final ExceptionHandlerFilter exceptionHandlerFilter;
 
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final OAuth2FailureHandler oAuth2FailureHandler;
+    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -36,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .authorizeRequests()
                     // Account
                     .antMatchers("/v1/login", "/v1/sign-up", "/v1/check-email-token", "/v1/resend-token",
-                            "/v1/check-email-duplicate", "/v1/check-nickname-duplicate", "/v2/sign-in").permitAll()
+                            "/v1/check-email-duplicate", "/v1/check-nickname-duplicate", "/v2/sign-in", "/auth/login/**").permitAll()
 
                     // Post
                     .antMatchers(HttpMethod.GET,"/v1/posts/**", "/v1/comments/**", "/v2/posts/**").permitAll()
@@ -48,11 +57,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
                 .and()
                     .addFilterAfter(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
-                    .exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint)
+                    .exceptionHandling()
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                .and()
+                    .oauth2Login()
+                        .authorizationEndpoint()
+                        .baseUri("/auth/login")
+                        .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
+                    .and()
+                        .successHandler(oAuth2SuccessHandler)
+                        .failureHandler(oAuth2FailureHandler)
+                        .userInfoEndpoint()
+                            .userService(customOAuth2UserService)
         ;
 
         // 예외처리 필터 등록
         http.addFilterBefore(exceptionHandlerFilter, CustomAuthorizationFilter.class);
+    }
+
+    @Bean
+    public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
+        return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 
     @Override

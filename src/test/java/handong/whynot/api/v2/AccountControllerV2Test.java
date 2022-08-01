@@ -6,7 +6,7 @@ import handong.whynot.config.SecurityConfig;
 import handong.whynot.dto.account.AccountResponseDTO;
 import handong.whynot.dto.account.SignInRequestDTO;
 import handong.whynot.dto.account.TokenResponseDTO;
-import handong.whynot.handler.CustomAuthenticationEntryPoint;
+import handong.whynot.handler.security.CustomAuthenticationEntryPoint;
 import handong.whynot.repository.AccountRepository;
 import handong.whynot.service.AccountService;
 import org.junit.jupiter.api.DisplayName;
