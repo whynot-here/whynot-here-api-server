@@ -1,11 +1,8 @@
 package handong.whynot.dto.account.oauth2;
 
-import lombok.Getter;
+public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
 
-@Getter
-public class GoogleOAuth2UserInfo extends OAuth2UserInfo {
-
-    public GoogleOAuth2UserInfo(SecuredOAuth2DTO dto) {
+    public KakaoOAuth2UserInfo(SecuredOAuth2DTO dto) {
         super(dto);
     }
 

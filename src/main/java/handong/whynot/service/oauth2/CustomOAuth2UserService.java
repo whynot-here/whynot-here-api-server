@@ -59,11 +59,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private Account registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
-        System.out.println(LocalDateTime.now());
+
         Account account = Account.builder()
                             .nickname(oAuth2UserInfo.getName())
                             .email(oAuth2UserInfo.getEmail())
-                            .profileImg(oAuth2UserInfo.getImageUrl())
+                            .profileImg(oAuth2UserInfo.getProfileImg())
                             .authType(AuthType.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))
                             .emailVerified(true)
                             .joinedAt(LocalDateTime.now())
@@ -74,7 +74,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private Account updateExistingUser(Account existingUser, OAuth2UserInfo oAuth2UserInfo) {
         existingUser.setNickname(oAuth2UserInfo.getName());
-        existingUser.setProfileImg(oAuth2UserInfo.getImageUrl());
+        existingUser.setProfileImg(oAuth2UserInfo.getProfileImg());
         return accountRepository.save(existingUser);
     }
 }
