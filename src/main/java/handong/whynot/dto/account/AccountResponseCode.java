@@ -34,7 +34,8 @@ public enum AccountResponseCode implements ResponseCode {
     ACCOUNT_NOT_VALID_TOKEN_SECRET(40012, "올바르지 않은 jwt 토큰 시크릿입니다."),
     ACCOUNT_OAUTH2_PROCESS_FAILED(40013, "OAuth2 처리 실패하였습니다."),
     ACCOUNT_OAUTH2_INVALID_REGISTRATION(40014, "지원하지 않는 OAuth2 서버입니다."),
-    ACCOUNT_OAUTH2_NOT_PROVIDED_VALUE(40015, "필수 사용자 정보가 제공되지 않았습니다.");
+    ACCOUNT_OAUTH2_NOT_PROVIDED_VALUE(40015, "필수 사용자 정보가 제공되지 않았습니다."),
+    ACCOUNT_OAUTH2_EXIST_SAME_EMAIL(40016, "동일한 이메일이 사용되고 있습니다.");
 
     private final Integer statusCode;
     private final String message;

@@ -28,22 +28,23 @@ public class OAuth2UserInfoFactory {
     }
 
     private static SecuredOAuth2DTO getGoogleOAuth2User(Map<String, Object> attributes) {
-        try {
-            String id = (String) attributes.get("sub");
-            String name = (String) attributes.get("name");
-            String email = (String) attributes.get("email");
-            String profileImg = (String) attributes.get("picture");
 
-            return SecuredOAuth2DTO.builder()
-                    .id(id)
-                    .name(name)
-                    .email(email)
-                    .profileImg(profileImg)
-                    .build();
-        } catch (Exception e) {
-            // 획득하지 못한 정보가 있을 때
+        String id = (String) attributes.get("sub");
+        String name = (String) attributes.get("name");
+        String email = (String) attributes.get("email");
+        String profileImg = (String) attributes.get("picture");
+
+        // 획득하지 못한 정보가 있을 때
+        if (IsNotProvidedUserInfo(id, name, email, profileImg)) {
             throw new OAuth2NotProvidedException(AccountResponseCode.ACCOUNT_OAUTH2_NOT_PROVIDED_VALUE);
         }
+
+        return SecuredOAuth2DTO.builder()
+                .id(id)
+                .name(name)
+                .email(email)
+                .profileImg(profileImg)
+                .build();
     }
 
     private static SecuredOAuth2DTO getKakaoOAuth2User(Map<String, Object> attributes) {
@@ -55,7 +56,7 @@ public class OAuth2UserInfoFactory {
             String id = ((Long) attributes.get("id")).toString();
             String name = (String) profileMap.get("nickname");
             String email = (String) kakao_account.get("email");
-            String profileImg = (String) profileMap.get("profileImageUrl");
+            String profileImg = (String) profileMap.get("profile_image_url");
 
             return SecuredOAuth2DTO.builder()
                     .id(id)
@@ -89,5 +90,9 @@ public class OAuth2UserInfoFactory {
             // 획득하지 못한 정보가 있을 때
             throw new OAuth2NotProvidedException(AccountResponseCode.ACCOUNT_OAUTH2_NOT_PROVIDED_VALUE);
         }
+    }
+
+    private static Boolean IsNotProvidedUserInfo(String id, String name, String email, String profileImg) {
+        return id == null || name == null || email == null || profileImg == null;
     }
 }

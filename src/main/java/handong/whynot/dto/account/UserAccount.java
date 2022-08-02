@@ -32,10 +32,4 @@ public class UserAccount extends User implements OAuth2User {
     public String getName() {
         return accountId;
     }
-
-    public static UserAccount create(Account account, Map<String, Object> attributes) {
-        UserAccount userAccount = new UserAccount(account);
-        userAccount.setAttributes(attributes);
-        return userAccount;
-    }
 }

@@ -21,6 +21,8 @@ spring:
   security:
     oauth2:
       redirect-uri: http://localhost:3000  # todo: 프론트 주소 나오면 변경
+      information-uri-essential: http://localhost:4000 # todo: 안내페이지 주소 나오면 변경
+      information-uri-email: http://localhost:4000 # todo: 안내페이지 주소 나오면 변경
       client:
         registration:
           google:
@@ -121,3 +123,4 @@ logging:
   config: 'classpath:logback-spring.xml'
   level:
     root: INFO
+    com.amazonaws.util.EC2MetadataUtils: error
