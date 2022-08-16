@@ -48,6 +48,9 @@ public class Account {
     @Column(name = "joined_at")
     private LocalDateTime joinedAt;
 
+    @Column(name = "category_order")
+    private String categoryOrder;
+
     public void generateEmailCheckToken() {
         emailCheckToken = UUID.randomUUID().toString().split("-")[0];
         emailCheckTokenGeneratedAt = LocalDateTime.now();

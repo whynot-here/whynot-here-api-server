@@ -1,6 +1,8 @@
 package handong.whynot.domain;
 
 import handong.whynot.domain.common.BaseTimeEntity;
+import handong.whynot.dto.post.CommunicationType;
+import handong.whynot.dto.post.ContactType;
 import handong.whynot.dto.post.PostRequestDTO;
 import lombok.*;
 
@@ -30,6 +32,10 @@ public class Post extends BaseTimeEntity {
     @JoinColumn(name = "account_id")
     private Account createdBy;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category categoryId;
+
     @Column(name = "title")
     private String title;
 
@@ -44,6 +50,20 @@ public class Post extends BaseTimeEntity {
 
     @Column(name = "closed_dt")
     private LocalDateTime closedDt;
+
+    @Column(name = "owner_contact")
+    @Enumerated(EnumType.STRING)
+    private ContactType ownerContact;
+
+    @Column(name = "recruit_total_cnt")
+    private Integer recruitTotalCnt;
+
+    @Column(name = "recruit_current_cnt")
+    private Integer recruitCurrentCnt;
+
+    @Column(name = "communication_tool")
+    @Enumerated(EnumType.STRING)
+    private CommunicationType communicationTool;
 
     @Builder
     public Post(Account createdBy, String title, String content, String postImg) {
