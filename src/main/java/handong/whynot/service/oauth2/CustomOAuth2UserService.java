@@ -9,6 +9,7 @@ import handong.whynot.dto.common.ResponseCode;
 import handong.whynot.exception.account.OAuth2ExistEmailException;
 import handong.whynot.exception.account.OAuth2ProcessingException;
 import handong.whynot.repository.AccountRepository;
+import handong.whynot.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -25,6 +26,7 @@ import java.time.LocalDateTime;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final AccountRepository accountRepository;
+    private final CategoryService categoryService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -79,6 +81,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                             .authType(AuthType.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))
                             .emailVerified(true)
                             .joinedAt(LocalDateTime.now())
+                            .categoryOrder(categoryService.initOrder())
                             .build();
 
         return accountRepository.save(account);
