@@ -2,9 +2,11 @@ package handong.whynot.service;
 
 import handong.whynot.domain.*;
 import handong.whynot.dto.account.AccountResponseDTO;
-import handong.whynot.dto.job.JobType;
+import handong.whynot.dto.category.CategoryResponseCode;
 import handong.whynot.dto.job.JobResponseCode;
+import handong.whynot.dto.job.JobType;
 import handong.whynot.dto.post.*;
+import handong.whynot.exception.category.CategoryNotFoundException;
 import handong.whynot.exception.job.JobNotFoundException;
 import handong.whynot.exception.post.*;
 import handong.whynot.mail.EmailMessage;
@@ -31,6 +33,7 @@ public class PostService {
     private final PostFavoriteRepository postFavoriteRepository;
     private final PostApplyRepository postApplyRepository;
     private final EmailService emailService;
+    private final CategoryRepository categoryRepository;
 
     public List<PostResponseDTO> getPostsByParam(RecruitStatus recruitStatus, List<JobType> jobTypeList) {
 
@@ -119,31 +122,26 @@ public class PostService {
     @Transactional
     public Post createPost(PostRequestDTO request, Account account) {
 
-        // 1. Post 저장
+        // 1. 카테고리 조회
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException(CategoryResponseCode.CATEGORY_READ_FAIL));
+
+        // 2. Post 저장
         Post post = Post.builder()
                 .createdBy(account)
                 .title(request.getTitle())
                 .content(request.getContent())
                 .postImg(request.getPostImg())
+                .categoryId(category)
+                .closedDt(request.getClosedDt())
+                .ownerContact(request.getOwnerContact())
+                .recruitTotalCnt(request.getRecruitTotalCnt())
+                .recruitCurrentCnt(request.getRecruitCurrentCnt())
+                .communicationTool(request.getCommunicationTool())
                 .isRecruiting(true)
+
                 .build();
         Post newPost = postRepository.save(post);
-
-        // 2. JobPost 저장
-        request.jobIds.forEach(
-                id -> {
-                    Job job = jobRepository.findById(id)
-                            .orElseThrow(
-                                    () -> new JobNotFoundException(JobResponseCode.JOB_READ_FAIL));
-
-                    JobPost jobPost = JobPost.builder()
-                            .job(job)
-                            .post(newPost)
-                            .build();
-
-                    jobPostRepository.save(jobPost);
-                }
-        );
 
         return newPost;
     }
