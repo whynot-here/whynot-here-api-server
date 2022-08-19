@@ -18,6 +18,9 @@ public class Category {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "order")
+    private Integer order;
+
     @Column(name = "code")
     private String code;
 
