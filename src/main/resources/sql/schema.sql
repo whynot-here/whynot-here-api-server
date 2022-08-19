@@ -93,10 +93,10 @@ CREATE TABLE `post`
     `closed_dt`           datetime                                 DEFAULT NULL,
     `content`             varchar(2500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
     `is_recruiting`       bit(1)                                   DEFAULT NULL,
-    `post_img`            varchar(255) COLLATE utf8mb4_unicode_ci  DEFAULT NULL,
     `title`               varchar(255) COLLATE utf8mb4_unicode_ci  DEFAULT NULL,
     `account_id`          bigint                                   DEFAULT NULL,
-    `owner_contact`       varchar(20),
+    `owner_contact_type`  varchar(20),
+    `owner_contact_value` varchar(50),
     `recruit_total_cnt`   int,
     `recruit_current_cnt` int,
     `communication_tool`  varchar(20),
@@ -110,38 +110,40 @@ CREATE TABLE `post`
 
 LOCK
 TABLES `post` WRITE;
-INSERT INTO `post` (`id`, `closed_dt`, `updated_dt`, `content`, `created_dt`, `is_recruiting`, `post_img`, `title`, `account_id`,
-                    `owner_contact`, `recruit_total_cnt`, `recruit_current_cnt`, `communication_tool`, `category_id`)
-VALUES (1, '2022-08-17 13:22', '2022-01-12 00:00', '공프기 팀원을 모집합니다. 저희팀은 커피를 좋아하는 사람들을 위한 서비스를 기획하고 있습니다. 개발자가 필요합니다.', '2022-01-12 00:00',
-        true,
-        'https://user-images.githubusercontent.com/42775225/156349826-a00d9152-fb83-4e90-8267-2e4bdb836f21.jpeg',
-        '[팀원모집] 공프기', 1,
-        'KAKAO_OPEN_CHAT', 4, 0, 'ONLINE', 2),
-       (2, '2022-08-30 13:22', '2022-01-12 00:00', '캡스톤을 시작으로 창업까지 이어갈 인원을 모집합니다. 자동차를 싸고 쉽게 구매하기 위한 서비스를 기획하고 있습니다. 디자이너와 개발자를 찾고 있습니다.',
-        '2022-01-12 00:00', true,
-        'https://user-images.githubusercontent.com/42775225/156349826-a00d9152-fb83-4e90-8267-2e4bdb836f21.jpeg',
-        '캡스톤에서 창업까지', 2,
-        'GOOGLE_FORM', 3, 0, 'ONLINE', 2),
-       (3, '2022-09-02 13:22', '2022-01-12 00:00', '인공지능 알고리즘을 적용한 서비스를 기획하고 있습니다. 아직까지 구체적인 기획안이 없으며, 기획부터 개발 운영까지 함께할 초기 멤버를 찾고 있습니다.',
-        '2022-01-12 00:00', true,
-        'https://user-images.githubusercontent.com/42775225/156349826-a00d9152-fb83-4e90-8267-2e4bdb836f21.jpeg',
-        '인공지능 서비스 - 기획자 구함', 3,
-        'EMAIL', 2, 1, 'OFFLINE', 2),
-       (4, '2022-10-12 13:22', '2022-01-12 00:00', '노래를 통해 세상을 치유하고 있는 사람들을 아시나요? 그런 사람들을 위한 무료 예약 시스템을 구축하고자 합니다.', '2022-01-12 00:00',
-        true,
-        'https://user-images.githubusercontent.com/42775225/156349826-a00d9152-fb83-4e90-8267-2e4bdb836f21.jpeg',
-        '노래로 세상을 치유하는 팀', 4,
-        'PHONE', 5, 3, 'ONLINE', 2),
-       (5, '2022-11-12 13:22', '2022-01-12 00:00', '어려운 전공 과목을 함께 이겨낼 수 있도록 스터디원을 모집할 수 있는 플랫폼을 만들고자 합니다. 010-1234-5678으로 연락주세요',
-        '2022-01-12 00:00', true,
-        'https://user-images.githubusercontent.com/42775225/156349826-a00d9152-fb83-4e90-8267-2e4bdb836f21.jpeg',
-        '[팀원모집] 개발자 급구 - 스터디 서비스', 5,
-        'PHONE', 2, 0, 'ONLINE', 2),
-       (6, '2022-10-02 13:22', '2022-01-12 00:00', '과거 역사를 알아야 앞으로 같은 실수를 반복하지 않습니다. 저희는 역사를 좋아하는 사람들이 부담없이 만날 수 있는 서비스를 기획하고 있습니다.',
-        '2022-01-12 00:00', true,
-        'https://user-images.githubusercontent.com/42775225/156349826-a00d9152-fb83-4e90-8267-2e4bdb836f21.jpeg',
-        'History Maker 초기멤버', 6,
-        'KAKAO_OPEN_CHAT', 4, 0, 'ONLINE', 2);
+INSERT INTO `post` (`id`, `closed_dt`, `updated_dt`, `content`, `created_dt`, `is_recruiting`, `title`,
+                    `account_id`, `owner_contact_type`, `owner_contact_value`, `recruit_total_cnt`,
+                    `recruit_current_cnt`,
+                    `communication_tool`, `category_id`)
+VALUES (1, '2022-08-17 13:22', '2022-01-12 00:00', '공프기 팀원을 모집합니다. 저희팀은 커피를 좋아하는 사람들을 위한 서비스를 기획하고 있습니다. 개발자가 필요합니다.',
+        '2022-01-12 00:00', true, '[팀원모집] 공프기', 1,
+        'KAKAO_OPEN_CHAT', 'https://open.kakao.com/o/gsOnhywe', 4, 0, 'ONLINE', 2),
+       (2, '2022-08-30 13:22', '2022-01-12 00:00',
+        '캡스톤을 시작으로 창업까지 이어갈 인원을 모집합니다. 자동차를 싸고 쉽게 구매하기 위한 서비스를 기획하고 있습니다. 디자이너와 개발자를 찾고 있습니다.',
+        '2022-01-12 00:00', true, '캡스톤에서 창업까지', 2,
+        'GOOGLE_FORM', 'https://forms.gle/m9gs26R6GK51rHP66', 3, 0, 'ONLINE', 2),
+       (3, '2022-09-02 13:22', '2022-01-12 00:00',
+        '인공지능 알고리즘을 적용한 서비스를 기획하고 있습니다. 아직까지 구체적인 기획안이 없으며, 기획부터 개발 운영까지 함께할 초기 멤버를 찾고 있습니다.',
+        '2022-01-12 00:00', true, '인공지능 서비스 - 기획자 구함', 3,
+        'EMAIL', 'taeho@maver.com', 2, 1, 'OFFLINE', 2),
+       (4, '2022-10-12 13:22', '2022-01-12 00:00', '노래를 통해 세상을 치유하고 있는 사람들을 아시나요? 그런 사람들을 위한 무료 예약 시스템을 구축하고자 합니다.',
+        '2022-01-12 00:00', true, '노래로 세상을 치유하는 팀', 4,
+        'PHONE', '010-1234-5678', 5, 3, 'ONLINE', 2),
+       (5, '2022-11-12 13:22', '2022-01-12 00:00',
+        '어려운 전공 과목을 함께 이겨낼 수 있도록 스터디원을 모집할 수 있는 플랫폼을 만들고자 합니다. 010-1234-5678으로 연락주세요',
+        '2022-01-12 00:00', true, '[팀원모집] 개발자 급구 - 스터디 서비스', 5,
+        'PHONE', '010-5678-1234', 2, 0, 'ONLINE', 2),
+       (6, '2022-10-02 13:22', '2022-01-12 00:00',
+        '과거 역사를 알아야 앞으로 같은 실수를 반복하지 않습니다. 저희는 역사를 좋아하는 사람들이 부담없이 만날 수 있는 서비스를 기획하고 있습니다.',
+        '2022-01-12 00:00', true, 'History Maker 초기멤버', 6,
+        'KAKAO_OPEN_CHAT', 'https://open.kakao.com/o/gsOnhywe', 4, 0, 'ONLINE', 2),
+       (7, '2022-11-02 13:22', '2022-08-19 00:00',
+        '공학 수학 어려우신 분들 다같이 과제도 하고, 중간 기말도 같이 공부합시다~~~ 만나서 진행할거구요!! 주 1회정도 생각하고 있습니다.',
+        '2022-08-19 00:00', true, '공학 수학 스터디 구함', 6,
+        'KAKAO_OPEN_CHAT', 'https://open.kakao.com/o/gsOnhywe', 3, 0, 'OFFLINE', 3),
+       (8, '2022-10-12 10:22', '2022-08-19 10:00',
+        '8월 26일 프로그래밍2 오픈세션을 열겠습니다. Q&A 시간이 있으니 궁금하신 내용을 들고 오시면 좋을것 같습니다.',
+        '2022-08-19 10:00', true, '[TA] 프로그래밍2 오픈세션', 6,
+        'KAKAO_OPEN_CHAT', 'https://open.kakao.com/o/gsOnhywe', 30, 0, 'OFFLINE', 3);
 UNLOCK
 TABLES;
 
@@ -261,6 +263,7 @@ TABLES;
 CREATE TABLE `category`
 (
     `id`          bigint NOT NULL AUTO_INCREMENT,
+    `order`       int,
     `code`        varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
     `is_leaf`     varchar(1) COLLATE utf8mb4_unicode_ci  DEFAULT NULL,
     `name`        varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -271,53 +274,81 @@ CREATE TABLE `category`
 
 LOCK
 TABLES `category` WRITE;
-INSERT INTO `category` (`code`, `name`, `is_leaf`, `parent_code`, `use_yn`)
-VALUES ('STUDY', '스터디', 'N', 'STUDY', 'Y'),
-       ('PROJECT', '프로젝트', 'Y', 'STUDY', 'Y'),
-       ('MAJOR', '전공공부', 'Y', 'STUDY', 'Y'),
-       ('RECRUIT', '리쿠르팅', 'Y', 'STUDY', 'Y'),
-       ('ETC-STUDY', '그 외', 'Y', 'STUDY', 'Y'),
+INSERT INTO `category` (`order`, `code`, `name`, `is_leaf`, `parent_code`, `use_yn`)
+VALUES (1, 'STUDY', '스터디', 'N', 'STUDY', 'Y'),
+       (2, 'PROJECT', '프로젝트', 'Y', 'STUDY', 'Y'),
+       (3, 'MAJOR', '전공공부', 'Y', 'STUDY', 'Y'),
+       (4, 'RECRUIT', '리쿠르팅', 'Y', 'STUDY', 'Y'),
+       (5, 'ETC-STUDY', '그 외', 'Y', 'STUDY', 'Y'),
 
-       ('FRIEND', '친목', 'N', 'FRIEND', 'Y'),
-       ('WALK', '산책', 'Y', 'FRIEND', 'Y'),
-       ('NIGHT', '야식모임', 'Y', 'FRIEND', 'Y'),
-       ('TEA', '티타임', 'Y', 'FRIEND', 'Y'),
-       ('DATING', '소개팅', 'Y', 'FRIEND', 'Y'),
-       ('ALCOHOL', '알코올', 'Y', 'FRIEND', 'Y'),
-       ('ETC-FRIEND', '그 외', 'Y', 'FRIEND', 'Y'),
+       (6, 'FRIEND', '친목', 'N', 'FRIEND', 'Y'),
+       (7, 'WALK', '산책', 'Y', 'FRIEND', 'Y'),
+       (8, 'NIGHT', '야식모임', 'Y', 'FRIEND', 'Y'),
+       (9, 'TEA', '티타임', 'Y', 'FRIEND', 'Y'),
+       (10, 'DATING', '소개팅', 'Y', 'FRIEND', 'Y'),
+       (11, 'ALCOHOL', '알코올', 'Y', 'FRIEND', 'Y'),
+       (12, 'ETC-FRIEND', '그 외', 'Y', 'FRIEND', 'Y'),
 
-       ('TRANSPORT', '교통수단', 'N', 'TRANSPORT', 'Y'),
-       ('CARPOOL', '카풀', 'Y', 'TRANSPORT', 'Y'),
-       ('KTX', 'KTX 동반석', 'Y', 'TRANSPORT', 'Y'),
-       ('ETC-TRANSPORT', '그 외', 'Y', 'TRANSPORT', 'Y'),
+       (13, 'TRANSPORT', '교통수단', 'N', 'TRANSPORT', 'Y'),
+       (14, 'CARPOOL', '카풀', 'Y', 'TRANSPORT', 'Y'),
+       (15, 'KTX', 'KTX 동반석', 'Y', 'TRANSPORT', 'Y'),
+       (16, 'ETC-TRANSPORT', '그 외', 'Y', 'TRANSPORT', 'Y'),
 
-       ('USED', '중고거래', 'N', 'USED', 'Y'),
-       ('HOUSE', '양도', 'Y', 'USED', 'Y'),
-       ('TEXTBOOK', '전공책', 'Y', 'USED', 'Y'),
-       ('ETC-USED', '그 외', 'Y', 'USED', 'Y'),
+       (17, 'USED', '중고거래', 'N', 'USED', 'Y'),
+       (18, 'HOUSE', '양도', 'Y', 'USED', 'Y'),
+       (19, 'TEXTBOOK', '전공책', 'Y', 'USED', 'Y'),
+       (20, 'ETC-USED', '그 외', 'Y', 'USED', 'Y'),
 
-       ('EXERCISE', '운동', 'N', 'EXERCISE', 'Y'),
-       ('FUTSAL', '풋살', 'Y', 'EXERCISE', 'Y'),
-       ('PINGPONG', '탁구', 'Y', 'EXERCISE', 'Y'),
-       ('ETC-EXERCISE', '그 외', 'Y', 'EXERCISE', 'Y'),
+       (21, 'EXERCISE', '운동', 'N', 'EXERCISE', 'Y'),
+       (22, 'FUTSAL', '풋살', 'Y', 'EXERCISE', 'Y'),
+       (23, 'PINGPONG', '탁구', 'Y', 'EXERCISE', 'Y'),
+       (24, 'ETC-EXERCISE', '그 외', 'Y', 'EXERCISE', 'Y'),
 
-       ('PART-JOB', '알바', 'N', 'PART-JOB', 'Y'),
-       ('IN-SCHOOL', '교내', 'Y', 'PART-JOB', 'Y'),
-       ('OUT-SCHOOL', '교외', 'Y', 'PART-JOB', 'Y'),
-       ('ETC-PART-JOB', '그 외', 'Y', 'PART-JOB', 'Y'),
+       (25, 'PART-JOB', '알바', 'N', 'PART-JOB', 'Y'),
+       (26, 'IN-SCHOOL', '교내', 'Y', 'PART-JOB', 'Y'),
+       (27, 'OUT-SCHOOL', '교외', 'Y', 'PART-JOB', 'Y'),
+       (28, 'ETC-PART-JOB', '그 외', 'Y', 'PART-JOB', 'Y'),
 
-       ('GAME', '게임', 'N', 'GAME', 'Y'),
-       ('BOARD', '보드게임', 'Y', 'GAME', 'Y'),
-       ('ROL', '롤', 'Y', 'GAME', 'Y'),
-       ('ETC-GAME', '그 외', 'Y', 'GAME', 'Y'),
+       (29, 'GAME', '게임', 'N', 'GAME', 'Y'),
+       (30, 'BOARD', '보드게임', 'Y', 'GAME', 'Y'),
+       (31, 'ROL', '롤', 'Y', 'GAME', 'Y'),
+       (32, 'ETC-GAME', '그 외', 'Y', 'GAME', 'Y'),
 
-       ('FAITH', '신앙', 'N', 'FAITH', 'Y'),
-       ('PRAY', '기도모임', 'Y', 'FAITH', 'Y'),
-       ('ETC-FAITH', '그 외', 'Y', 'FAITH', 'Y'),
+       (33, 'FAITH', '신앙', 'N', 'FAITH', 'Y'),
+       (34, 'PRAY', '기도모임', 'Y', 'FAITH', 'Y'),
+       (35, 'ETC-FAITH', '그 외', 'Y', 'FAITH', 'Y'),
 
-       ('GROUP-BUY', '공동구매', 'N', 'GROUP-BUY', 'Y'),
-       ('STUFF', '물건', 'Y', 'GROUP-BUY', 'Y'),
-       ('OTT', 'OTT 구독', 'Y', 'GROUP-BUY', 'Y'),
-       ('ETC-GROUP-BUY', '그 외', 'Y', 'GROUP-BUY', 'Y');
+       (36, 'GROUP-BUY', '공동구매', 'N', 'GROUP-BUY', 'Y'),
+       (37, 'STUFF', '물건', 'Y', 'GROUP-BUY', 'Y'),
+       (38, 'OTT', 'OTT 구독', 'Y', 'GROUP-BUY', 'Y'),
+       (39, 'ETC-GROUP-BUY', '그 외', 'Y', 'GROUP-BUY', 'Y');
+UNLOCK
+TABLES;
+
+CREATE TABLE `post_image_link`
+(
+    `id`         bigint       NOT NULL AUTO_INCREMENT,
+    `created_dt` datetime,
+    `updated_dt` datetime,
+    `link`       varchar(255) not null,
+    `post_id`    bigint,
+    PRIMARY KEY (`id`)
+);
+
+LOCK
+TABLES `post_image_link` WRITE;
+INSERT INTO `post_image_link` (`created_dt`, `updated_dt`, `link`, `post_id`)
+VALUES ('2022-01-12 00:00', '2022-01-12 00:00',
+        'https://user-images.githubusercontent.com/42775225/160243121-da4843d4-74e9-428c-835d-0dd4e42713a6.png', 1),
+       ('2022-01-12 00:00', '2022-01-12 00:00',
+        'https://user-images.githubusercontent.com/42775225/185349176-6a5dd712-489b-46a6-93cb-a76460501167.png', 2),
+       ('2022-01-12 00:00', '2022-01-12 00:00',
+        'https://user-images.githubusercontent.com/42775225/160243201-ffd7bd3d-7d65-43bc-b382-e65c8a709762.png', 3),
+       ('2022-01-12 00:00', '2022-01-12 00:00',
+        'https://user-images.githubusercontent.com/42775225/160243238-e2749649-251f-4efa-9685-a90816f1c993.png', 4),
+       ('2022-01-12 00:00', '2022-01-12 00:00',
+        'https://user-images.githubusercontent.com/42775225/160243248-7a683e2e-855f-498f-ae42-0dc4d4f4e344.png', 5),
+       ('2022-01-12 00:00', '2022-01-12 00:00',
+        'https://user-images.githubusercontent.com/42775225/160243284-bdf5084e-3e5e-44fb-a1a9-c3cf791e5f59.png', 6);
 UNLOCK
 TABLES;
