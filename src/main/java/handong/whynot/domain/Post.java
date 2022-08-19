@@ -51,9 +51,12 @@ public class Post extends BaseTimeEntity {
     @Column(name = "closed_dt")
     private LocalDateTime closedDt;
 
-    @Column(name = "owner_contact")
+    @Column(name = "owner_contact_type")
     @Enumerated(EnumType.STRING)
-    private ContactType ownerContact;
+    private ContactType ownerContactType;
+
+    @Column(name = "owner_contact_value")
+    private String ownerContactValue;
 
     @Column(name = "recruit_total_cnt")
     private Integer recruitTotalCnt;
@@ -65,6 +68,9 @@ public class Post extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private CommunicationType communicationTool;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostImageLink> links = new ArrayList<>();
+
     @Builder
     public Post(Account createdBy, String title, String content, String postImg) {
         this.createdBy = createdBy;
@@ -74,13 +80,13 @@ public class Post extends BaseTimeEntity {
         isRecruiting = true;
     }
 
-    public void addJobs(List<JobPost> jobPosts) {
-        this.jobPosts = jobPosts;
+    public void addLinks(List<PostImageLink> links) {
+        this.links = links;
     }
 
     public void update(PostRequestDTO request) {
         title = request.getTitle();
         content = request.getContent();
-        postImg = request.getPostImg();
+//        addLinks(request.getImageLinks());
     }
 }

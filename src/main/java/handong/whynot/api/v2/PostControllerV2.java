@@ -21,6 +21,21 @@ public class PostControllerV2 {
     private final PostService postService;
     private final AccountService accountService;
 
+    @Operation(summary = "공고 전체 조회")
+    @GetMapping("")
+    public List<PostResponseDTO> getPostsV2(
+            @RequestParam(name = "recruit", required = false) RecruitStatus status) {
+
+        return postService.getPostsV2(status);
+    }
+
+    @Operation(summary = "선택한 카테고리 공고 전체 조회")
+    @GetMapping("/category/{id}")
+    public List<PostResponseDTO> getPostsByCategoryV2(@PathVariable Long id) {
+
+        return postService.getPostsByCategory(id);
+    }
+
     @Operation(summary = "공고 생성")
     @PostMapping("")
     @ResponseStatus(CREATED)

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,13 +17,13 @@ public class PostRequestDTO {
 
     private String title;
     private String content;
-    private String postImg;
+    private List<String> imageLinks;
     private Long categoryId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = "Asia/Seoul")
     private LocalDateTime closedDt;
 
-    private ContactType ownerContact;
+    private OwnerContact ownerContact;
     private Integer recruitTotalCnt;
     private Integer recruitCurrentCnt;
     private CommunicationType communicationTool;

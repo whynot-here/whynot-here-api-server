@@ -1,6 +1,7 @@
 package handong.whynot.repository;
 
 import handong.whynot.domain.Account;
+import handong.whynot.domain.Category;
 import handong.whynot.domain.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,4 +12,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findByIdAndCreatedBy(Long id, Account account);
 
     List<Post> findAllByCreatedBy(Account account);
+
+    List<Post> findAllByCategoryId(Category id);
 }

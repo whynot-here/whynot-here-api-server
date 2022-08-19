@@ -13,10 +13,13 @@ import handong.whynot.mail.EmailMessage;
 import handong.whynot.mail.EmailService;
 import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static handong.whynot.dto.job.JobType.getJobInfoBy;
@@ -89,10 +92,7 @@ public class PostService {
         List<Post> posts = postQueryRepository.getPostByRecruit(isRecruiting);
 
         return posts.stream()
-                .map(post ->
-                        PostResponseDTO.of(post,
-                                postQueryRepository.getJobs(post.getId()),
-                                getApplicants(post.getId())))
+                .map(PostResponseDTO::of)
                 .collect(Collectors.toList());
     }
 
@@ -131,19 +131,28 @@ public class PostService {
                 .createdBy(account)
                 .title(request.getTitle())
                 .content(request.getContent())
-                .postImg(request.getPostImg())
                 .categoryId(category)
                 .closedDt(request.getClosedDt())
-                .ownerContact(request.getOwnerContact())
+                .ownerContactType(request.getOwnerContact().getType())
+                .ownerContactValue(request.getOwnerContact().getValue())
                 .recruitTotalCnt(request.getRecruitTotalCnt())
                 .recruitCurrentCnt(request.getRecruitCurrentCnt())
                 .communicationTool(request.getCommunicationTool())
                 .isRecruiting(true)
-
                 .build();
-        Post newPost = postRepository.save(post);
 
-        return newPost;
+        // 3. Image 저장
+        createImageLinks(request.getImageLinks(), post);
+
+        return postRepository.save(post);
+    }
+
+    private void createImageLinks(List<String> imageLinks, Post post) {
+        List<PostImageLink> links = imageLinks.stream()
+                .map(link -> PostImageLink.of(link, post))
+                .collect(Collectors.toList());
+
+        post.addLinks(links);
     }
 
     public PostResponseDTO getPost(Long id) {
@@ -347,5 +356,44 @@ public class PostService {
 
         post.setRecruiting(dto.getIsRecruit());
         postRepository.save(post);
+    }
+
+    public List<PostResponseDTO> getPostsV2(RecruitStatus recruitStatus) {
+
+        if (recruitStatus != null) {
+
+            Boolean isRecruiting = recruitStatus.getIsRecruiting();
+
+            return getPostByRecruit(isRecruiting);
+        }
+
+        return postQueryRepository.getPostsV2().stream()
+                .map(PostResponseDTO::of)
+                .collect(Collectors.toList());
+    }
+
+    public List<PostResponseDTO> getPostsByCategory(Long id) {
+
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException(CategoryResponseCode.CATEGORY_READ_FAIL));
+
+        // parent 카테고리 여부
+        if (StringUtils.equals(category.getIsLeaf(), "N")) {
+
+            List<Category> childrenCategoryList = categoryRepository.findAllByParentCode(category.getParentCode());
+            List<PostResponseDTO> responseDTOList = new ArrayList<>();
+
+
+            for(Category it : childrenCategoryList) {
+                responseDTOList.addAll(postRepository.findAllByCategoryId(it).stream()
+                        .map(PostResponseDTO::of)
+                        .collect(Collectors.toList()));
+            }
+            return responseDTOList.stream().distinct().collect(Collectors.toList());
+        }
+
+        return postRepository.findAllByCategoryId(category).stream()
+                .map(PostResponseDTO::of)
+                .collect(Collectors.toList());
     }
 }

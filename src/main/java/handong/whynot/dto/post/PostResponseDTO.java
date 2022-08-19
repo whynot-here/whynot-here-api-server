@@ -1,20 +1,17 @@
 package handong.whynot.dto.post;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import handong.whynot.domain.Job;
 import handong.whynot.domain.Post;
 import handong.whynot.dto.account.AccountResponseDTO;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import handong.whynot.dto.category.CategoryDTO;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -30,38 +27,66 @@ public class PostResponseDTO {
 
     private String title;
 
-    private String postImg;
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = "Asia/Seoul")
     private LocalDateTime createdDt;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = "Asia/Seoul")
     private LocalDateTime updatedDt;
 
-    private AccountResponseDTO writer;
+    private PostWriterDTO writer;
 
     private String content;
 
     private boolean isRecruiting;
 
-    @Builder.Default
-    private List<Job> jobs = new ArrayList<>();
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = "Asia/Seoul")
+    private LocalDateTime closedDt;
 
-    @Builder.Default
-    private List<AccountResponseDTO> applicants = new ArrayList<>();
+    private OwnerContact ownerContact;
+
+    private Integer recruitTotalCnt;
+
+    private Integer recruitCurrentCnt;
+
+    private CommunicationType communicationTool;
+
+    private CategoryDTO category;
+
+    private List<PostImageLinkDTO> imageLinks = new ArrayList<>();
 
     public static PostResponseDTO of(Post post, List<Job> jobs, List<AccountResponseDTO> applicants) {
         return builder()
             .id(post.getId())
             .title(post.getTitle())
-            .postImg(post.getPostImg())
             .createdDt(post.getCreatedDt())
             .updatedDt(post.getUpdatedDt())
-            .writer(post.getCreatedBy().getAccountDTO())
+                .writer(PostWriterDTO.of(post.getCreatedBy()))
             .content(post.getContent())
             .isRecruiting(post.isRecruiting())
-            .jobs(jobs)
-            .applicants(applicants)
             .build();
+    }
+
+    public static PostResponseDTO of(Post post) {
+
+        List<PostImageLinkDTO> imageLinks = post.getLinks().stream()
+                .map(it -> PostImageLinkDTO.of(it.getId(), it.getLink()))
+                .collect(Collectors.toList());
+
+        return builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .createdDt(post.getCreatedDt())
+                .updatedDt(post.getUpdatedDt())
+                .writer(PostWriterDTO.of(post.getCreatedBy()))
+                .content(post.getContent())
+                .isRecruiting(post.isRecruiting())
+                .closedDt(post.getClosedDt())
+                .ownerContact(new OwnerContact(post.getOwnerContactType(), post.getOwnerContactValue()))
+                .recruitTotalCnt(post.getRecruitTotalCnt())
+                .recruitCurrentCnt(post.getRecruitCurrentCnt())
+                .communicationTool(post.getCommunicationTool())
+                .category(CategoryDTO.generateDTOBy(post.getCategoryId()))
+                .imageLinks(imageLinks)
+                .build();
     }
 }
