@@ -18,12 +18,10 @@ CREATE TABLE `account`
     `nickname`                       varchar(50) COLLATE utf8mb4_unicode_ci  DEFAULT NULL,
     `password`                       varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
     `profile_img`                    varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-    `auth_type`                      varchar(10),
     `oauth_ci`                       varchar(50),
     `auth_type`                      varchar(20),
     `category_order`                 varchar(255),
     PRIMARY KEY (`id`),
-    UNIQUE KEY `UK_q0uja26qgu1atulenwup9rxyr` (`email`),
     UNIQUE KEY `UK_s2a5omeaik0sruawqpvs18qfk` (`nickname`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
