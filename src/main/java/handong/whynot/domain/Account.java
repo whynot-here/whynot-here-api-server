@@ -20,7 +20,7 @@ public class Account {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email")
     private String email;
 
     @Column(name = "nickname", unique = true)
@@ -50,6 +50,9 @@ public class Account {
 
     @Column(name = "category_order")
     private String categoryOrder;
+
+    @Column(name = "oauth_ci")
+    private String oauthCI;
 
     public void generateEmailCheckToken() {
         emailCheckToken = UUID.randomUUID().toString().split("-")[0];

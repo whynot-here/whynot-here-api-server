@@ -2,6 +2,7 @@ package handong.whynot.api.v2;
 
 import handong.whynot.domain.Account;
 import handong.whynot.dto.account.AccountResponseDTO;
+import handong.whynot.dto.account.NicknameDTO;
 import handong.whynot.dto.account.SignInRequestDTO;
 import handong.whynot.dto.account.TokenResponseDTO;
 import handong.whynot.service.AccountService;
@@ -45,5 +46,14 @@ public class AccountControllerV2 {
                 .profileImg(account.getProfileImg())
                 .authType(account.getAuthType())
                 .build();
+    }
+
+    @Operation(summary = "닉네임 변경")
+    @PostMapping("/account/nickname")
+    public AccountResponseDTO checkNicknameDuplicate(@RequestBody NicknameDTO dto) {
+
+        Account account = accountService.updateNickname(dto.getNickname());
+
+        return AccountResponseDTO.of(account);
     }
 }

@@ -152,7 +152,7 @@ public class AccountService implements UserDetailsService {
 
     public void checkNicknameDuplicate(String nickname) {
 
-        Account account = accountQueryRepository.findByVerifiedNickname(nickname);
+        Account account = accountRepository.findByNickname(nickname);
 
         if (account != null) {
             throw new AccountAlreadyExistNicknameException(AccountResponseCode.ACCOUNT_ALREADY_EXIST_NICKNAME);
@@ -184,5 +184,18 @@ public class AccountService implements UserDetailsService {
         String refreshToken = signInTokenGenerator.refreshToken(account.getId());
 
         return TokenResponseDTO.of(account, accessToken, refreshToken);
+    }
+
+    @Transactional
+    public Account updateNickname(String nickname) {
+
+        // 닉네임 중복 검사
+        checkNicknameDuplicate(nickname);
+
+        // 닉네임 업데이트
+        Account account = getCurrentAccount();
+        account.setNickname(nickname);
+
+        return account;
     }
 }
