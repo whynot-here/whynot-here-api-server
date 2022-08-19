@@ -30,8 +30,8 @@ class PostServiceJpaTest {
     void createPost() {
         PostRequestDTO requestDTO = PostRequestDTO.builder()
                 .content("content")
-                .postImg("postImg")
-                .jobIds(Arrays.asList(1L, 2L))
+//                .postImg("postImg")
+//                .jobIds(Arrays.asList(1L, 2L))
                 .build();
 
 //        postService.createPost(requestDTO);

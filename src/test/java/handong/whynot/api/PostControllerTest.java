@@ -89,8 +89,8 @@ public class PostControllerTest {
         PostRequestDTO requestDTO = PostRequestDTO.builder()
                 .title("[공고 모집] 캡스톤 함께하실 분!")
                 .content("행복한 펫을 위해 서비스를 만들고자 합니다.")
-                .postImg("http://image.com")
-                .jobIds(Arrays.asList(2L, 3L))
+//                .postImg("http://image.com")
+//                .jobIds(Arrays.asList(2L, 3L))
                 .build();
 
         // when, given
@@ -133,7 +133,7 @@ public class PostControllerTest {
         PostRequestDTO dto = PostRequestDTO.builder()
                 .title("제목 수정")
                 .content("내용 수정")
-                .postImg("http://image-edited.com")
+//                .postImg("http://image-edited.com")
                 .build();
 
         mockMvc.perform(put("/v1/posts/{postId}", 1L)
