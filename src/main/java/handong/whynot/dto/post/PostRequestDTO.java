@@ -1,8 +1,9 @@
 package handong.whynot.dto.post;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -12,10 +13,19 @@ import java.util.List;
 @AllArgsConstructor
 public class PostRequestDTO {
 
+    private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm";
+
     private String title;
     private String content;
-    private String postImg;
+    private List<String> imageLinks;
+    private Long categoryId;
 
-    @Builder.Default
-    public List<Long> jobIds = new ArrayList<>();
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = "Asia/Seoul")
+    private LocalDateTime closedDt;
+
+    private OwnerContact ownerContact;
+    private Integer recruitTotalCnt;
+    private Integer recruitCurrentCnt;
+    private CommunicationType communicationTool;
+
 }

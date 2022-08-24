@@ -2,19 +2,24 @@ package handong.whynot.service;
 
 import handong.whynot.domain.*;
 import handong.whynot.dto.account.AccountResponseDTO;
-import handong.whynot.dto.job.JobType;
+import handong.whynot.dto.category.CategoryResponseCode;
 import handong.whynot.dto.job.JobResponseCode;
+import handong.whynot.dto.job.JobType;
 import handong.whynot.dto.post.*;
+import handong.whynot.exception.category.CategoryNotFoundException;
 import handong.whynot.exception.job.JobNotFoundException;
 import handong.whynot.exception.post.*;
 import handong.whynot.mail.EmailMessage;
 import handong.whynot.mail.EmailService;
 import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static handong.whynot.dto.job.JobType.getJobInfoBy;
@@ -31,6 +36,7 @@ public class PostService {
     private final PostFavoriteRepository postFavoriteRepository;
     private final PostApplyRepository postApplyRepository;
     private final EmailService emailService;
+    private final CategoryRepository categoryRepository;
 
     public List<PostResponseDTO> getPostsByParam(RecruitStatus recruitStatus, List<JobType> jobTypeList) {
 
@@ -86,10 +92,7 @@ public class PostService {
         List<Post> posts = postQueryRepository.getPostByRecruit(isRecruiting);
 
         return posts.stream()
-                .map(post ->
-                        PostResponseDTO.of(post,
-                                postQueryRepository.getJobs(post.getId()),
-                                getApplicants(post.getId())))
+                .map(PostResponseDTO::of)
                 .collect(Collectors.toList());
     }
 
@@ -119,33 +122,37 @@ public class PostService {
     @Transactional
     public Post createPost(PostRequestDTO request, Account account) {
 
-        // 1. Post 저장
+        // 1. 카테고리 조회
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException(CategoryResponseCode.CATEGORY_READ_FAIL));
+
+        // 2. Post 저장
         Post post = Post.builder()
                 .createdBy(account)
                 .title(request.getTitle())
                 .content(request.getContent())
-                .postImg(request.getPostImg())
+                .categoryId(category)
+                .closedDt(request.getClosedDt())
+                .ownerContactType(request.getOwnerContact().getType())
+                .ownerContactValue(request.getOwnerContact().getValue())
+                .recruitTotalCnt(request.getRecruitTotalCnt())
+                .recruitCurrentCnt(request.getRecruitCurrentCnt())
+                .communicationTool(request.getCommunicationTool())
                 .isRecruiting(true)
                 .build();
-        Post newPost = postRepository.save(post);
 
-        // 2. JobPost 저장
-        request.jobIds.forEach(
-                id -> {
-                    Job job = jobRepository.findById(id)
-                            .orElseThrow(
-                                    () -> new JobNotFoundException(JobResponseCode.JOB_READ_FAIL));
+        // 3. Image 저장
+        createImageLinks(request.getImageLinks(), post);
 
-                    JobPost jobPost = JobPost.builder()
-                            .job(job)
-                            .post(newPost)
-                            .build();
+        return postRepository.save(post);
+    }
 
-                    jobPostRepository.save(jobPost);
-                }
-        );
+    private void createImageLinks(List<String> imageLinks, Post post) {
+        List<PostImageLink> links = imageLinks.stream()
+                .map(link -> PostImageLink.of(link, post))
+                .collect(Collectors.toList());
 
-        return newPost;
+        post.addLinks(links);
     }
 
     public PostResponseDTO getPost(Long id) {
@@ -349,5 +356,44 @@ public class PostService {
 
         post.setRecruiting(dto.getIsRecruit());
         postRepository.save(post);
+    }
+
+    public List<PostResponseDTO> getPostsV2(RecruitStatus recruitStatus) {
+
+        if (recruitStatus != null) {
+
+            Boolean isRecruiting = recruitStatus.getIsRecruiting();
+
+            return getPostByRecruit(isRecruiting);
+        }
+
+        return postQueryRepository.getPostsV2().stream()
+                .map(PostResponseDTO::of)
+                .collect(Collectors.toList());
+    }
+
+    public List<PostResponseDTO> getPostsByCategory(Long id) {
+
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException(CategoryResponseCode.CATEGORY_READ_FAIL));
+
+        // parent 카테고리 여부
+        if (StringUtils.equals(category.getIsLeaf(), "N")) {
+
+            List<Category> childrenCategoryList = categoryRepository.findAllByParentCode(category.getParentCode());
+            List<PostResponseDTO> responseDTOList = new ArrayList<>();
+
+
+            for(Category it : childrenCategoryList) {
+                responseDTOList.addAll(postRepository.findAllByCategoryId(it).stream()
+                        .map(PostResponseDTO::of)
+                        .collect(Collectors.toList()));
+            }
+            return responseDTOList.stream().distinct().collect(Collectors.toList());
+        }
+
+        return postRepository.findAllByCategoryId(category).stream()
+                .map(PostResponseDTO::of)
+                .collect(Collectors.toList());
     }
 }

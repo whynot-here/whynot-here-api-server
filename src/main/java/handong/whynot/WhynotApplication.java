@@ -1,6 +1,7 @@
 package handong.whynot;
 
 import handong.whynot.domain.Account;
+import handong.whynot.domain.AuthType;
 import handong.whynot.repository.AccountRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,7 @@ public class WhynotApplication {
                         .nickname(username)
                         .email(username + "@email.com")
                         .password(passwordEncoder.encode(password))
+                        .authType(AuthType.local)
                         .build();
                 account.completeSignUp();
                 accountRepository.save(account);

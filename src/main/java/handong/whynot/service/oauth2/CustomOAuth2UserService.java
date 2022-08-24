@@ -9,6 +9,8 @@ import handong.whynot.dto.common.ResponseCode;
 import handong.whynot.exception.account.OAuth2ExistEmailException;
 import handong.whynot.exception.account.OAuth2ProcessingException;
 import handong.whynot.repository.AccountRepository;
+import handong.whynot.util.NicknameMaker;
+import handong.whynot.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -25,6 +27,7 @@ import java.time.LocalDateTime;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final AccountRepository accountRepository;
+    private final CategoryService categoryService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -56,8 +59,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         // OAuth2 사용자 필수 정보 획득
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(registrationId, oAuth2User.getAttributes());
 
-        // email 중복 체크 후 사용자 등록
-        Account account = accountRepository.findByEmail(oAuth2UserInfo.getEmail());
+        // 기존 사용자인지 확인
+        Account account = accountRepository.findByOauthCI(oAuth2UserInfo.getId());
 
         if (account == null) {
             account = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
@@ -73,12 +76,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private Account registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
 
         Account account = Account.builder()
-                            .nickname(oAuth2UserInfo.getName())
+                            .nickname(NicknameMaker.make(oAuth2UserInfo.getName()))
                             .email(oAuth2UserInfo.getEmail())
                             .profileImg(oAuth2UserInfo.getProfileImg())
                             .authType(AuthType.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))
                             .emailVerified(true)
                             .joinedAt(LocalDateTime.now())
+                            .oauthCI(oAuth2UserInfo.getId())
+                            .categoryOrder(categoryService.initOrder())
                             .build();
 
         return accountRepository.save(account);

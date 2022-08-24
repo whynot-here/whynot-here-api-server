@@ -110,7 +110,7 @@ class PostServiceTest {
             .thenThrow(new JobNotFoundException(JobResponseCode.JOB_READ_FAIL));
 
         PostRequestDTO requestDTO = PostRequestDTO.builder()
-                                                  .jobIds(jobIds)
+//                                                  .jobIds(jobIds)
                                                   .build();
 
         // when, then
@@ -218,7 +218,7 @@ class PostServiceTest {
         PostRequestDTO dto = PostRequestDTO.builder()
                                            .title("제목 수정")
                                            .content("내용 수정")
-                                           .postImg("http://image-edited.com")
+//                                           .postImg("http://image-edited.com")
                                            .build();
 
         when(postRepository.findByIdAndCreatedBy(postId, currentAccount))
@@ -246,7 +246,7 @@ class PostServiceTest {
         PostRequestDTO dto = PostRequestDTO.builder()
                                            .title("제목 수정")
                                            .content("내용 수정")
-                                           .postImg("http://image-edited.com")
+//                                           .postImg("http://image-edited.com")
                                            .build();
         when(postRepository.findByIdAndCreatedBy(notExistPostId, currentAccount))
             .thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));

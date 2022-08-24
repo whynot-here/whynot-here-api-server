@@ -48,8 +48,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                             "/v1/check-email-duplicate", "/v1/check-nickname-duplicate", "/v2/sign-in", "/auth/login/**").permitAll()
 
                     // Post
-                    .antMatchers(HttpMethod.GET,"/v1/posts/**", "/v1/comments/**", "/v2/posts/**").permitAll()
+                    .antMatchers(HttpMethod.GET,"/v1/posts/**", "/v1/comments/**", "/v2/posts/**", "/v2/posts/category/**").permitAll()
                     .antMatchers("/v1/posts/favorite/**", "/v1/posts/apply/**", "/v1/posts/own/**", "/v2/posts/**").hasRole("USER")
+
+                    // Category
+                    .antMatchers(HttpMethod.GET,"/v2/category/default").permitAll()
 
                     // Swagger
                     .antMatchers(HttpMethod.GET,"/v1/posts/**", "/v1/comments/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()

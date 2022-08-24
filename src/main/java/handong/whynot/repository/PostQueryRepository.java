@@ -33,6 +33,13 @@ public class PostQueryRepository {
                 .fetch();
     }
 
+    public List<Post> getPostsV2() {
+
+        return queryFactory.selectFrom(qPost)
+                .orderBy(qPost.createdDt.desc())
+                .fetch();
+    }
+
     public List<Job> getJobs(Long post_id) {
         return queryFactory.selectFrom(qJob)
                 .where(qJob.id.in(
@@ -105,10 +112,7 @@ public class PostQueryRepository {
 
         return queryFactory.selectFrom(qPost)
                 .where(qPost.isRecruiting.eq(isRecruiting))
-                .orderBy(
-                        qPost.id.desc(),
-                        qPost.createdDt.desc()
-                )
+                .orderBy(qPost.createdDt.desc())
                 .fetch();
     }
 
