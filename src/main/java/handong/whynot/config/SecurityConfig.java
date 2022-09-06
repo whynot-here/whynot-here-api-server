@@ -25,7 +25,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter{
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAuthorizationFilter customAuthorizationFilter;
@@ -43,35 +43,35 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .authorizeRequests()
-                    // Account
-                    .antMatchers("/v1/login", "/v1/sign-up", "/v1/check-email-token", "/v1/resend-token",
-                            "/v1/check-email-duplicate", "/v1/check-nickname-duplicate", "/v2/sign-in", "/auth/login/**").permitAll()
+                // Account
+                .antMatchers("/v1/login", "/v1/sign-up", "/v1/check-email-token", "/v1/resend-token",
+                        "/v1/check-email-duplicate", "/v1/check-nickname-duplicate", "/v2/sign-in", "/auth/login/**").permitAll()
 
-                    // Post
-                    .antMatchers(HttpMethod.GET,"/v1/posts/**", "/v1/comments/**", "/v2/posts/**", "/v2/posts/category/**").permitAll()
-                    .antMatchers("/v1/posts/favorite/**", "/v1/posts/apply/**", "/v1/posts/own/**", "/v2/posts/**").hasRole("USER")
+                // Post
+                .antMatchers(HttpMethod.GET, "/v1/posts/**", "/v1/comments/**", "/v2/posts/**", "/v2/posts/category/**").permitAll()
+                .antMatchers("/v1/posts/favorite/**", "/v1/posts/apply/**", "/v1/posts/own/**", "/v2/posts/**").hasRole("USER")
 
-                    // Category
-                    .antMatchers(HttpMethod.GET,"/v2/category/default").permitAll()
+                // Category
+                .antMatchers(HttpMethod.GET, "/v2/category/default").permitAll()
 
-                    // Swagger
-                    .antMatchers(HttpMethod.GET,"/v1/posts/**", "/v1/comments/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                    .anyRequest().authenticated()
+                // Swagger
+                .antMatchers(HttpMethod.GET, "/v1/posts/**", "/v1/comments/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .anyRequest().authenticated()
 
                 .and()
-                    .addFilterAfter(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
-                    .exceptionHandling()
-                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                .addFilterAfter(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
                 .and()
-                    .oauth2Login()
-                        .authorizationEndpoint()
-                        .baseUri("/auth/login")
-                        .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
-                    .and()
-                        .successHandler(oAuth2SuccessHandler)
-                        .failureHandler(oAuth2FailureHandler)
-                        .userInfoEndpoint()
-                            .userService(customOAuth2UserService)
+                .oauth2Login()
+                .authorizationEndpoint()
+                .baseUri("/auth/login")
+                .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
+                .and()
+                .successHandler(oAuth2SuccessHandler)
+                .failureHandler(oAuth2FailureHandler)
+                .userInfoEndpoint()
+                .userService(customOAuth2UserService)
         ;
 
         // 예외처리 필터 등록

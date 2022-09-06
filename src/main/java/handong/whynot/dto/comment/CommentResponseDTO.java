@@ -20,7 +20,7 @@ public class CommentResponseDTO {
 
     public static CommentResponseDTO of(Comment comment) {
 
-        return CommentResponseDTO.builder()
+        return builder()
                 .commentId(comment.getId())
                 .content(comment.getContent())
                 .account(AccountResponseDTO.of(comment.getCreatedBy()))

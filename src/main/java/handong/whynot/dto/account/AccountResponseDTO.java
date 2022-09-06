@@ -18,7 +18,7 @@ public class AccountResponseDTO {
     private AuthType authType;
 
     public static AccountResponseDTO of(Account account) {
-        return AccountResponseDTO.builder()
+        return builder()
                 .id(account.getId())
                 .email(account.getEmail())
                 .nickname(account.getNickname())

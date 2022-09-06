@@ -32,13 +32,13 @@ public class PostExceptionHandler {
     public ErrorResponseDTO postAlreadyFavoriteOff() {
         return ErrorResponseDTO.of(PostResponseCode.POST_DELETE_FAVORITE_FAIL, null);
     }
-  
+
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(PostAlreadyApplyOn.class)
     public ErrorResponseDTO postAlreadyApplyOn() {
         return ErrorResponseDTO.of(PostResponseCode.POST_CREATE_APPLY_FAIL, null);
     }
-  
+
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(PostAlreadyApplyOff.class)
     public ErrorResponseDTO postAlreadyApplyOff() {

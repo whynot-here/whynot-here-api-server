@@ -8,18 +8,19 @@ import handong.whynot.exception.account.OAuth2ProcessingException;
 
 import java.util.Map;
 
-public class OAuth2UserInfoFactory {
+public final class OAuth2UserInfoFactory {
+
+    private OAuth2UserInfoFactory() {
+    }
 
     public static OAuth2UserInfo getOAuth2UserInfo(String registrationId, Map<String, Object> attributes) {
-        if(registrationId.equalsIgnoreCase(AuthType.google.toString())) {
+        if (registrationId.equalsIgnoreCase(AuthType.google.toString())) {
             SecuredOAuth2DTO securedOAuth2DTO = getGoogleOAuth2User(attributes);
             return new GoogleOAuth2UserInfo(securedOAuth2DTO);
-        }
-        else if (registrationId.equalsIgnoreCase(AuthType.kakao.toString())) {
+        } else if (registrationId.equalsIgnoreCase(AuthType.kakao.toString())) {
             SecuredOAuth2DTO securedOAuth2DTO = getKakaoOAuth2User(attributes);
             return new KakaoOAuth2UserInfo(securedOAuth2DTO);
-        }
-        else if (registrationId.equalsIgnoreCase(AuthType.naver.toString())) {
+        } else if (registrationId.equalsIgnoreCase(AuthType.naver.toString())) {
             SecuredOAuth2DTO securedOAuth2DTO = getNaverOAuth2User(attributes);
             return new NaverOAuth2UserInfo(securedOAuth2DTO);
         } else {

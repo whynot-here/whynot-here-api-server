@@ -2,9 +2,7 @@ package handong.whynot.dto.post;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import handong.whynot.domain.Job;
 import handong.whynot.domain.Post;
-import handong.whynot.dto.account.AccountResponseDTO;
 import handong.whynot.dto.category.CategoryDTO;
 import lombok.*;
 
@@ -53,18 +51,6 @@ public class PostResponseDTO {
     private CategoryDTO category;
 
     private List<PostImageLinkDTO> imageLinks = new ArrayList<>();
-
-    public static PostResponseDTO of(Post post, List<Job> jobs, List<AccountResponseDTO> applicants) {
-        return builder()
-            .id(post.getId())
-            .title(post.getTitle())
-            .createdDt(post.getCreatedDt())
-            .updatedDt(post.getUpdatedDt())
-                .writer(PostWriterDTO.of(post.getCreatedBy()))
-            .content(post.getContent())
-            .isRecruiting(post.isRecruiting())
-            .build();
-    }
 
     public static PostResponseDTO of(Post post) {
 

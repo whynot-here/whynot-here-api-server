@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static handong.whynot.dto.job.JobType.getJobInfoBy;
@@ -107,7 +106,7 @@ public class PostService {
                                 getApplicants(post.getId())))
                 .collect(Collectors.toList());
     }
-    
+
     public List<PostResponseDTO> getPosts() {
 
         List<Post> posts = postQueryRepository.getPosts();
@@ -243,7 +242,7 @@ public class PostService {
         postFavoriteRepository.save(postFavorite);
 
     }
-  
+
     public void deleteFavorite(Long postId, Account account) {
 
         Post post = postRepository.findById(postId)
@@ -257,7 +256,7 @@ public class PostService {
         postFavoriteRepository.deleteById(favorite.get(0).getId());
 
     }
-  
+
     public List<PostResponseDTO> getApplys(Account account) {
 
         List<Post> posts = postQueryRepository.getApplys(account);
@@ -299,7 +298,7 @@ public class PostService {
 
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(post.getCreatedBy().getEmail())
-                .subject("[공고 지원 알림] "+post.getTitle()+" by "+account.getNickname())
+                .subject("[공고 지원 알림] " + post.getTitle() + " by " + account.getNickname())
                 .message(message)
                 .build();
 
@@ -329,14 +328,14 @@ public class PostService {
 
         EmailMessage emailMessage = EmailMessage.builder()
                 .to(post.getCreatedBy().getEmail())
-                .subject("[공고 지원 취소 알림] "+post.getTitle()+" by "+account.getNickname())
+                .subject("[공고 지원 취소 알림] " + post.getTitle() + " by " + account.getNickname())
                 .message(message)
                 .build();
 
         emailService.sendEmail(emailMessage);
 
     }
-  
+
     public List<PostResponseDTO> getMyPosts(Account account) {
 
         List<Post> posts = postRepository.findAllByCreatedBy(account);
@@ -384,7 +383,7 @@ public class PostService {
             List<PostResponseDTO> responseDTOList = new ArrayList<>();
 
 
-            for(Category it : childrenCategoryList) {
+            for (Category it : childrenCategoryList) {
                 responseDTOList.addAll(postRepository.findAllByCategoryId(it).stream()
                         .map(PostResponseDTO::of)
                         .collect(Collectors.toList()));

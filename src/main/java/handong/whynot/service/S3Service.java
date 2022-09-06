@@ -24,13 +24,11 @@ import java.util.function.BiFunction;
 @RequiredArgsConstructor
 public class S3Service {
 
-    @Value("${cloud.aws.s3.bucket}")
-    public String bucket;
-
-    private final AmazonS3Client amazonS3Client;
-
     private static final BiFunction<String, File, String> FILE_NAME =
             (dirName, uploadFile) -> dirName + '/' + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ssSS")) + '-' + uploadFile.getName();
+    private final AmazonS3Client amazonS3Client;
+    @Value("${cloud.aws.s3.bucket}")
+    public String bucket;
 
     // S3 파일 업로드 수행
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
@@ -52,10 +50,10 @@ public class S3Service {
     // S3로 업로드
     private String putS3(File uploadFile, String fileName) {
 
-        try{
+        try {
             PutObjectRequest req = new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead);
             amazonS3Client.putObject(req);
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new S3AclException(S3ResponseCode.AWS_S3_UPLOAD_FAIL_ACL_ISSUE);
         }
 
@@ -80,7 +78,7 @@ public class S3Service {
         convertFile.createNewFile();
 
         // 업로드 가능한 파일 형식 검증
-        if (! ImageType.isValidFileMimeType(convertFile, ImageType.IMAGE_MIME_TYPES)) {
+        if (!ImageType.isValidFileMimeType(convertFile, ImageType.IMAGE_MIME_TYPES)) {
             removeLocalFile(convertFile);
             throw new S3InvalidFileTypeException(S3ResponseCode.AWS_S3_UPLOAD_FAIL_INVALID_TYPE);
         }

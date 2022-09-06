@@ -11,7 +11,8 @@ public final class NicknameMaker {
             "점심밥고는", "푸른바다", "여기모여라", "내일중간고사", "새내기", "행복한", "아이스아메리카노", "방귀쟁이", "촛불", "휴강기원1일차",
             "작심삼일", "과탑", "자린고비", "아기고양이", "농사꾼", "내 꿈은", "비타민");
 
-    private NicknameMaker() {}
+    private NicknameMaker() {
+    }
 
     public static String make(String nickname) {
         return PREFIX_LIST.get(RandomUtils.nextInt(0, PREFIX_LIST.size() - 1)) + nickname;

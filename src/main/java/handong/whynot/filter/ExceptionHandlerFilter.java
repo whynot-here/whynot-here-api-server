@@ -51,7 +51,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
                                  HttpServletResponse response, Throwable ex) {
 
         List<String> errorMessage = new ArrayList<>();
-        if(Objects.isNull(ex.getMessage())) {
+        if (Objects.isNull(ex.getMessage())) {
             errorMessage = null;
         } else {
             errorMessage.add(ex.getMessage());

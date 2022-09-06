@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class CategoryInfo implements Comparable<CategoryInfo>{
+public class CategoryInfo implements Comparable<CategoryInfo> {
 
     private Long parentId;
     private String parentCode;
@@ -20,11 +20,17 @@ public class CategoryInfo implements Comparable<CategoryInfo>{
     @Override
     public int compareTo(CategoryInfo info) {
 
-        if(info.parentId < parentId) {
+        if (info.parentId < parentId) {
             return 1;
-        } else if(info.parentId > parentId) {
+        }
+        if (info.parentId > parentId) {
             return -1;
         }
         return 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof CategoryInfo && compareTo((CategoryInfo) o) == 0;
     }
 }

@@ -21,11 +21,11 @@ public enum JobType {
     public static List<Job> getJobInfoBy(List<JobType> jobTypeList) {
 
         return jobTypeList.stream()
-                          .map(jobType -> Job.builder()
-                                             .id(jobType.getCode())
-                                             .name(jobType.getJobName())
-                                             .build()
+                .map(jobType -> Job.builder()
+                        .id(jobType.getCode())
+                        .name(jobType.getJobName())
+                        .build()
                 )
-                          .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 }
