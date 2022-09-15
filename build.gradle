@@ -37,6 +37,7 @@ dependencies {
 
     // redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
     // queryDSL
     implementation 'com.querydsl:querydsl-jpa'

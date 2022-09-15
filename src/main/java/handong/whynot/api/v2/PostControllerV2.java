@@ -7,6 +7,8 @@ import handong.whynot.service.AccountService;
 import handong.whynot.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +24,7 @@ public class PostControllerV2 {
     private final AccountService accountService;
 
     @Operation(summary = "공고 전체 조회")
+    @Cacheable(value="MainPosts", key="'MainPosts'")
     @GetMapping("")
     public List<PostResponseDTO> getPostsV2(
             @RequestParam(name = "recruit", required = false) RecruitStatus status) {
@@ -30,6 +33,7 @@ public class PostControllerV2 {
     }
 
     @Operation(summary = "선택한 카테고리 공고 전체 조회")
+    @Cacheable(value="CategoryPosts", key="'Category#' + #id + '-Posts'")
     @GetMapping("/category/{id}")
     public List<PostResponseDTO> getPostsByCategoryV2(@PathVariable Long id) {
 
@@ -37,6 +41,7 @@ public class PostControllerV2 {
     }
 
     @Operation(summary = "공고 생성")
+    @CacheEvict(value="MainPosts", key="'MainPosts'")
     @PostMapping("")
     @ResponseStatus(CREATED)
     public ResponseDTO createPost(@RequestBody PostRequestDTO request) {
@@ -48,12 +53,14 @@ public class PostControllerV2 {
     }
 
     @Operation(summary = "공고 단건 조회")
+    @Cacheable(value="Post", key="'Post#' + #postId")
     @GetMapping("/{postId}")
     public PostResponseDTO getPost(@PathVariable Long postId) {
         return postService.getPost(postId);
     }
 
     @Operation(summary = "공고 단건 삭제")
+    @CacheEvict(value="Post", key="'Post#' + #postId")
     @DeleteMapping("/{postId}")
     public ResponseDTO deletePost(@PathVariable Long postId) {
 
@@ -64,6 +71,7 @@ public class PostControllerV2 {
     }
 
     @Operation(summary = "공고 단건 수정")
+    @CacheEvict(value="Post", key="'Post#' + #postId")
     @PutMapping("/{postId}")
     public ResponseDTO updatePost(@PathVariable Long postId, @RequestBody PostRequestDTO request) {
 

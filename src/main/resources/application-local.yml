@@ -62,6 +62,9 @@ spring:
     port: ${redis.port}
     password: ${redis.password}
 
+  cache:
+    type: redis
+
   jpa:
     generate-ddl: true
     database: MYSQL
