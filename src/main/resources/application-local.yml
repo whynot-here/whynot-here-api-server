@@ -57,6 +57,11 @@ spring:
     username: ${db.username}
     password: ${db.password}
 
+  redis:
+    host: ${redis.host}
+    port: ${redis.port}
+    password: ${redis.password}
+
   jpa:
     generate-ddl: true
     database: MYSQL
