@@ -73,10 +73,7 @@ public class PostService {
         List<Post> posts = postQueryRepository.getPostByRecruitAndJob(isRecruiting, jobList);
 
         return posts.stream()
-                .map(post ->
-                        PostResponseDTO.of(post,
-                                postQueryRepository.getJobs(post.getId()),
-                                getApplicants(post.getId())))
+                .map(PostResponseDTO::of)
                 .collect(Collectors.toList());
     }
 
@@ -100,10 +97,7 @@ public class PostService {
         List<Post> posts = postQueryRepository.getPostByJob(jobs);
 
         return posts.stream()
-                .map(post ->
-                        PostResponseDTO.of(post,
-                                postQueryRepository.getJobs(post.getId()),
-                                getApplicants(post.getId())))
+                .map(PostResponseDTO::of)
                 .collect(Collectors.toList());
     }
 
@@ -111,10 +105,7 @@ public class PostService {
 
         List<Post> posts = postQueryRepository.getPosts();
         return posts.stream()
-                .map(post ->
-                        PostResponseDTO.of(post,
-                                postQueryRepository.getJobs(post.getId()),
-                                getApplicants(post.getId())))
+                .map(PostResponseDTO::of)
                 .collect(Collectors.toList());
     }
 
@@ -159,9 +150,7 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
 
-        return PostResponseDTO.of(post,
-                postQueryRepository.getJobs(post.getId()),
-                getApplicants(post.getId()));
+        return PostResponseDTO.of(post);
     }
 
     public void deletePost(Long id, Account account) {
@@ -218,10 +207,7 @@ public class PostService {
         List<Post> posts = postQueryRepository.getFavorites(account);
 
         return posts.stream()
-                .map(post ->
-                        PostResponseDTO.of(post,
-                                postQueryRepository.getJobs(post.getId()),
-                                getApplicants(post.getId())))
+                .map(PostResponseDTO::of)
                 .collect(Collectors.toList());
     }
 
@@ -262,10 +248,7 @@ public class PostService {
         List<Post> posts = postQueryRepository.getApplys(account);
 
         return posts.stream()
-                .map(post ->
-                        PostResponseDTO.of(post,
-                                postQueryRepository.getJobs(post.getId()),
-                                getApplicants(post.getId())))
+                .map(PostResponseDTO::of)
                 .collect(Collectors.toList());
     }
 
@@ -341,10 +324,7 @@ public class PostService {
         List<Post> posts = postRepository.findAllByCreatedBy(account);
 
         return posts.stream()
-                .map(post ->
-                        PostResponseDTO.of(post,
-                                postQueryRepository.getJobs(post.getId()),
-                                getApplicants(post.getId())))
+                .map(PostResponseDTO::of)
                 .collect(Collectors.toList());
     }
 
