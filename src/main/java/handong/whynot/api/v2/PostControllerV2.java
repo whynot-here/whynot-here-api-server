@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -60,7 +61,13 @@ public class PostControllerV2 {
     }
 
     @Operation(summary = "공고 단건 삭제")
-    @CacheEvict(value="Post", key="'Post#' + #postId")
+    @Caching(
+            evict = {
+                    @CacheEvict(value="Post", key="'Post#' + #postId"),
+                    @CacheEvict(value="MainPosts", key="'MainPosts'"),
+                    @CacheEvict(value="CategoryPosts", allEntries = true)
+            }
+    )
     @DeleteMapping("/{postId}")
     public ResponseDTO deletePost(@PathVariable Long postId) {
 
@@ -71,7 +78,13 @@ public class PostControllerV2 {
     }
 
     @Operation(summary = "공고 단건 수정")
-    @CacheEvict(value="Post", key="'Post#' + #postId")
+    @Caching(
+            evict = {
+                    @CacheEvict(value="Post", key="'Post#' + #postId"),
+                    @CacheEvict(value="MainPosts", key="'MainPosts'"),
+                    @CacheEvict(value="CategoryPosts", allEntries = true)
+            }
+    )
     @PutMapping("/{postId}")
     public ResponseDTO updatePost(@PathVariable Long postId, @RequestBody PostRequestDTO request) {
 
