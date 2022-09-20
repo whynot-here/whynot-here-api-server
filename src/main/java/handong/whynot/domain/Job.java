@@ -13,7 +13,8 @@ import javax.persistence.*;
 @EqualsAndHashCode(of = "id")
 public class Job {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "job_id", nullable = false)
     private Long id;
 

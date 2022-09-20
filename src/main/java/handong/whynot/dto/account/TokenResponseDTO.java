@@ -16,8 +16,8 @@ public class TokenResponseDTO {
 
     private AccountResponseDTO accountResponseDTO;
 
-    public static TokenResponseDTO of(Account account, String accessToken, String refreshToken){
-        return TokenResponseDTO.builder()
+    public static TokenResponseDTO of(Account account, String accessToken, String refreshToken) {
+        return builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .accountResponseDTO(AccountResponseDTO.of(account))

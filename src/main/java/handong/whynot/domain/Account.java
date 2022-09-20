@@ -16,7 +16,8 @@ import java.util.UUID;
 @EqualsAndHashCode(of = "id")
 public class Account {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 

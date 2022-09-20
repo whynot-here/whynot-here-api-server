@@ -1,13 +1,8 @@
 package handong.whynot.domain;
 
-import javax.persistence.*;
+import lombok.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -17,11 +12,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Table(
-        name="job_post",
-        uniqueConstraints={
+        name = "job_post",
+        uniqueConstraints = {
                 @UniqueConstraint(
-                        name= "constJobPost",
-                        columnNames={"job_id", "post_id"}
+                        name = "constJobPost",
+                        columnNames = {"job_id", "post_id"}
                 )
         }
 )

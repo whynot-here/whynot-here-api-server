@@ -26,22 +26,19 @@ import static handong.whynot.repository.HttpCookieOAuth2AuthorizationRequestRepo
 @RequiredArgsConstructor
 public class OAuth2FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
+    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     @Value("${spring.security.oauth2.redirect-uri}")
     public String CLIENT_REDIRECT_URI;
-
     @Value("${spring.security.oauth2.information-uri-essential}")
     public String INFORMATION_URI_ESSENTIAL;
-
     @Value("${spring.security.oauth2.information-uri-email}")
     public String INFORMATION_URI_EMAIL;
-
-    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
 
-        String targetUrl = "";
-        String errorCode = (((OAuth2AuthenticationException)exception).getError()).getErrorCode();
+        String targetUrl;
+        String errorCode = ((OAuth2AuthenticationException) exception).getError().getErrorCode();
 
         // 필수 정보가 누락된 경우 안내 페이지
         if (StringUtils.equals(AccountResponseCode.ACCOUNT_OAUTH2_NOT_PROVIDED_VALUE.getStatusCode().toString(), errorCode)) {

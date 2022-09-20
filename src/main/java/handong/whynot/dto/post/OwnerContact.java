@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OwnerContact {
 
-   private ContactType type;
-   private String value;
+    private ContactType type;
+    private String value;
 }

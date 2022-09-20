@@ -1,8 +1,7 @@
 package handong.whynot.util;
 
-import org.springframework.core.convert.converter.Converter;
-
 import handong.whynot.dto.post.RecruitStatus;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component

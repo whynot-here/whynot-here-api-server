@@ -1,7 +1,6 @@
 package handong.whynot.domain;
 
 import handong.whynot.domain.common.BaseTimeEntity;
-import handong.whynot.dto.post.PostRequestDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,7 +14,8 @@ import javax.persistence.*;
 @EqualsAndHashCode(of = "id")
 public class PostImageLink extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -28,7 +28,7 @@ public class PostImageLink extends BaseTimeEntity {
 
     public static PostImageLink of(String link, Post post) {
 
-        return PostImageLink.builder()
+        return builder()
                 .link(link)
                 .post(post)
                 .build();

@@ -12,17 +12,18 @@ import javax.persistence.*;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Table(
-        name="post_favorite",
-        uniqueConstraints={
+        name = "post_favorite",
+        uniqueConstraints = {
                 @UniqueConstraint(
-                        name= "constPostFavorite",
-                        columnNames={"post_id", "account_id"}
+                        name = "constPostFavorite",
+                        columnNames = {"post_id", "account_id"}
                 )
         }
 )
 public class PostFavorite {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
