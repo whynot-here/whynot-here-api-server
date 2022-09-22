@@ -11,6 +11,6 @@ public enum AuthType {
     kakao;
 
     public static Boolean isValidRegistrationId(String registrationId) {
-        return Arrays.stream(AuthType.values()).anyMatch(value -> StringUtils.equals(value.toString(), registrationId));
+        return Arrays.stream(values()).anyMatch(value -> StringUtils.equals(value.toString(), registrationId));
     }
 }

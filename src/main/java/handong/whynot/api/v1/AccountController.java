@@ -1,15 +1,14 @@
 package handong.whynot.api.v1;
 
-import javax.validation.Valid;
-
-import handong.whynot.dto.account.*;
-import org.springframework.web.bind.annotation.*;
-
 import handong.whynot.domain.Account;
+import handong.whynot.dto.account.*;
 import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -70,7 +69,7 @@ public class AccountController {
     @GetMapping("/account/login-state")
     public IsLoginDTO getLoginState(@CurrentAccount Account account) {
 
-        if(account != null) {
+        if (account != null) {
             return IsLoginDTO.builder()
                     .isLogin(true).build();
         }

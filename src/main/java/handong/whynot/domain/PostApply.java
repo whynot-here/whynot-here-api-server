@@ -12,17 +12,18 @@ import javax.persistence.*;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Table(
-        name="post_apply",
-        uniqueConstraints={
+        name = "post_apply",
+        uniqueConstraints = {
                 @UniqueConstraint(
-                        name= "constPostApply",
-                        columnNames={"post_id", "account_id", "job_id"}
+                        name = "constPostApply",
+                        columnNames = {"post_id", "account_id", "job_id"}
                 )
         }
 )
 public class PostApply {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 

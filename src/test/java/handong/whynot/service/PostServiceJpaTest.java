@@ -11,7 +11,6 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest
@@ -26,7 +25,7 @@ class PostServiceJpaTest {
 
     @Transactional
     @Test
-    @Rollback(value = false)
+    @Rollback(false)
     void createPost() {
         PostRequestDTO requestDTO = PostRequestDTO.builder()
                 .content("content")

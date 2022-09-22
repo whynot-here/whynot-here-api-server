@@ -1,20 +1,13 @@
 package handong.whynot.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
+import handong.whynot.domain.*;
+import handong.whynot.dto.account.AccountResponseDTO;
+import handong.whynot.dto.job.JobResponseCode;
+import handong.whynot.dto.post.*;
+import handong.whynot.exception.job.JobNotFoundException;
+import handong.whynot.exception.post.*;
+import handong.whynot.mail.EmailService;
+import handong.whynot.repository.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,33 +15,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import handong.whynot.domain.Account;
-import handong.whynot.domain.Job;
-import handong.whynot.domain.JobPost;
-import handong.whynot.domain.Post;
-import handong.whynot.domain.PostApply;
-import handong.whynot.domain.PostFavorite;
-import handong.whynot.dto.account.AccountResponseDTO;
-import handong.whynot.dto.job.JobResponseCode;
-import handong.whynot.dto.post.PostApplyRequestDTO;
-import handong.whynot.dto.post.PostRecruitDTO;
-import handong.whynot.dto.post.PostRequestDTO;
-import handong.whynot.dto.post.PostResponseCode;
-import handong.whynot.dto.post.PostResponseDTO;
-import handong.whynot.exception.job.JobNotFoundException;
-import handong.whynot.exception.post.PostAlreadyApplyOff;
-import handong.whynot.exception.post.PostAlreadyApplyOn;
-import handong.whynot.exception.post.PostAlreadyFavoriteOff;
-import handong.whynot.exception.post.PostAlreadyFavoriteOn;
-import handong.whynot.exception.post.PostNotFoundException;
-import handong.whynot.mail.EmailService;
-import handong.whynot.repository.AccountRepository;
-import handong.whynot.repository.JobPostRepository;
-import handong.whynot.repository.JobRepository;
-import handong.whynot.repository.PostApplyRepository;
-import handong.whynot.repository.PostFavoriteRepository;
-import handong.whynot.repository.PostQueryRepository;
-import handong.whynot.repository.PostRepository;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PostServiceTest {
@@ -107,15 +81,15 @@ class PostServiceTest {
         when(jobRepository.findById(jobIds.get(0))).thenReturn(Optional.ofNullable(Job.builder().build()));
         when(jobRepository.findById(jobIds.get(1))).thenReturn(Optional.ofNullable(Job.builder().build()));
         when(jobRepository.findById(notExistJobId))
-            .thenThrow(new JobNotFoundException(JobResponseCode.JOB_READ_FAIL));
+                .thenThrow(new JobNotFoundException(JobResponseCode.JOB_READ_FAIL));
 
         PostRequestDTO requestDTO = PostRequestDTO.builder()
 //                                                  .jobIds(jobIds)
-                                                  .build();
+                .build();
 
         // when, then
         JobNotFoundException exception =
-            assertThrows(JobNotFoundException.class, () -> postService.createPost(requestDTO, account));
+                assertThrows(JobNotFoundException.class, () -> postService.createPost(requestDTO, account));
         assertEquals(JobResponseCode.JOB_READ_FAIL, exception.getResponseCode());
         verify(postRepository, times(1)).save(any());
     }
@@ -129,13 +103,13 @@ class PostServiceTest {
 
         Long notExistId = 12345L;
         Post post = Post.builder().id(notExistId).createdBy(account).build();
-        PostResponseDTO notExistResponse = PostResponseDTO.of(post, new ArrayList<>(), new ArrayList<>());
+        PostResponseDTO notExistResponse = PostResponseDTO.of(post);
         when(postRepository.findById(notExistId)).thenThrow(
-            new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+                new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
 
         // when, then
         PostNotFoundException exception =
-            assertThrows(PostNotFoundException.class, () -> postService.getPost(notExistId));
+                assertThrows(PostNotFoundException.class, () -> postService.getPost(notExistId));
         assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
     }
 
@@ -150,7 +124,7 @@ class PostServiceTest {
         List<Job> jobs = new ArrayList<>();
         List<AccountResponseDTO> applicants = new ArrayList<>();
 
-        PostResponseDTO expectedResponse = PostResponseDTO.of(post, jobs, applicants);
+        PostResponseDTO expectedResponse = PostResponseDTO.of(post);
         when(postRepository.findById(post.getId())).thenReturn(Optional.of(post));
         when(postQueryRepository.getJobs(post.getId())).thenReturn(jobs);
 
@@ -177,7 +151,7 @@ class PostServiceTest {
 
         // when, then
         PostNotFoundException exception =
-            assertThrows(PostNotFoundException.class, () -> postService.deletePost(postId, currentAccount));
+                assertThrows(PostNotFoundException.class, () -> postService.deletePost(postId, currentAccount));
         assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
         verify(jobPostRepository, never()).findAllByPost(any());
     }
@@ -199,8 +173,8 @@ class PostServiceTest {
 
         // when, then
         PostNotFoundException exception =
-            assertThrows(PostNotFoundException.class,
-                         () -> postService.deletePost(notExistPostId, currentAccount));
+                assertThrows(PostNotFoundException.class,
+                        () -> postService.deletePost(notExistPostId, currentAccount));
         assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
         verify(jobPostRepository, never()).findAllByPost(any());
     }
@@ -216,18 +190,18 @@ class PostServiceTest {
         Account currentAccount = Account.builder().id(currentAccountId).build();
 
         PostRequestDTO dto = PostRequestDTO.builder()
-                                           .title("제목 수정")
-                                           .content("내용 수정")
+                .title("제목 수정")
+                .content("내용 수정")
 //                                           .postImg("http://image-edited.com")
-                                           .build();
+                .build();
 
         when(postRepository.findByIdAndCreatedBy(postId, currentAccount))
-            .thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+                .thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
 
         // when, then
         PostNotFoundException exception =
-            assertThrows(PostNotFoundException.class,
-                         () -> postService.updatePost(postId, dto, currentAccount));
+                assertThrows(PostNotFoundException.class,
+                        () -> postService.updatePost(postId, dto, currentAccount));
         assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
         verify(postRepository, never()).save(any());
 
@@ -244,17 +218,17 @@ class PostServiceTest {
         Account currentAccount = Account.builder().id(currentAccountId).build();
 
         PostRequestDTO dto = PostRequestDTO.builder()
-                                           .title("제목 수정")
-                                           .content("내용 수정")
+                .title("제목 수정")
+                .content("내용 수정")
 //                                           .postImg("http://image-edited.com")
-                                           .build();
+                .build();
         when(postRepository.findByIdAndCreatedBy(notExistPostId, currentAccount))
-            .thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+                .thenThrow(new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
 
         // when, then
         PostNotFoundException exception =
-            assertThrows(PostNotFoundException.class,
-                         () -> postService.updatePost(notExistPostId, dto, currentAccount));
+                assertThrows(PostNotFoundException.class,
+                        () -> postService.updatePost(notExistPostId, dto, currentAccount));
         assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
         verify(postRepository, never()).save(any());
     }
@@ -356,11 +330,11 @@ class PostServiceTest {
         Account account = Account.builder().build();
         Long notExistId = 12345L;
         when(postRepository.findById(notExistId)).thenThrow(
-            new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+                new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
 
         // when, then
         PostNotFoundException exception =
-            assertThrows(PostNotFoundException.class, () -> postService.createFavorite(notExistId, account));
+                assertThrows(PostNotFoundException.class, () -> postService.createFavorite(notExistId, account));
         assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
 
     }
@@ -379,7 +353,7 @@ class PostServiceTest {
 
         // when, then
         PostAlreadyFavoriteOn exception =
-            assertThrows(PostAlreadyFavoriteOn.class, () -> postService.createFavorite(post.getId(), account));
+                assertThrows(PostAlreadyFavoriteOn.class, () -> postService.createFavorite(post.getId(), account));
         assertEquals(PostResponseCode.POST_CREATE_FAVORITE_FAIL, exception.getResponseCode());
     }
 
@@ -391,11 +365,11 @@ class PostServiceTest {
         Account account = Account.builder().build();
         Long notExistId = 12345L;
         when(postRepository.findById(notExistId)).thenThrow(
-            new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+                new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
 
         // when, then
         PostNotFoundException exception =
-            assertThrows(PostNotFoundException.class, () -> postService.deleteFavorite(notExistId, account));
+                assertThrows(PostNotFoundException.class, () -> postService.deleteFavorite(notExistId, account));
         assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
 
     }
@@ -414,7 +388,7 @@ class PostServiceTest {
 
         // when, then
         PostAlreadyFavoriteOff exception =
-            assertThrows(PostAlreadyFavoriteOff.class, () -> postService.deleteFavorite(post.getId(), account));
+                assertThrows(PostAlreadyFavoriteOff.class, () -> postService.deleteFavorite(post.getId(), account));
         assertEquals(PostResponseCode.POST_DELETE_FAVORITE_FAIL, exception.getResponseCode());
     }
 
@@ -450,12 +424,12 @@ class PostServiceTest {
         Long notExistId = 12345L;
         PostApplyRequestDTO requestDTO = PostApplyRequestDTO.builder().build();
         when(postQueryRepository.getEnabledPost(notExistId)).thenThrow(
-            new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+                new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
 
         // when, then
         PostNotFoundException exception =
-            assertThrows(PostNotFoundException.class,
-                         () -> postService.createApply(notExistId, requestDTO, account));
+                assertThrows(PostNotFoundException.class,
+                        () -> postService.createApply(notExistId, requestDTO, account));
         assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
 
         verify(jobRepository, never()).findById(anyLong());
@@ -479,12 +453,12 @@ class PostServiceTest {
 
         when(postQueryRepository.getEnabledPost(anyLong())).thenReturn(List.of(post));
         when(jobRepository.findById(notExistJobId)).thenThrow(
-            new JobNotFoundException(JobResponseCode.JOB_READ_FAIL));
+                new JobNotFoundException(JobResponseCode.JOB_READ_FAIL));
 
         // when, then
         JobNotFoundException exception =
-            assertThrows(JobNotFoundException.class,
-                         () -> postService.createApply(postId, requestDTO, account));
+                assertThrows(JobNotFoundException.class,
+                        () -> postService.createApply(postId, requestDTO, account));
         assertEquals(JobResponseCode.JOB_READ_FAIL, exception.getResponseCode());
 
         verify(postQueryRepository, never()).getApplyByPostId(any(), any());
@@ -510,12 +484,12 @@ class PostServiceTest {
         when(postQueryRepository.getEnabledPost(anyLong())).thenReturn(List.of(post));
         when(jobRepository.findById(anyLong())).thenReturn(Optional.ofNullable(job));
         when(postQueryRepository.getApplyByPostId(post, account)).thenThrow(
-            new PostAlreadyApplyOn(PostResponseCode.POST_CREATE_APPLY_FAIL));
+                new PostAlreadyApplyOn(PostResponseCode.POST_CREATE_APPLY_FAIL));
 
         // when, then
         PostAlreadyApplyOn exception =
-            assertThrows(PostAlreadyApplyOn.class,
-                         () -> postService.createApply(post.getId(), requestDTO, account));
+                assertThrows(PostAlreadyApplyOn.class,
+                        () -> postService.createApply(post.getId(), requestDTO, account));
         assertEquals(PostResponseCode.POST_CREATE_APPLY_FAIL, exception.getResponseCode());
 
         verify(postApplyRepository, never()).save(any());
@@ -530,11 +504,11 @@ class PostServiceTest {
         Account account = Account.builder().build();
         Long notExistId = 12345L;
         when(postQueryRepository.getEnabledPost(notExistId)).thenThrow(
-            new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+                new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
 
         // when, then
         PostNotFoundException exception =
-            assertThrows(PostNotFoundException.class, () -> postService.deleteApply(notExistId, account));
+                assertThrows(PostNotFoundException.class, () -> postService.deleteApply(notExistId, account));
         assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
 
         verify(jobRepository, never()).findById(anyLong());
@@ -557,11 +531,11 @@ class PostServiceTest {
 
         when(postQueryRepository.getEnabledPost(anyLong())).thenReturn(List.of(post));
         when(postQueryRepository.getApplyByPostId(post, account)).thenThrow(
-            new PostAlreadyApplyOff(PostResponseCode.POST_DELETE_APPLY_FAIL));
+                new PostAlreadyApplyOff(PostResponseCode.POST_DELETE_APPLY_FAIL));
 
         // when, then
         PostAlreadyApplyOff exception =
-            assertThrows(PostAlreadyApplyOff.class, () -> postService.deleteApply(post.getId(), account));
+                assertThrows(PostAlreadyApplyOff.class, () -> postService.deleteApply(post.getId(), account));
         assertEquals(PostResponseCode.POST_DELETE_APPLY_FAIL, exception.getResponseCode());
 
         verify(postApplyRepository, never()).save(any());
@@ -601,13 +575,13 @@ class PostServiceTest {
         PostRecruitDTO dto = PostRecruitDTO.builder().build();
 
         when(postRepository.findByIdAndCreatedBy(notExistId, account)).thenThrow(
-            new PostNotFoundException(PostResponseCode.POST_READ_FAIL)
+                new PostNotFoundException(PostResponseCode.POST_READ_FAIL)
         );
 
         // when, then
         PostNotFoundException exception =
-            assertThrows(PostNotFoundException.class,
-                         () -> postService.changeRecruiting(notExistId, dto, account));
+                assertThrows(PostNotFoundException.class,
+                        () -> postService.changeRecruiting(notExistId, dto, account));
         assertEquals(PostResponseCode.POST_READ_FAIL, exception.getResponseCode());
         verify(postRepository, never()).save(any());
 

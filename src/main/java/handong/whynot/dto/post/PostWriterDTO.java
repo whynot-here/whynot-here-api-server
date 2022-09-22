@@ -15,7 +15,7 @@ public class PostWriterDTO {
     private String profileImg;
 
     public static PostWriterDTO of(Account account) {
-        return PostWriterDTO.builder()
+        return builder()
                 .email(account.getEmail())
                 .nickname(account.getNickname())
                 .profileImg(account.getProfileImg())

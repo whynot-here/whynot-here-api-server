@@ -83,7 +83,7 @@ public class PostQueryRepository {
 
                 .fetch();
     }
-  
+
     public List<Post> getApplys(Account account) {
 
         Long accountId = account.getId();
@@ -95,7 +95,7 @@ public class PostQueryRepository {
                 ))
                 .fetch();
     }
-  
+
     public List<PostApply> getApplyByPostId(Post post, Account account) {
 
         Long postId = post.getId();

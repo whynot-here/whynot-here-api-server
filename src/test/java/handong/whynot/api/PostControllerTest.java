@@ -26,8 +26,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -39,19 +37,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-
 @WebMvcTest(PostController.class)
 public class PostControllerTest {
 
-    @MockBean private PostService postService;
-    @MockBean private PostRepository postRepository;
-    @MockBean private AccountService accountService;
-    @MockBean private AccountRepository accountRepository;
-    @MockBean private PostQueryRepository postQueryRepository;
-    @MockBean private PasswordEncoder passwordEncoder;
+    @MockBean
+    private PostService postService;
+    @MockBean
+    private PostRepository postRepository;
+    @MockBean
+    private AccountService accountService;
+    @MockBean
+    private AccountRepository accountRepository;
+    @MockBean
+    private PostQueryRepository postQueryRepository;
+    @MockBean
+    private PasswordEncoder passwordEncoder;
 
-    @Autowired MockMvc mockMvc;
-    @Autowired ObjectMapper objectMapper;
+    @Autowired
+    MockMvc mockMvc;
+    @Autowired
+    ObjectMapper objectMapper;
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext) {
@@ -66,11 +71,11 @@ public class PostControllerTest {
         when(accountRepository.findById(anyLong())).thenReturn(Optional.ofNullable(account));
 
         Post post = Post.builder()
-                        .id(1L)
-                        .createdBy(account)
-                        .title("공프기 모집")
-                        .content("개발자, 디자이너가 필요해요~!!").build();
-        PostResponseDTO dto = PostResponseDTO.of(post, new ArrayList<>(), new ArrayList<>());
+                .id(1L)
+                .createdBy(account)
+                .title("공프기 모집")
+                .content("개발자, 디자이너가 필요해요~!!").build();
+        PostResponseDTO dto = PostResponseDTO.of(post);
         when(postRepository.findById(1L)).thenReturn(Optional.of(post));
         when(postService.getPost(1L)).thenReturn(dto);
 
@@ -107,7 +112,7 @@ public class PostControllerTest {
 
     @DisplayName("공고 단건 조회")
     @Test
-    void getPostTest() throws Exception{
+    void getPostTest() throws Exception {
 
         mockMvc.perform(get("/v1/posts/{postId}", 1L))
                 .andDo(print())
@@ -172,7 +177,7 @@ public class PostControllerTest {
                 .andExpect(jsonPath("statusCode").value(20005))
         ;
     }
-  
+
     @DisplayName("공고 신청 성공")
     @Test
     @WithMockCustomUser
@@ -189,7 +194,7 @@ public class PostControllerTest {
                 .andExpect(jsonPath("statusCode").value(20009))
         ;
     }
-  
+
     @DisplayName("공고 취소 성공")
     @Test
     @WithMockCustomUser

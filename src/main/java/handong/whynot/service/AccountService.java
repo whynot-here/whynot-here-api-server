@@ -18,7 +18,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +37,7 @@ public class AccountService implements UserDetailsService {
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public UserDetails loadUserByUsername(String emailOrNickname) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String emailOrNickname) {
 
         Account account = findByEmailOrNickname(emailOrNickname, emailOrNickname);
 
@@ -66,11 +65,11 @@ public class AccountService implements UserDetailsService {
 
         Account account = accountQueryRepository.findByVerifiedEmail(signUpDTO.getEmail());
 
-        if(account == null) {
+        if (account == null) {
             throw new AccountNotValidToken(AccountResponseCode.ACCOUNT_NOT_VALID_TOKEN);
         }
 
-        if(account.getPassword() != null) {
+        if (account.getPassword() != null) {
             throw new AccountAlreadyExistEmailException(AccountResponseCode.ACCOUNT_ALREADY_EXIST_EMAIL);
         }
         account.setNickname(signUpDTO.getNickname());
@@ -135,7 +134,7 @@ public class AccountService implements UserDetailsService {
         // 동일한 email은 있지만, email 인증이 되지 않은 사용자
         Account savedAccount = accountRepository.findByEmail(email);
 
-        if(savedAccount == null) {
+        if (savedAccount == null) {
 
             // 동일한 email도 없는 경우 새로운 사용자
             Account newAccount = Account.builder()

@@ -11,21 +11,21 @@ public class GoogleOAuth2UserInfo extends OAuth2UserInfo {
 
     @Override
     public String getId() {
-        return super.id;
+        return id;
     }
 
     @Override
     public String getName() {
-        return super.name;
+        return name;
     }
 
     @Override
     public String getEmail() {
-        return super.email;
+        return email;
     }
 
     @Override
     public String getProfileImg() {
-        return super.profileImg;
+        return profileImg;
     }
 }

@@ -15,15 +15,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 public class WhynotApplication {
 
+    @Value("${test.user.name}")
+    private String username;
+    @Value("${test.user.password}")
+    private String password;
+
     public static void main(String[] args) {
         SpringApplication.run(WhynotApplication.class, args);
     }
-
-    @Value("${test.user.name}")
-    private String username;
-
-    @Value("${test.user.password}")
-    private String password;
 
     @Bean
     CommandLineRunner run(AccountRepository accountRepository, PasswordEncoder passwordEncoder) {

@@ -27,7 +27,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                                         HttpServletResponse response,
                                         Authentication authentication) {
 
-        AccountResponseDTO dto = ((UserAccount)authentication.getPrincipal()).getAccount().getAccountDTO();
+        AccountResponseDTO dto = ((UserAccount) authentication.getPrincipal()).getAccount().getAccountDTO();
         writeTokenResponse(response, dto);
     }
 
