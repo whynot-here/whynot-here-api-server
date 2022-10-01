@@ -2,6 +2,7 @@ package handong.whynot.dto.comment;
 
 import handong.whynot.domain.Comment;
 import handong.whynot.dto.account.AccountResponseDTO;
+import handong.whynot.dto.post.PostWriterDTO;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ public class CommentResponseDTO {
 
     private Long commentId;
     private String content;
-    private AccountResponseDTO account;
+    private PostWriterDTO account;
     private LocalDateTime createdDt;
 
     public static CommentResponseDTO of(Comment comment) {
@@ -23,7 +24,7 @@ public class CommentResponseDTO {
         return builder()
                 .commentId(comment.getId())
                 .content(comment.getContent())
-                .account(AccountResponseDTO.of(comment.getCreatedBy()))
+                .account(PostWriterDTO.of(comment.getCreatedBy()))
                 .createdDt(comment.getCreatedDt())
                 .build();
     }
