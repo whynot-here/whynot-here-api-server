@@ -148,4 +148,12 @@ public class PostQueryRepository {
                 )
                 .fetch();
     }
+
+    public List<Post> searchPosts(String keyword) {
+
+        return queryFactory.selectFrom(qPost)
+                .where(qPost.title.contains(keyword)
+                        .or(qPost.content.contains(keyword)))
+                .fetch();
+    }
 }

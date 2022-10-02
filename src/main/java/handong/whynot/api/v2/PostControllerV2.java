@@ -171,4 +171,11 @@ public class PostControllerV2 {
 
         return ResponseDTO.of(PostResponseCode.POST_END_RECRUIT_OK);
     }
+
+    @Operation(summary = "공고 통합 검색")
+    @GetMapping("/search")
+    public List<PostResponseDTO> changeRecruiting(@RequestParam(value = "keyword") String keyword) {
+
+        return postService.searchPosts(keyword);
+    }
 }

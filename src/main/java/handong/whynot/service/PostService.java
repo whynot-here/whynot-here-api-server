@@ -375,4 +375,11 @@ public class PostService {
                 .map(PostResponseDTO::of)
                 .collect(Collectors.toList());
     }
+
+    public List<PostResponseDTO> searchPosts(String keyword) {
+
+        return postQueryRepository.searchPosts(keyword).stream()
+                .map(PostResponseDTO::of)
+                .collect(Collectors.toList());
+    }
 }
