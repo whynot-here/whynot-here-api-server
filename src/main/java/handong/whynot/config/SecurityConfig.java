@@ -54,6 +54,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Category
                 .antMatchers(HttpMethod.GET, "/v2/category/default").permitAll()
 
+                // Comment
+                .antMatchers(HttpMethod.GET, "/v2/comments/**").permitAll()
+
                 // Swagger
                 .antMatchers(HttpMethod.GET, "/v1/posts/**", "/v1/comments/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated()
