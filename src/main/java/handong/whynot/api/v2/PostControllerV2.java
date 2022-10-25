@@ -12,6 +12,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -56,8 +58,8 @@ public class PostControllerV2 {
     @Operation(summary = "공고 단건 조회")
     @Cacheable(value="Post", key="'Post#' + #postId")
     @GetMapping("/{postId}")
-    public PostResponseDTO getPost(@PathVariable Long postId) {
-        return postService.getPost(postId);
+    public PostResponseDTO getPost(HttpServletRequest request, HttpServletResponse response, @PathVariable Long postId) {
+        return postService.getPost(request, response, postId);
     }
 
     @Operation(summary = "공고 단건 삭제")
