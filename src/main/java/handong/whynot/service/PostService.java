@@ -12,12 +12,17 @@ import handong.whynot.exception.post.*;
 import handong.whynot.mail.EmailMessage;
 import handong.whynot.mail.EmailService;
 import handong.whynot.repository.*;
+import handong.whynot.util.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,11 +36,13 @@ public class PostService {
     private final PostQueryRepository postQueryRepository;
     private final JobRepository jobRepository;
     private final JobPostRepository jobPostRepository;
-    private final AccountRepository accountRepository;
     private final PostFavoriteRepository postFavoriteRepository;
     private final PostApplyRepository postApplyRepository;
     private final EmailService emailService;
     private final CategoryRepository categoryRepository;
+
+    public static final String COOKIE_VIEW_COUNT = "viewList";
+    private static final int cookieExpireSeconds = 600;        // 10분
 
     public List<PostResponseDTO> getPostsByParam(RecruitStatus recruitStatus, List<JobType> jobTypeList) {
 
@@ -149,6 +156,36 @@ public class PostService {
 
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        return PostResponseDTO.of(post);
+    }
+
+    @Transactional
+    @CacheEvict(value="Post", key="'Post#' + #id")
+    public PostResponseDTO getPost(HttpServletRequest request, HttpServletResponse response, Long id) {
+
+        // 존재하는 post 인지 확인
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
+
+        // 조회한 id 인지 확인
+        List<Long> viewList = CookieUtils.getCookie(request, COOKIE_VIEW_COUNT)
+                .map( cookie -> Arrays.stream(cookie.getValue().split("/"))
+                            .map(Long::parseLong)
+                            .collect(Collectors.toList()))
+                .orElseGet(ArrayList::new);
+
+        // 조회수 증가
+        if (! viewList.contains(id)) {
+            post.increaseViews();
+            viewList.add(id);
+
+            // cookie 저장
+            String cookieStr = viewList.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining("/"));
+            CookieUtils.addCookie(response, COOKIE_VIEW_COUNT, cookieStr, cookieExpireSeconds);
+        }
 
         return PostResponseDTO.of(post);
     }

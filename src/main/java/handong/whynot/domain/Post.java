@@ -69,6 +69,9 @@ public class Post extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private CommunicationType communicationTool;
 
+    @Column(name = "views")
+    private Integer views;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImageLink> links = new ArrayList<>();
 
@@ -88,6 +91,9 @@ public class Post extends BaseTimeEntity {
     public void update(PostRequestDTO request) {
         title = request.getTitle();
         content = request.getContent();
-//        addLinks(request.getImageLinks());
+    }
+
+    public void increaseViews() {
+        views += 1;
     }
 }

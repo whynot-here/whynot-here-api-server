@@ -60,6 +60,8 @@ public class PostResponseDTO {
 
     private CategoryDTO category;
 
+    private Integer views;
+
     private List<PostImageLinkDTO> imageLinks = new ArrayList<>();
 
     public static PostResponseDTO of(Post post) {
@@ -82,6 +84,7 @@ public class PostResponseDTO {
                 .recruitCurrentCnt(post.getRecruitCurrentCnt())
                 .communicationTool(post.getCommunicationTool())
                 .category(CategoryDTO.generateDTOBy(post.getCategoryId()))
+                .views(post.getViews())
                 .imageLinks(imageLinks)
                 .build();
     }
