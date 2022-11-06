@@ -9,6 +9,7 @@ import handong.whynot.dto.account.TokenResponseDTO;
 import handong.whynot.handler.security.CustomAuthenticationEntryPoint;
 import handong.whynot.repository.AccountRepository;
 import handong.whynot.service.AccountService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Disabled
 @WebMvcTest(AccountControllerV2.class)
-@Import({ SecurityConfig.class, AppConfig.class })
+@Import({SecurityConfig.class, AppConfig.class})
 class AccountControllerV2Test {
 
     @MockBean
