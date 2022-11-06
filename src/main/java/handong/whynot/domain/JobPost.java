@@ -11,15 +11,10 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-@Table(
-        name = "job_post",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "constJobPost",
-                        columnNames = {"job_id", "post_id"}
-                )
-        }
-)
+@Table(name = "job_post", uniqueConstraints = @UniqueConstraint(
+        name = "constJobPost",
+        columnNames = {"job_id", "post_id"}
+))
 public class JobPost {
 
     @Id

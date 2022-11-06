@@ -176,7 +176,7 @@ public class PostControllerV2 {
 
     @Operation(summary = "공고 통합 검색")
     @GetMapping("/search")
-    public List<PostResponseDTO> changeRecruiting(@RequestParam(value = "keyword") String keyword) {
+    public List<PostResponseDTO> changeRecruiting(@RequestParam("keyword") String keyword) {
 
         return postService.searchPosts(keyword);
     }

@@ -1,13 +1,13 @@
 package handong.whynot.api;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import handong.whynot.api.v1.AccountController;
+import handong.whynot.config.AppConfig;
+import handong.whynot.config.SecurityConfig;
+import handong.whynot.dto.account.AccountResponseCode;
+import handong.whynot.dto.account.SignUpDTO;
+import handong.whynot.repository.AccountRepository;
+import handong.whynot.service.AccountService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -19,14 +19,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 
-import handong.whynot.config.AppConfig;
-import handong.whynot.config.SecurityConfig;
-import handong.whynot.dto.account.AccountResponseCode;
-import handong.whynot.dto.account.SignUpDTO;
-import handong.whynot.repository.AccountRepository;
-import handong.whynot.service.AccountService;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AccountController.class)
 @Import({ SecurityConfig.class, AppConfig.class })

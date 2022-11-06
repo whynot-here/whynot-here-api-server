@@ -1,7 +1,6 @@
 package handong.whynot.dto.comment;
 
 import handong.whynot.domain.Comment;
-import handong.whynot.dto.account.AccountResponseDTO;
 import handong.whynot.dto.post.PostWriterDTO;
 import lombok.*;
 

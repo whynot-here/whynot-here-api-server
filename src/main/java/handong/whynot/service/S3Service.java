@@ -62,16 +62,14 @@ public class S3Service {
 
     // 로컬에 저장된 이미지 삭제
     private void removeLocalFile(File targetFile) {
-        if (targetFile.delete()) {
-            return;
-        }
+        targetFile.delete();
     }
 
     // 로컬에 파일 업로드
     private Optional<File> convert(MultipartFile file) throws IOException {
         // 로컬 파일 저장
         final File convertFile = new File(
-                System.getProperty("user.dir") + "/" + file.getOriginalFilename()
+                System.getProperty("user.dir") + '/' + file.getOriginalFilename()
         );
 
         // 로컬 지정한 경로에 File 생성
