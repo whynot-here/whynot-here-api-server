@@ -6,6 +6,8 @@ DROP TABLE IF EXISTS `comment`;
 DROP TABLE IF EXISTS `post`;
 DROP TABLE IF EXISTS `account`;
 DROP TABLE IF EXISTS `category`;
+DROP TABLE IF EXISTS `post_image_link`;
+DROP TABLE IF EXISTS `user_feedback`;
 
 CREATE TABLE `account`
 (
@@ -353,3 +355,12 @@ VALUES ('2022-01-12 00:00', '2022-01-12 00:00',
         'https://user-images.githubusercontent.com/42775225/160243284-bdf5084e-3e5e-44fb-a1a9-c3cf791e5f59.png', 6);
 UNLOCK
 TABLES;
+
+CREATE TABLE `user_feedback`
+(
+    `id`          bigint       NOT NULL AUTO_INCREMENT,
+    `created_dt`  datetime,
+    `updated_dt`  datetime,
+    `description` varchar(2000) not null,
+    PRIMARY KEY (`id`)
+);
