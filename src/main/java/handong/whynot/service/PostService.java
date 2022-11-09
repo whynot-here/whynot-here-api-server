@@ -16,6 +16,7 @@ import handong.whynot.util.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -135,6 +136,7 @@ public class PostService {
                 .recruitTotalCnt(request.getRecruitTotalCnt())
                 .recruitCurrentCnt(request.getRecruitCurrentCnt())
                 .communicationTool(request.getCommunicationTool())
+                .views(0)
                 .isRecruiting(true)
                 .build();
 
@@ -161,7 +163,13 @@ public class PostService {
     }
 
     @Transactional
-    @CacheEvict(value="Post", key="'Post#' + #id")
+    @Caching(
+            evict = {
+                    @CacheEvict(value="Post", key="'Post#' + #id"),
+                    @CacheEvict(value="MainPosts", key="'MainPosts'"),
+                    @CacheEvict(value="CategoryPosts", allEntries = true)
+            }
+    )
     public PostResponseDTO getPost(HttpServletRequest request, HttpServletResponse response, Long id) {
 
         // 존재하는 post 인지 확인
