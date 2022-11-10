@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
@@ -20,7 +22,7 @@ public class AdminController {
     @Operation(summary = "사용자 후기 등록")
     @PostMapping("/admin/feedback")
     @ResponseStatus(CREATED)
-    public ResponseDTO createUserFeedback(@RequestBody UserFeedbackRequestDTO request) {
+    public ResponseDTO createUserFeedback(@RequestBody @Valid UserFeedbackRequestDTO request) {
 
         userFeedbackService.createUserFeedback(request);
 

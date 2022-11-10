@@ -358,9 +358,10 @@ TABLES;
 
 CREATE TABLE `user_feedback`
 (
-    `id`          bigint       NOT NULL AUTO_INCREMENT,
+    `id`          bigint        NOT NULL AUTO_INCREMENT,
     `created_dt`  datetime,
     `updated_dt`  datetime,
+    `rating`      int,
     `description` varchar(2000) not null,
     PRIMARY KEY (`id`)
 );

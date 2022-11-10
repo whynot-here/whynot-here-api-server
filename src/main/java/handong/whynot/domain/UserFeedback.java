@@ -1,7 +1,10 @@
 package handong.whynot.domain;
 
 import handong.whynot.domain.common.BaseTimeEntity;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -16,6 +19,9 @@ public class UserFeedback extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @Column(name = "rating")
+    private int rating;
 
     @Column(name = "description")
     private String description;

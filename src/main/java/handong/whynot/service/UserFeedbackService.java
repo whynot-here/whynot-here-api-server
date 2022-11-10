@@ -18,6 +18,7 @@ public class UserFeedbackService {
     public void createUserFeedback(UserFeedbackRequestDTO request) {
 
         UserFeedback feedback = UserFeedback.builder()
+                .rating(request.getRating())
                 .description(request.getDescription())
                 .build();
 
