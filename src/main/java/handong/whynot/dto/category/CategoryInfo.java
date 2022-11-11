@@ -22,14 +22,4 @@ public class CategoryInfo implements Comparable<CategoryInfo> {
 
         return parentId.compareTo(info.parentId);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof CategoryInfo && compareTo((CategoryInfo) o) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return parentId != null ? parentId.hashCode() : 0;
-    }
 }
