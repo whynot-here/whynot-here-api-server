@@ -20,17 +20,6 @@ public class CategoryInfo implements Comparable<CategoryInfo> {
     @Override
     public int compareTo(CategoryInfo info) {
 
-        if (info.parentId < parentId) {
-            return 1;
-        }
-        if (info.parentId > parentId) {
-            return -1;
-        }
-        return 0;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof CategoryInfo && compareTo((CategoryInfo) o) == 0;
+        return parentId.compareTo(info.parentId);
     }
 }

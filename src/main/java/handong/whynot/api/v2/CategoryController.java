@@ -18,7 +18,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/default")
-    @Cacheable(value="DefaultCategory")
+    @Cacheable("DefaultCategory")
     public List<CategoryInfo> getDefaultList() {
 
         return categoryService.getDefaultList();
