@@ -1,6 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '2.6.8'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version '2.6.13'
+    id 'io.spring.dependency-management' version '1.1.0'
     id 'java'
 }
 
@@ -29,7 +29,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     // swagger
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.12'
 
     // database
     runtimeOnly 'mysql:mysql-connector-java'
