@@ -1,6 +1,6 @@
 package handong.whynot.handler;
 
-import handong.whynot.dto.account.AccountResponseCode;
+import handong.whynot.dto.admin.AdminResponseCode;
 import handong.whynot.dto.common.ErrorResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,7 @@ public class MethodArgumentNotValidExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponseDTO postNotFoundExceptionHandle() {
-        return ErrorResponseDTO.of(AccountResponseCode.ACCOUNT_NOT_VALID_FROM, null);
+    public ErrorResponseDTO postNotFoundExceptionHandle(Exception e) {
+        return ErrorResponseDTO.of(AdminResponseCode.NOT_VALID_CONSTRAINT, null);
     }
 }
