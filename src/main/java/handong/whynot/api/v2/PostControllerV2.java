@@ -1,6 +1,7 @@
 package handong.whynot.api.v2;
 
 import handong.whynot.domain.Account;
+import handong.whynot.domain.Post;
 import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.dto.post.*;
 import handong.whynot.service.AccountService;
@@ -44,15 +45,20 @@ public class PostControllerV2 {
     }
 
     @Operation(summary = "공고 생성")
-    @CacheEvict(value="MainPosts", key="'MainPosts'")
+    @Caching(
+            evict = {
+                    @CacheEvict(value="MainPosts", key="'MainPosts'"),
+                    @CacheEvict(value="CategoryPosts", allEntries = true)
+            }
+    )
     @PostMapping("")
     @ResponseStatus(CREATED)
-    public ResponseDTO createPost(@RequestBody PostRequestDTO request) {
+    public PostResponseDTO createPost(@RequestBody PostRequestDTO request) {
 
         Account account = accountService.getCurrentAccount();
-        postService.createPost(request, account);
+        PostResponseDTO createdPost = PostResponseDTO.of(postService.createPost(request, account));
 
-        return ResponseDTO.of(PostResponseCode.POST_CREATE_OK);
+        return createdPost;
     }
 
     @Operation(summary = "공고 단건 조회")
