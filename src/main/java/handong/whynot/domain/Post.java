@@ -25,10 +25,6 @@ public class Post extends BaseTimeEntity {
     @Column(name = "id")
     private Long id;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "post")
-    private List<JobPost> jobPosts = new ArrayList<>();
-
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account createdBy;
@@ -42,9 +38,6 @@ public class Post extends BaseTimeEntity {
 
     @Column(name = "content")
     private String content;
-
-    @Column(name = "post_img")
-    private String postImg;
 
     @Column(name = "is_recruiting")
     private boolean isRecruiting;
@@ -76,11 +69,10 @@ public class Post extends BaseTimeEntity {
     private List<PostImageLink> links = new ArrayList<>();
 
     @Builder
-    public Post(Account createdBy, String title, String content, String postImg) {
+    public Post(Account createdBy, String title, String content) {
         this.createdBy = createdBy;
         this.title = title;
         this.content = content;
-        this.postImg = postImg;
         isRecruiting = true;
     }
 
@@ -88,9 +80,18 @@ public class Post extends BaseTimeEntity {
         this.links = links;
     }
 
-    public void update(PostRequestDTO request) {
+    public void update(PostRequestDTO request, Category category, List<PostImageLink> imageLinks) {
         title = request.getTitle();
         content = request.getContent();
+        categoryId = category;
+        closedDt = request.getClosedDt();
+        ownerContactType = request.getOwnerContact().getType();
+        ownerContactValue = request.getOwnerContact().getValue();
+        recruitTotalCnt = request.getRecruitTotalCnt();
+        recruitCurrentCnt = request.getRecruitCurrentCnt();
+        communicationTool = request.getCommunicationTool();
+        links.clear();
+        links.addAll(imageLinks);
     }
 
     public void increaseViews() {

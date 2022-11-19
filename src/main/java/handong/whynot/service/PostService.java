@@ -235,15 +235,24 @@ public class PostService {
 
     }
 
+    @Transactional
     public void updatePost(Long postId, PostRequestDTO request, Account account) {
 
+        // 존재하는 post인지 확인
         Post post = postRepository.findByIdAndCreatedBy(postId, account)
                 .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
 
-        post.update(request);
+        // 존재하는 카테고리인지 확인
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException(CategoryResponseCode.CATEGORY_READ_FAIL));
 
-        postRepository.save(post);
+        // 이미지 정보 만들기
+        List<PostImageLink> links = request.getImageLinks().stream()
+                .map(link -> PostImageLink.of(link, post))
+                .collect(Collectors.toList());
 
+        // 정보 업데이트
+        post.update(request, category, links);
     }
 
 
