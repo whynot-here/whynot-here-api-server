@@ -17,6 +17,7 @@ public class WebConfig implements WebMvcConfigurer {
 //                        "https://whynot-here.netlify.app"
 //                )
                 .allowedOriginPatterns("*")
+                .allowCredentials(true)
                 .allowedMethods("*")
                 .exposedHeaders("*");
     }
