@@ -74,7 +74,10 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.mockito:mockito-inline'
+}
 
+clean {
+    delete file('src/main/generated')
 }
 
 sourceSets {
