@@ -67,6 +67,9 @@ public class PostQueryRepository {
                         select(qPostFavorite.post.id).from(qPostFavorite)
                                 .where(qPostFavorite.account.id.eq(accountId))
                 ))
+                .orderBy(
+                        qPost.createdDt.desc()
+                )
                 .fetch();
     }
 
@@ -93,6 +96,9 @@ public class PostQueryRepository {
                         select(qPostApply.post.id).from(qPostApply)
                                 .where(qPostApply.account.id.eq(accountId))
                 ))
+                .orderBy(
+                        qPost.createdDt.desc()
+                )
                 .fetch();
     }
 
@@ -154,6 +160,9 @@ public class PostQueryRepository {
         return queryFactory.selectFrom(qPost)
                 .where(qPost.title.contains(keyword)
                         .or(qPost.content.contains(keyword)))
+                .orderBy(
+                        qPost.createdDt.desc()
+                )
                 .fetch();
     }
 }
