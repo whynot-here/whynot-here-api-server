@@ -161,7 +161,7 @@ public class PostControllerV2 {
         return ResponseDTO.of(PostResponseCode.POST_DELETE_APPLY_OK);
     }
 
-    @Operation(summary = "생성한 공고 전체 조회성")
+    @Operation(summary = "생성한 공고 전체 조회")
     @GetMapping("/own")
     public List<PostResponseDTO> getMyPosts() {
 

@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -379,6 +380,7 @@ public class PostService {
 
         return posts.stream()
                 .map(PostResponseDTO::of)
+                .sorted(Comparator.comparing(PostResponseDTO::getCreatedDt, Comparator.reverseOrder()))
                 .collect(Collectors.toList());
     }
 
@@ -420,6 +422,7 @@ public class PostService {
             for (Category it : childrenCategoryList) {
                 responseDTOList.addAll(postRepository.findAllByCategoryId(it).stream()
                         .map(PostResponseDTO::of)
+                        .sorted(Comparator.comparing(PostResponseDTO::getCreatedDt, Comparator.reverseOrder()))
                         .collect(Collectors.toList()));
             }
             return responseDTOList.stream().distinct().collect(Collectors.toList());
@@ -427,6 +430,7 @@ public class PostService {
 
         return postRepository.findAllByCategoryId(category).stream()
                 .map(PostResponseDTO::of)
+                .sorted(Comparator.comparing(PostResponseDTO::getCreatedDt, Comparator.reverseOrder()))
                 .collect(Collectors.toList());
     }
 
