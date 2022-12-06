@@ -105,11 +105,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-//        configuration.addAllowedOrigin("https://whynot-here.github.io");
-//        configuration.addAllowedOrigin("http://localhost:8080");
-//        configuration.addAllowedOrigin("http://localhost:9000");
-//        configuration.addAllowedOrigin("https://whynot-here.netlify.app");
-        configuration.addAllowedOriginPattern("*");
+        configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.addAllowedOrigin("http://localhost:9000");
+        configuration.addAllowedOrigin("https://why-not-here.netlify.app");
+
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);

@@ -10,13 +10,11 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-//                .allowedOrigins(
-//                        "https://whynot-here.github.io",
-//                        "http://localhost:8080",
-//                        "http://localhost:9000",
-//                        "https://whynot-here.netlify.app"
-//                )
-                .allowedOriginPatterns("*")
+                .allowedOrigins(
+                        "http://localhost:3000",
+                        "http://localhost:9000",
+                        "https://why-not-here.netlify.app"
+                )
                 .allowCredentials(true)
                 .allowedMethods("*")
                 .exposedHeaders("*");
