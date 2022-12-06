@@ -422,10 +422,11 @@ public class PostService {
             for (Category it : childrenCategoryList) {
                 responseDTOList.addAll(postRepository.findAllByCategoryId(it).stream()
                         .map(PostResponseDTO::of)
-                        .sorted(Comparator.comparing(PostResponseDTO::getCreatedDt, Comparator.reverseOrder()))
                         .collect(Collectors.toList()));
             }
-            return responseDTOList.stream().distinct().collect(Collectors.toList());
+            return responseDTOList.stream().distinct()
+                    .sorted(Comparator.comparing(PostResponseDTO::getCreatedDt, Comparator.reverseOrder()))
+                    .collect(Collectors.toList());
         }
 
         return postRepository.findAllByCategoryId(category).stream()
