@@ -132,11 +132,6 @@ public class PostService {
                 .content(request.getContent())
                 .categoryId(category)
                 .closedDt(request.getClosedDt())
-                .ownerContactType(request.getOwnerContact().getType())
-                .ownerContactValue(request.getOwnerContact().getValue())
-                .recruitTotalCnt(request.getRecruitTotalCnt())
-                .recruitCurrentCnt(request.getRecruitCurrentCnt())
-                .communicationTool(request.getCommunicationTool())
                 .views(0)
                 .isRecruiting(true)
                 .build();
