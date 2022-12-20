@@ -177,24 +177,7 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
 
-        // 조회한 id 인지 확인
-        List<Long> viewList = CookieUtils.getCookie(request, COOKIE_VIEW_COUNT)
-                .map( cookie -> Arrays.stream(cookie.getValue().split("/"))
-                            .map(Long::parseLong)
-                            .collect(Collectors.toList()))
-                .orElseGet(ArrayList::new);
-
-        // 조회수 증가
-        if (! viewList.contains(id)) {
-            post.increaseViews();
-            viewList.add(id);
-
-            // cookie 저장
-            String cookieStr = viewList.stream()
-                    .map(String::valueOf)
-                    .collect(Collectors.joining("/"));
-            CookieUtils.addCookie(response, COOKIE_VIEW_COUNT, cookieStr, cookieExpireSeconds);
-        }
+        post.increaseViews();
 
         return PostResponseDTO.of(post);
     }
