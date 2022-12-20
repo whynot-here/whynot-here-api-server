@@ -85,11 +85,6 @@ public class Post extends BaseTimeEntity {
         content = request.getContent();
         categoryId = category;
         closedDt = request.getClosedDt();
-        ownerContactType = request.getOwnerContact().getType();
-        ownerContactValue = request.getOwnerContact().getValue();
-        recruitTotalCnt = request.getRecruitTotalCnt();
-        recruitCurrentCnt = request.getRecruitCurrentCnt();
-        communicationTool = request.getCommunicationTool();
         links.clear();
         links.addAll(imageLinks);
     }
