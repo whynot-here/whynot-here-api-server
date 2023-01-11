@@ -165,6 +165,7 @@ public class AccountService implements UserDetailsService {
         return account;
     }
 
+    @Transactional
     public TokenResponseDTO signIn(SignInRequestDTO signInRequest) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
@@ -179,8 +180,8 @@ public class AccountService implements UserDetailsService {
             throw new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL);
         }
 
-        String accessToken = signInTokenGenerator.accessToken(account.getId());
-        String refreshToken = signInTokenGenerator.refreshToken(account.getId());
+        String accessToken = signInTokenGenerator.accessToken(account);
+        String refreshToken = signInTokenGenerator.refreshToken(account);
 
         return TokenResponseDTO.of(account, accessToken, refreshToken);
     }
