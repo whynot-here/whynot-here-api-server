@@ -1,11 +1,18 @@
 package handong.whynot.domain;
 
+import handong.whynot.dto.account.AccountResponseCode;
 import handong.whynot.dto.account.AccountResponseDTO;
+import handong.whynot.exception.account.AccountAlreadyExistRoleException;
 import lombok.*;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -55,6 +62,24 @@ public class Account {
     @Column(name = "oauth_ci")
     private String oauthCI;
 
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<AccountRole> userRoleList = new ArrayList<>();
+
+    public List<Role> getRoles() {
+        return userRoleList.stream()
+          .map(AccountRole::getRole)
+          .collect(Collectors.toList());
+    }
+
+    public List<SimpleGrantedAuthority> getAuthorityList() {
+        return userRoleList.stream()
+          .map(AccountRole::getRole)
+          .map(Role::getCode)
+          .map(SimpleGrantedAuthority::new)
+          .collect(Collectors.toList());
+    }
+
     public void generateEmailCheckToken() {
         emailCheckToken = UUID.randomUUID().toString().split("-")[0];
         emailCheckTokenGeneratedAt = LocalDateTime.now();
@@ -77,5 +102,19 @@ public class Account {
                 .profileImg(profileImg)
                 .authType(authType)
                 .build();
+    }
+
+    public Account addAccountRole(Role role) {
+        if (hasRoleByCode(role.getCode())) {
+            throw new AccountAlreadyExistRoleException(AccountResponseCode.ALREADY_EXIST_ROLE);
+        }
+
+        userRoleList.add(new AccountRole(this, role));
+        return this;
+    }
+
+    public Boolean hasRoleByCode(String roleCode) {
+        return userRoleList.stream()
+          .anyMatch(it -> StringUtils.equals(it.getRole().getCode(), roleCode));
     }
 }
