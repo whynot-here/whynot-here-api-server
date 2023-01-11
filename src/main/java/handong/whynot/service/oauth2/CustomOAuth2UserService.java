@@ -2,6 +2,7 @@ package handong.whynot.service.oauth2;
 
 import handong.whynot.domain.Account;
 import handong.whynot.domain.AuthType;
+import handong.whynot.domain.Role;
 import handong.whynot.dto.account.AccountResponseCode;
 import handong.whynot.dto.account.UserAccount;
 import handong.whynot.dto.account.oauth2.OAuth2UserInfo;
@@ -11,6 +12,7 @@ import handong.whynot.exception.account.OAuth2ExistEmailException;
 import handong.whynot.exception.account.OAuth2ProcessingException;
 import handong.whynot.repository.AccountRepository;
 import handong.whynot.service.CategoryService;
+import handong.whynot.service.RoleService;
 import handong.whynot.util.NicknameMaker;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +23,7 @@ import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
 @Service
@@ -29,8 +32,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final AccountRepository accountRepository;
     private final CategoryService categoryService;
+    private final RoleService roleService;
 
     @Override
+    @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
@@ -86,6 +91,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .oauthCI(oAuth2UserInfo.getId())
                 .categoryOrder(categoryService.initOrder())
                 .build();
+
+        final Role role = roleService.getRoleByCode("ROLE_GUEST");
+        account.addAccountRole(role);
 
         return accountRepository.save(account);
     }
