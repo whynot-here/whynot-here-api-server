@@ -13,7 +13,9 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "http://localhost:3000",
                         "http://localhost:9000",
-                        "https://why-not-here.netlify.app"
+                        "https://why-not-here.netlify.app",
+                        "https://why-not-here.o-r.kr",
+                        "http://127.0.0.1:5173"
                 )
                 .allowCredentials(true)
                 .allowedMethods("*")

@@ -108,6 +108,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedOrigin("http://localhost:9000");
         configuration.addAllowedOrigin("https://why-not-here.netlify.app");
+        configuration.addAllowedOrigin("https://why-not-here.o-r.kr");
+        configuration.addAllowedOrigin("http://127.0.0.1:5173");
 
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");

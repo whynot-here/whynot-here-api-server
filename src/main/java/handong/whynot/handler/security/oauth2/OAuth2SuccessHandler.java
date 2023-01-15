@@ -17,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -33,13 +34,14 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public String CLIENT_REDIRECT_URI;
 
     @Override
+    @Transactional
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 
         final Account account = ((UserAccount) authentication.getPrincipal()).getAccount();
 
         // JWT 응답
-        String accessToken = signInTokenGenerator.accessToken(account.getId());
-        String refreshToken = signInTokenGenerator.refreshToken(account.getId());
+        String accessToken = signInTokenGenerator.accessToken(account);
+        String refreshToken = signInTokenGenerator.refreshToken(account);
 
         final TokenResponseDTO token = TokenResponseDTO.of(account, accessToken, refreshToken);
 

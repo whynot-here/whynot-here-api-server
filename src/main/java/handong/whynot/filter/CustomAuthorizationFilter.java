@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -55,7 +56,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 String accountId = jwtClaimsSet.getSubject();
                 UserAccount userAccount = new UserAccount(accountId);
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                        new UsernamePasswordAuthenticationToken(userAccount, null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
+                        new UsernamePasswordAuthenticationToken(userAccount, null,
+                          jwtClaimsSet.getStringListClaim("roles").stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
 
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }

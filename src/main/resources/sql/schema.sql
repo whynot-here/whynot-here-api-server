@@ -365,3 +365,31 @@ CREATE TABLE `user_feedback`
     `description` varchar(2000) not null,
     PRIMARY KEY (`id`)
 );
+
+CREATE TABLE `account_role`
+(
+    `id`         bigint NOT NULL AUTO_INCREMENT,
+    `created_dt` datetime,
+    `updated_dt` datetime,
+    `role_id`    int,
+    `account_id` int,
+    PRIMARY KEY (`id`)
+);
+
+CREATE TABLE `role`
+(
+    `id`   bigint       NOT NULL AUTO_INCREMENT,
+    `code` varchar(255) not null,
+    `name` varchar(255) not null,
+    PRIMARY KEY (`id`)
+);
+
+LOCK
+TABLES `role` WRITE;
+INSERT INTO `role` (`id`, `code`, `name`)
+VALUES (1, 'ROLE_ADMIN', '운영자'),
+       (2, 'ROLE_USER', '사용자'),
+       (3, 'ROLE_MANAGER', '외부 매니저'),
+       (4, 'ROLE_GUEST', '게스트');
+UNLOCK
+TABLES;
