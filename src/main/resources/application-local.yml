@@ -1,5 +1,13 @@
 server:
-  port: 9000
+  port: 443
+  ssl:
+    enabled: true
+    enabled-protocols:
+      - TLSv1.1
+      - TLSv1.2
+    key-store: classpath:whynot-config/apple-oauth-keys/keystore.p12
+    key-store-type: PKCS12
+    key-store-password: 1234
   error:
     include-stacktrace: never
   servlet:
@@ -34,6 +42,20 @@ spring:
             authorization-grant-type: authorization_code
             scope: ${kakao.client.scope}
             client-name: Kakao
+          apple:
+            client-name: apple
+            client-id: ${apple.aud}
+            client-secret: ${apple.key.id}
+            client-authentication-method: POST
+            redirect-uri: "{baseUrl}/v2/login/apple"
+            authorization-grant-type: authorization_code
+            scope: ${apple.scope}
+            issuer: ${apple.iss}
+            audience: ${apple.aud}
+            team-id: ${apple.team.id}
+            key-id: ${apple.key.id}
+            key-path: ${apple.key.path}
+            redirect-url: ${apple.redirectUrl}
         provider:
           naver:
             authorization_uri: https://nid.naver.com/oauth2.0/authorize
@@ -45,6 +67,10 @@ spring:
             token_uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user_name_attribute: id
+          apple:
+            authorization-uri: https://appleid.apple.com/auth/authorize?response_mode=form_post
+            token-uri: https://appleid.apple.com/auth/token
+            jwk-set-uri: https://appleid.apple.com/auth/keys
 
   config:
     import: classpath:/whynot-config/env-local.yml
