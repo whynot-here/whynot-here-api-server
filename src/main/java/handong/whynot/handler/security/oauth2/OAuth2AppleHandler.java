@@ -149,16 +149,10 @@ public class OAuth2AppleHandler {
    */
   private byte[] readPrivateKey() {
 
-    try {
-      InputStream resourceAsStream = resourceLoader.getClass().getResourceAsStream(oAuth2AppleConst.getKeyPath());
-      PemReader pemReader;
-      if (Objects.isNull(resourceAsStream)) {
-        FileReader keyReader = new FileReader(oAuth2AppleConst.getKeyPath());
-        pemReader = new PemReader(keyReader);
-      } else {
-        Reader keyReader = new InputStreamReader(resourceAsStream);
-        pemReader = new PemReader(keyReader);
-      }
+    InputStream resourceAsStream = resourceLoader.getClass().getResourceAsStream(oAuth2AppleConst.getKeyPath());
+
+    try (Reader keyReader = new InputStreamReader(resourceAsStream);
+         PemReader pemReader = new PemReader(keyReader)) {
 
       PemObject pemObject = pemReader.readPemObject();
       return pemObject.getContent();
