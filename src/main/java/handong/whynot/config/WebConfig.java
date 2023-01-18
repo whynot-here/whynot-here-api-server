@@ -15,7 +15,8 @@ public class WebConfig implements WebMvcConfigurer {
                         "http://localhost:9000",
                         "https://why-not-here.netlify.app",
                         "https://why-not-here.o-r.kr",
-                        "http://127.0.0.1:5173"
+                        "http://127.0.0.1:5173",
+                        "https://appleid.apple.com"
                 )
                 .allowCredentials(true)
                 .allowedMethods("*")

@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // Account
                 .antMatchers("/v1/login", "/v1/sign-up", "/v1/check-email-token", "/v1/resend-token",
-                        "/v1/check-email-duplicate", "/v1/check-nickname-duplicate", "/v2/sign-in", "/auth/login/**").permitAll()
+                        "/v1/check-email-duplicate", "/v1/check-nickname-duplicate", "/v2/sign-in", "/auth/login/**", "/v2/login/apple").permitAll()
 
                 // Post
                 .antMatchers(HttpMethod.GET, "/v1/posts/**", "/v1/comments/**", "/v2/posts/**", "/v2/posts/category/**").permitAll()
@@ -110,6 +110,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.addAllowedOrigin("https://why-not-here.netlify.app");
         configuration.addAllowedOrigin("https://why-not-here.o-r.kr");
         configuration.addAllowedOrigin("http://127.0.0.1:5173");
+        configuration.addAllowedOrigin("https://appleid.apple.com");
 
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
