@@ -69,7 +69,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Account account = accountRepository.findByOauthCI(oAuth2UserInfo.getId());
 
         if (account == null) {
-            account = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
+            account = registerNewUser(oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2UserInfo);
         } else {
             if (!StringUtils.equals(registrationId, account.getAuthType().toString())) {
                 throw new OAuth2ExistEmailException(AccountResponseCode.ACCOUNT_OAUTH2_EXIST_SAME_EMAIL);
@@ -79,13 +79,33 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return new UserAccount(account);
     }
 
-    private Account registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
+    public OAuth2User processOAuth2UserForApple(OAuth2User oAuth2User) {
+        String registrationId = AuthType.apple.toString();
+
+        // OAuth2 사용자 필수 정보 획득
+        OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(registrationId, oAuth2User.getAttributes());
+
+        // 기존 사용자인지 확인
+        Account account = accountRepository.findByOauthCI(oAuth2UserInfo.getId());
+
+        if (account == null) {
+            account = registerNewUser(AuthType.apple.toString(), oAuth2UserInfo);
+        } else {
+            if (!StringUtils.equals(registrationId, account.getAuthType().toString())) {
+                throw new OAuth2ExistEmailException(AccountResponseCode.ACCOUNT_OAUTH2_EXIST_SAME_EMAIL);
+            }
+        }
+
+        return new UserAccount(account);
+    }
+
+    private Account registerNewUser(String registrationId, OAuth2UserInfo oAuth2UserInfo) {
 
         Account account = Account.builder()
                 .nickname(NicknameMaker.make(oAuth2UserInfo.getName()))
                 .email(oAuth2UserInfo.getEmail())
                 .profileImg(oAuth2UserInfo.getProfileImg())
-                .authType(AuthType.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))
+                .authType(AuthType.valueOf(registrationId))
                 .emailVerified(true)
                 .joinedAt(LocalDateTime.now())
                 .oauthCI(oAuth2UserInfo.getId())

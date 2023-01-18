@@ -23,6 +23,9 @@ public final class OAuth2UserInfoFactory {
         } else if (registrationId.equalsIgnoreCase(AuthType.naver.toString())) {
             SecuredOAuth2DTO securedOAuth2DTO = getNaverOAuth2User(attributes);
             return new NaverOAuth2UserInfo(securedOAuth2DTO);
+        } else if (registrationId.equalsIgnoreCase(AuthType.apple.toString())) {
+            SecuredOAuth2DTO securedOAuth2DTO = getAppleOAuth2User(attributes);
+            return new NaverOAuth2UserInfo(securedOAuth2DTO);
         } else {
             throw new OAuth2ProcessingException(AccountResponseCode.ACCOUNT_OAUTH2_PROCESS_FAILED);
         }
@@ -88,6 +91,25 @@ public final class OAuth2UserInfoFactory {
                     .email(email)
                     .profileImg(profileImg)
                     .build();
+        } catch (Exception e) {
+            // 획득하지 못한 정보가 있을 때
+            throw new OAuth2NotProvidedException(AccountResponseCode.ACCOUNT_OAUTH2_NOT_PROVIDED_VALUE);
+        }
+    }
+
+    private static SecuredOAuth2DTO getAppleOAuth2User(Map<String, Object> attributes) {
+
+        try {
+            String id = (String) attributes.get("sub");
+            String name = (String) attributes.get("nickname");
+            String email = (String) attributes.get("email");
+
+            return SecuredOAuth2DTO.builder()
+              .id(id)
+              .name(name)
+              .email(email)
+              .profileImg(null)
+              .build();
         } catch (Exception e) {
             // 획득하지 못한 정보가 있을 때
             throw new OAuth2NotProvidedException(AccountResponseCode.ACCOUNT_OAUTH2_NOT_PROVIDED_VALUE);

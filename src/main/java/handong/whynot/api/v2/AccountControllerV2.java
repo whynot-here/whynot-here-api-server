@@ -5,21 +5,27 @@ import handong.whynot.dto.account.AccountResponseDTO;
 import handong.whynot.dto.account.NicknameDTO;
 import handong.whynot.dto.account.SignInRequestDTO;
 import handong.whynot.dto.account.TokenResponseDTO;
+import handong.whynot.dto.account.oauth2.AppleServicesResponseDTO;
+import handong.whynot.handler.security.oauth2.OAuth2AppleHandler;
 import handong.whynot.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v2")
 public class AccountControllerV2 {
 
     private final AccountService accountService;
+    private final OAuth2AppleHandler OAuth2AppleHandler;
 
     @PostMapping("/sign-in")
     public TokenResponseDTO signIn(@RequestBody @Valid SignInRequestDTO signInRequest, HttpServletResponse response) {
@@ -55,5 +61,18 @@ public class AccountControllerV2 {
         Account account = accountService.updateNickname(dto.getNickname());
 
         return AccountResponseDTO.of(account);
+    }
+
+    @PostMapping("/login/apple")
+    public void doOAuth2AppleLogin(HttpServletRequest request,
+                                   HttpServletResponse response,
+                                   AppleServicesResponseDTO serviceResponse) throws Exception {
+
+        try {
+            OAuth2AppleHandler.validateRequestCodeAndDoLogin(request, response, serviceResponse);
+        } catch (Exception ex) {
+            log.error("doOAuth2AppleLogin Apple OAuth 리다이렉션 실패 ", ex);
+            throw new Exception("doOAuth2AppleLogin error");
+        }
     }
 }
