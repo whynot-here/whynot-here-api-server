@@ -141,10 +141,14 @@ logging:
   level:
     root: INFO
     com.amazonaws.util.EC2MetadataUtils: error
+    handong:
+      whynot:
+        service:
+          oauth2: DEBUG
 
 feign:
   client:
     config:
       oAuth2AppleFeignClient:
-        connect-timeout: 50000
-        read-timeout: 50000
+        connect-timeout: 5000
+        read-timeout: 5000

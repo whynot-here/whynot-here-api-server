@@ -155,5 +155,5 @@ feign:
   client:
     config:
       oAuth2AppleFeignClient:
-        connect-timeout: 50000
-        read-timeout: 50000
+        connect-timeout: 5000
+        read-timeout: 5000
