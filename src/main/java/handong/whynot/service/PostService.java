@@ -12,7 +12,6 @@ import handong.whynot.exception.post.*;
 import handong.whynot.mail.EmailMessage;
 import handong.whynot.mail.EmailService;
 import handong.whynot.repository.*;
-import handong.whynot.util.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
@@ -23,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,6 +43,7 @@ public class PostService {
 
     public static final String COOKIE_VIEW_COUNT = "viewList";
     private static final int cookieExpireSeconds = 600;        // 10분
+    private final CommentService commentService;
 
     public List<PostResponseDTO> getPostsByParam(RecruitStatus recruitStatus, List<JobType> jobTypeList) {
 
@@ -177,41 +176,28 @@ public class PostService {
         return PostResponseDTO.of(post);
     }
 
+    @Transactional
     public void deletePost(Long id, Account account) {
         Post post = postRepository.findByIdAndCreatedBy(id, account)
                 .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
 
-        // 1. job 삭제
-        deleteJobPosts(post);
+        // 1. comments 삭제
+        deletePostComments(post);
 
         // 2. favorite 삭제
         deletePostFavorites(post);
 
-        // 3. apply 삭제
-        deletePostApplys(post);
-
         postRepository.delete(post);
-    }
-
-    public void deleteJobPosts(Post post) {
-
-        List<JobPost> jobPosts = jobPostRepository.findAllByPost(post);
-        jobPosts.forEach(jobPost -> jobPostRepository.deleteById(jobPost.getId()));
-
     }
 
     public void deletePostFavorites(Post post) {
 
         List<PostFavorite> postFavorites = postFavoriteRepository.findAllByPost(post);
         postFavorites.forEach(postFavorite -> postFavoriteRepository.deleteById(postFavorite.getId()));
-
     }
 
-    public void deletePostApplys(Post post) {
-
-        List<PostApply> postApplys = postApplyRepository.findAllByPost(post);
-        postApplys.forEach(postApply -> postApplyRepository.deleteById(postApply.getId()));
-
+    public void deletePostComments(Post post) {
+        commentService.deleteCommentsByPostId(post);
     }
 
     @Transactional

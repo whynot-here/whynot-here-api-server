@@ -63,4 +63,10 @@ public class CommentService {
         // 댓글 삭제
         commentRepository.delete(comment);
     }
+
+    public void deleteCommentsByPostId(Post post) {
+
+        List<Comment> comments = commentRepository.findAllByPostId(post.getId());
+        comments.forEach(comment -> commentRepository.deleteById(comment.getId()));
+    }
 }
