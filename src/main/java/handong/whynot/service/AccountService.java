@@ -2,6 +2,7 @@ package handong.whynot.service;
 
 import handong.whynot.domain.Account;
 import handong.whynot.dto.account.*;
+import handong.whynot.dto.post.PostResponseDTO;
 import handong.whynot.exception.account.AccountAlreadyExistEmailException;
 import handong.whynot.exception.account.AccountAlreadyExistNicknameException;
 import handong.whynot.exception.account.AccountNotFoundException;
@@ -35,6 +36,8 @@ public class AccountService implements UserDetailsService {
     private final AccountQueryRepository accountQueryRepository;
     private final SignInTokenGenerator signInTokenGenerator;
     private final AuthenticationManager authenticationManager;
+    private final PostService postService;
+    private final CommentService commentService;
 
     @Override
     public UserDetails loadUserByUsername(String emailOrNickname) {
@@ -197,5 +200,20 @@ public class AccountService implements UserDetailsService {
         account.setNickname(nickname);
 
         return account;
+    }
+
+    @Transactional
+    public void deleteAccount(Account account) {
+
+        // 1. My 공고 삭제
+        postService.getMyPosts(account).forEach(post -> postService.deletePost(post.getId(), account));
+
+        // 2. 북마크 삭제
+        postService.getFavorites(account).forEach(post -> postService.deleteFavorite(post.getId(), account));
+
+        // 3. 댓글 삭제
+        commentService.deleteByAccount(account);
+
+        accountRepository.delete(account);
     }
 }

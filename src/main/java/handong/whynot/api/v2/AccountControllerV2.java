@@ -1,11 +1,9 @@
 package handong.whynot.api.v2;
 
 import handong.whynot.domain.Account;
-import handong.whynot.dto.account.AccountResponseDTO;
-import handong.whynot.dto.account.NicknameDTO;
-import handong.whynot.dto.account.SignInRequestDTO;
-import handong.whynot.dto.account.TokenResponseDTO;
+import handong.whynot.dto.account.*;
 import handong.whynot.dto.account.oauth2.AppleServicesResponseDTO;
+import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.handler.security.oauth2.OAuth2AppleHandler;
 import handong.whynot.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -75,4 +73,12 @@ public class AccountControllerV2 {
             throw new Exception("doOAuth2AppleLogin error");
         }
     }
-}
+
+    @DeleteMapping("/account")
+    public ResponseDTO deleteAccount() {
+
+        Account account = accountService.getCurrentAccount();
+        accountService.deleteAccount(account);
+        return ResponseDTO.of(AccountResponseCode.ACCOUNT_DELETE_OK);
+    }
+    }

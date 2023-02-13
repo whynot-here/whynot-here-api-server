@@ -69,4 +69,10 @@ public class CommentService {
         List<Comment> comments = commentRepository.findAllByPostId(post.getId());
         comments.forEach(comment -> commentRepository.deleteById(comment.getId()));
     }
+
+    public void deleteByAccount(Account account) {
+
+        List<Comment> comments = commentRepository.findAllByCreatedBy(account);
+        comments.forEach(comment -> commentRepository.deleteById(comment.getId()));
+    }
 }
