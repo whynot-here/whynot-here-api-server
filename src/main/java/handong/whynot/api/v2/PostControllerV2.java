@@ -171,6 +171,12 @@ public class PostControllerV2 {
     }
 
     @Operation(summary = "공고 모집 상태변경")
+    @Caching(
+      evict = {
+        @CacheEvict(value="MainPosts", key="'MainPosts'"),
+        @CacheEvict(value="CategoryPosts", allEntries = true)
+      }
+    )
     @PostMapping("/own/{postId}")
     public ResponseDTO changeRecruiting(@PathVariable Long postId, @RequestBody PostRecruitDTO request) {
 
