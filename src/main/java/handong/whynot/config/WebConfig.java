@@ -12,8 +12,9 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "http://localhost:3000",
+                        "http://localhost:3001",
                         "http://localhost:9000",
-                        "https://why-not-here.netlify.app",
+                        "https://dev.why-not-here.o-r.kr",
                         "https://why-not-here.o-r.kr",
                         "http://127.0.0.1:5173",
                         "https://appleid.apple.com"

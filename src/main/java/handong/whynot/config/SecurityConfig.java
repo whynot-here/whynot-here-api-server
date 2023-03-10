@@ -106,8 +106,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.addAllowedOrigin("http://localhost:3001");
         configuration.addAllowedOrigin("http://localhost:9000");
-        configuration.addAllowedOrigin("https://why-not-here.netlify.app");
+        configuration.addAllowedOrigin("https://dev.why-not-here.o-r.kr");
         configuration.addAllowedOrigin("https://why-not-here.o-r.kr");
         configuration.addAllowedOrigin("http://127.0.0.1:5173");
         configuration.addAllowedOrigin("https://appleid.apple.com");
