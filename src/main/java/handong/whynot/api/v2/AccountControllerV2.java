@@ -81,4 +81,13 @@ public class AccountControllerV2 {
         accountService.deleteAccount(account);
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_DELETE_OK);
     }
+
+    @Operation(summary = "프로필 사진 변경")
+    @PutMapping("/account/profileImg")
+    public AccountResponseDTO updateProfileImg(@RequestBody ProfileImgDTO dto) {
+
+        Account account = accountService.updateProfileImg(dto);
+
+        return AccountResponseDTO.of(account);
     }
+}

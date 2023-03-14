@@ -216,4 +216,13 @@ public class AccountService implements UserDetailsService {
 
         accountRepository.delete(account);
     }
+
+    @Transactional
+    public Account updateProfileImg(ProfileImgDTO dto) {
+
+        Account account = getCurrentAccount();
+        account.setProfileImg(dto.getProfileImg());
+
+        return account;
+    }
 }
