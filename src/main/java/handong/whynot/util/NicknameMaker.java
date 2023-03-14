@@ -14,7 +14,7 @@ public final class NicknameMaker {
     private NicknameMaker() {
     }
 
-    public static String make(String nickname) {
-        return PREFIX_LIST.get(RandomUtils.nextInt(0, PREFIX_LIST.size() - 1)) + nickname;
+    public static String make() {
+        return PREFIX_LIST.get(RandomUtils.nextInt(0, PREFIX_LIST.size() - 1)) + RandomUtils.nextInt(1000, 9999);
     }
 }

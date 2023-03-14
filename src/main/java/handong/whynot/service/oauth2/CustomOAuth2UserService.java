@@ -102,7 +102,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private Account registerNewUser(String registrationId, OAuth2UserInfo oAuth2UserInfo) {
 
         Account account = Account.builder()
-                .nickname(NicknameMaker.make(oAuth2UserInfo.getName()))
+                .nickname(NicknameMaker.make())
                 .email(oAuth2UserInfo.getEmail())
                 .profileImg(oAuth2UserInfo.getProfileImg())
                 .authType(AuthType.valueOf(registrationId))
