@@ -230,6 +230,8 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
+
+    @Transactional
     public void createFavorite(Long postId, Account account) {
 
         Post post = postRepository.findById(postId)
@@ -246,8 +248,10 @@ public class PostService {
 
         postFavoriteRepository.save(postFavorite);
 
+        post.increaseLikes();
     }
 
+    @Transactional
     public void deleteFavorite(Long postId, Account account) {
 
         Post post = postRepository.findById(postId)
@@ -260,6 +264,7 @@ public class PostService {
 
         postFavoriteRepository.deleteById(favorite.get(0).getId());
 
+        post.decreaseLikes();
     }
 
     public List<PostResponseDTO> getApplys(Account account) {

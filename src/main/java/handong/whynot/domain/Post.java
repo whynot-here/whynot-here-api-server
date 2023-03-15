@@ -65,6 +65,9 @@ public class Post extends BaseTimeEntity {
     @Column(name = "views")
     private Integer views;
 
+    @Column(name = "likes")
+    private Integer likes;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImageLink> links = new ArrayList<>();
 
@@ -91,5 +94,13 @@ public class Post extends BaseTimeEntity {
 
     public void increaseViews() {
         views += 1;
+    }
+
+    public void increaseLikes() {
+        likes += 1;
+    }
+
+    public void decreaseLikes() {
+        likes -= 1;
     }
 }

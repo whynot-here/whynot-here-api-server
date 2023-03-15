@@ -1,7 +1,6 @@
 package handong.whynot.api.v2;
 
 import handong.whynot.domain.Account;
-import handong.whynot.domain.Post;
 import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.dto.post.*;
 import handong.whynot.service.AccountService;
@@ -112,6 +111,13 @@ public class PostControllerV2 {
     }
 
     @Operation(summary = "‘좋아요’ 공고 단건 생성 (좋아요 on)")
+    @Caching(
+      evict = {
+        @CacheEvict(value="Post", key="'Post#' + #postId"),
+        @CacheEvict(value="MainPosts", key="'MainPosts'"),
+        @CacheEvict(value="CategoryPosts", allEntries = true)
+      }
+    )
     @PostMapping("/favorite/{postId}")
     @ResponseStatus(CREATED)
     public ResponseDTO createFavorite(@PathVariable Long postId) {
@@ -123,6 +129,13 @@ public class PostControllerV2 {
     }
 
     @Operation(summary = "‘좋아요’ 공고 단건 삭제 (좋아요 off)")
+    @Caching(
+      evict = {
+        @CacheEvict(value="Post", key="'Post#' + #postId"),
+        @CacheEvict(value="MainPosts", key="'MainPosts'"),
+        @CacheEvict(value="CategoryPosts", allEntries = true)
+      }
+    )
     @DeleteMapping("/favorite/{postId}")
     public ResponseDTO deleteFavorite(@PathVariable Long postId) {
 
