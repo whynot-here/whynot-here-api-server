@@ -62,6 +62,8 @@ public class PostResponseDTO {
 
     private Integer views;
 
+    private Integer likes;
+
     private List<PostImageLinkDTO> imageLinks = new ArrayList<>();
 
     public static PostResponseDTO of(Post post) {
@@ -85,6 +87,7 @@ public class PostResponseDTO {
                 .communicationTool(post.getCommunicationTool())
                 .category(CategoryDTO.generateDTOBy(post.getCategoryId()))
                 .views(post.getViews())
+                .likes(post.getLikes())
                 .imageLinks(imageLinks)
                 .build();
     }

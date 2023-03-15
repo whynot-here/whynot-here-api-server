@@ -104,6 +104,7 @@ CREATE TABLE `post`
     `communication_tool`  varchar(20),
     `category_id`         bigint,
     `views`               int                                      DEFAULT 0,
+    `likes`               int                                      DEFAULT 0,
     PRIMARY KEY (`id`),
     KEY                   `FKe5hjewhnd6trrdgt8i6uapkhy` (`account_id`),
     CONSTRAINT `FKe5hjewhnd6trrdgt8i6uapkhy` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
