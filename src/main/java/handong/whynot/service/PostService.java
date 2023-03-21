@@ -132,6 +132,7 @@ public class PostService {
                 .categoryId(category)
                 .closedDt(request.getClosedDt())
                 .views(0)
+                .likes(0)
                 .isRecruiting(true)
                 .build();
 
