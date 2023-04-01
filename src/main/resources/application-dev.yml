@@ -136,8 +136,8 @@ cloud:
 jwt:
   secretKey: ${jwt.token.secret}
   expiredTime:
-    access-token: 10000
-    refresh-token: 20000
+    access-token: 1000000
+    refresh-token: 2000000
 
 springdoc:
   api-docs:
