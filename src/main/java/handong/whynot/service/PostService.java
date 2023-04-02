@@ -382,6 +382,9 @@ public class PostService {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException(CategoryResponseCode.CATEGORY_READ_FAIL));
 
+        // 한슐랭 탭은 좋아요 순으로 정렬
+        boolean orderByLikes = StringUtils.equals(category.getParentCode(), "MUST-EAT");
+
         // parent 카테고리 여부
         if (StringUtils.equals(category.getIsLeaf(), "N")) {
 
@@ -394,15 +397,29 @@ public class PostService {
                         .map(PostResponseDTO::of)
                         .collect(Collectors.toList()));
             }
-            return responseDTOList.stream().distinct()
-                    .sorted(Comparator.comparing(PostResponseDTO::getCreatedDt, Comparator.reverseOrder()))
-                    .collect(Collectors.toList());
+
+            if (orderByLikes) {
+                return responseDTOList.stream().distinct()
+                  .sorted(Comparator.comparing(PostResponseDTO::getLikes, Comparator.reverseOrder()))
+                  .collect(Collectors.toList());
+            } else {
+                return responseDTOList.stream().distinct()
+                  .sorted(Comparator.comparing(PostResponseDTO::getCreatedDt, Comparator.reverseOrder()))
+                  .collect(Collectors.toList());
+            }
         }
 
-        return postRepository.findAllByCategoryId(category).stream()
-                .map(PostResponseDTO::of)
-                .sorted(Comparator.comparing(PostResponseDTO::getCreatedDt, Comparator.reverseOrder()))
-                .collect(Collectors.toList());
+        if (orderByLikes) {
+            return postRepository.findAllByCategoryId(category).stream()
+              .map(PostResponseDTO::of)
+              .sorted(Comparator.comparing(PostResponseDTO::getLikes, Comparator.reverseOrder()))
+              .collect(Collectors.toList());
+        } else {
+            return postRepository.findAllByCategoryId(category).stream()
+              .map(PostResponseDTO::of)
+              .sorted(Comparator.comparing(PostResponseDTO::getCreatedDt, Comparator.reverseOrder()))
+              .collect(Collectors.toList());
+        }
     }
 
     public List<PostResponseDTO> searchPosts(String keyword) {
