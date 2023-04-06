@@ -159,13 +159,6 @@ public class PostService {
     }
 
     @Transactional
-    @Caching(
-            evict = {
-                    @CacheEvict(value="Post", key="'Post#' + #id"),
-                    @CacheEvict(value="MainPosts", key="'MainPosts'"),
-                    @CacheEvict(value="CategoryPosts", allEntries = true)
-            }
-    )
     public PostResponseDTO getPost(HttpServletRequest request, HttpServletResponse response, Long id) {
 
         // 존재하는 post 인지 확인
