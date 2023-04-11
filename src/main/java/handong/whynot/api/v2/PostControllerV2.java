@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -52,7 +53,7 @@ public class PostControllerV2 {
     )
     @PostMapping("")
     @ResponseStatus(CREATED)
-    public PostResponseDTO createPost(@RequestBody PostRequestDTO request) {
+    public PostResponseDTO createPost(@RequestBody @Valid PostRequestDTO request) {
 
         Account account = accountService.getCurrentAccount();
         PostResponseDTO createdPost = PostResponseDTO.of(postService.createPost(request, account));

@@ -133,6 +133,7 @@ public class PostService {
                 .closedDt(request.getClosedDt())
                 .views(0)
                 .likes(0)
+                .locationUrl(request.getLocationUrl())
                 .isRecruiting(true)
                 .build();
 

@@ -3,6 +3,7 @@ package handong.whynot.dto.post;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,4 +29,6 @@ public class PostRequestDTO {
     private Integer recruitCurrentCnt;
     private CommunicationType communicationTool;
 
+    @Pattern(regexp = "^https", message = "Only https possible")
+    private String locationUrl;
 }

@@ -68,6 +68,9 @@ public class Post extends BaseTimeEntity {
     @Column(name = "likes")
     private Integer likes;
 
+    @Column(name = "location_url")
+    private String locationUrl;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImageLink> links = new ArrayList<>();
 
@@ -88,6 +91,7 @@ public class Post extends BaseTimeEntity {
         content = request.getContent();
         categoryId = category;
         closedDt = request.getClosedDt();
+        locationUrl = request.getLocationUrl();
         links.clear();
         links.addAll(imageLinks);
     }

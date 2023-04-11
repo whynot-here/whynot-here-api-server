@@ -105,6 +105,7 @@ CREATE TABLE `post`
     `category_id`         bigint,
     `views`               int                                      DEFAULT 0,
     `likes`               int                                      DEFAULT 0,
+    `location_url`        varchar(255)                             DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY                   `FKe5hjewhnd6trrdgt8i6uapkhy` (`account_id`),
     CONSTRAINT `FKe5hjewhnd6trrdgt8i6uapkhy` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)

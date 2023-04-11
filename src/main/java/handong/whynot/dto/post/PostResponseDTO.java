@@ -64,6 +64,8 @@ public class PostResponseDTO {
 
     private Integer likes;
 
+    private String locationUrl;
+
     private List<PostImageLinkDTO> imageLinks = new ArrayList<>();
 
     public static PostResponseDTO of(Post post) {
@@ -88,6 +90,7 @@ public class PostResponseDTO {
                 .category(CategoryDTO.generateDTOBy(post.getCategoryId()))
                 .views(post.getViews())
                 .likes(post.getLikes())
+                .locationUrl(post.getLocationUrl())
                 .imageLinks(imageLinks)
                 .build();
     }
