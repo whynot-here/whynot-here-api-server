@@ -2,11 +2,7 @@ package handong.whynot.service;
 
 import handong.whynot.domain.Account;
 import handong.whynot.dto.account.*;
-import handong.whynot.dto.post.PostResponseDTO;
-import handong.whynot.exception.account.AccountAlreadyExistEmailException;
-import handong.whynot.exception.account.AccountAlreadyExistNicknameException;
-import handong.whynot.exception.account.AccountNotFoundException;
-import handong.whynot.exception.account.AccountNotValidToken;
+import handong.whynot.exception.account.*;
 import handong.whynot.mail.EmailMessage;
 import handong.whynot.mail.EmailService;
 import handong.whynot.repository.AccountQueryRepository;
@@ -25,6 +21,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
+
+import static handong.whynot.util.NicknameMaker.checkInvalidNickName;
 
 @Service
 @RequiredArgsConstructor
@@ -194,6 +192,10 @@ public class AccountService implements UserDetailsService {
 
         // 닉네임 중복 검사
         checkNicknameDuplicate(nickname);
+
+        // 닉네임 포함 불가 단어 검증
+        if (checkInvalidNickName(nickname))
+            throw new AccountInvalidNicknameException(AccountResponseCode.ACCOUNT_INVALID_NICKNAME);
 
         // 닉네임 업데이트
         Account account = getCurrentAccount();

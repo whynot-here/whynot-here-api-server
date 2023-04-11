@@ -33,7 +33,8 @@ public enum AccountResponseCode implements ResponseCode {
     ACCOUNT_OAUTH2_NOT_PROVIDED_VALUE(40015, "필수 사용자 정보가 제공되지 않았습니다."),
     ACCOUNT_OAUTH2_EXIST_SAME_EMAIL(40016, "동일한 이메일이 사용되고 있습니다."),
     ALREADY_EXIST_ROLE(40017, "이미 가지고 있는 Role 입니다."),
-    ROLE_READ_FAIL(40018, "존재하지 않는 Role 입니다.");
+    ROLE_READ_FAIL(40018, "존재하지 않는 Role 입니다."),
+    ACCOUNT_INVALID_NICKNAME(40019, "변경할 수 없는 단어가 포함된 닉네임입니다.");
 
 
     private final Integer statusCode;

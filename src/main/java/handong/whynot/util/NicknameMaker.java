@@ -3,6 +3,7 @@ package handong.whynot.util;
 import org.apache.commons.lang3.RandomUtils;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public final class NicknameMaker {
     private static final List<String> PREFIX_LIST = List.of("오늘학식메뉴좀", "버거킹은쿠폰으로만", "야식은구름다리",
@@ -11,10 +12,16 @@ public final class NicknameMaker {
             "점심밥고는", "푸른바다", "여기모여라", "내일중간고사", "새내기", "행복한", "아이스아메리카노", "방귀쟁이", "촛불", "휴강기원1일차",
             "작심삼일", "과탑", "자린고비", "아기고양이", "농사꾼", "내 꿈은", "비타민");
 
+    private static final List<String> INVALID_WORDS = List.of("관리자", "운영자", "운영진", "WNH");
+
     private NicknameMaker() {
     }
 
     public static String make() {
         return PREFIX_LIST.get(RandomUtils.nextInt(0, PREFIX_LIST.size() - 1)) + RandomUtils.nextInt(1000, 9999);
+    }
+
+    public static boolean checkInvalidNickName(String nickname) {
+        return INVALID_WORDS.stream().anyMatch(nickname::contains);
     }
 }

@@ -35,6 +35,12 @@ public class AccountExceptionHandler {
     }
 
     @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(AccountInvalidNicknameException.class)
+    public ErrorResponseDTO invalidNicknameExceptionHandle() {
+        return ErrorResponseDTO.of(AccountResponseCode.ACCOUNT_INVALID_NICKNAME, null);
+    }
+
+    @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(AccountNotValidFormException.class)
     public ErrorResponseDTO notValidFormExceptionHandle() {
         return ErrorResponseDTO.of(AccountResponseCode.ACCOUNT_NOT_VALID_FROM, null);
