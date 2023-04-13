@@ -29,6 +29,6 @@ public class PostRequestDTO {
     private Integer recruitCurrentCnt;
     private CommunicationType communicationTool;
 
-    @Pattern(regexp = "^https", message = "Only https possible")
+    @Pattern(regexp = "^https.*", message = "Only https possible")
     private String locationUrl;
 }
