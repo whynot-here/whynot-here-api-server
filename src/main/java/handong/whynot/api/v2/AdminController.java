@@ -5,6 +5,7 @@ import handong.whynot.domain.StudentAuth;
 import handong.whynot.dto.account.StudentAuthRequestDTO;
 import handong.whynot.dto.account.StudentAuthResponseDTO;
 import handong.whynot.dto.admin.AdminResponseCode;
+import handong.whynot.dto.admin.AdminStudentAuthResponseDTO;
 import handong.whynot.dto.admin.UserFeedbackRequestDTO;
 import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.service.AccountService;
@@ -15,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -67,6 +70,13 @@ public class AdminController {
         return StudentAuthResponseDTO.builder()
           .accountId(account.getId())
           .imgUrl(auth.getImgUrl())
+          .isAuthenticated(auth.isAuthenticated())
           .build();
+    }
+
+    @Operation(summary = "인증 요청 전체 조회")
+    @GetMapping("/admin/requests")
+    public List<AdminStudentAuthResponseDTO> getRequests() {
+        return adminService.getRequests();
     }
 }
