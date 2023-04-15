@@ -1,7 +1,9 @@
 package handong.whynot.api.v2;
 
 import handong.whynot.domain.Account;
+import handong.whynot.domain.StudentAuth;
 import handong.whynot.dto.account.StudentAuthRequestDTO;
+import handong.whynot.dto.account.StudentAuthResponseDTO;
 import handong.whynot.dto.admin.AdminResponseCode;
 import handong.whynot.dto.admin.UserFeedbackRequestDTO;
 import handong.whynot.dto.common.ResponseDTO;
@@ -53,5 +55,18 @@ public class AdminController {
         adminService.updateStudentAuth(dto, account);
 
         return ResponseDTO.of(AdminResponseCode.STUDENT_UPDATE_IMAGE_OK);
+    }
+
+    @Operation(summary = "본인 학생증 이미지 조회")
+    @GetMapping("/student/img")
+    public StudentAuthResponseDTO getStudentImg() {
+
+        Account account = accountService.getCurrentAccount();
+        StudentAuth auth = adminService.getStudentImg(account);
+
+        return StudentAuthResponseDTO.builder()
+          .accountId(account.getId())
+          .imgUrl(auth.getImgUrl())
+          .build();
     }
 }
