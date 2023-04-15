@@ -1,5 +1,6 @@
 package handong.whynot.domain;
 
+import handong.whynot.domain.common.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class StudentAuth {
+public class StudentAuth extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,5 +30,9 @@ public class StudentAuth {
 
     public void updateImageUrl(String url) {
         this.imgUrl = url;
+    }
+
+    public void updateIsAuthenticated(boolean flag) {
+        this.isAuthenticated = flag;
     }
 }

@@ -62,6 +62,15 @@ public class Account {
     @Column(name = "oauth_ci")
     private String oauthCI;
 
+    @Column(name = "student_id")
+    private Integer studentId;
+
+    @Column(name = "student_name")
+    private String studentName;
+
+    @Column(name = "is_authenticated")
+    private boolean isAuthenticated;
+
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<AccountRole> userRoleList = new ArrayList<>();
@@ -116,5 +125,11 @@ public class Account {
     public Boolean hasRoleByCode(String roleCode) {
         return userRoleList.stream()
           .anyMatch(it -> StringUtils.equals(it.getRole().getCode(), roleCode));
+    }
+
+    public void approveStudentAuth(Integer studentId, String studentName) {
+        this.studentId = studentId;
+        this.studentName = studentName;
+        this.isAuthenticated = true;
     }
 }

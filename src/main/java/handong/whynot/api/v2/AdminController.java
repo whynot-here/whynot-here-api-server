@@ -2,6 +2,7 @@ package handong.whynot.api.v2;
 
 import handong.whynot.domain.Account;
 import handong.whynot.domain.StudentAuth;
+import handong.whynot.dto.account.AdminApproveRequestDTO;
 import handong.whynot.dto.account.StudentAuthRequestDTO;
 import handong.whynot.dto.account.StudentAuthResponseDTO;
 import handong.whynot.dto.admin.AdminResponseCode;
@@ -78,5 +79,14 @@ public class AdminController {
     @GetMapping("/admin/requests")
     public List<AdminStudentAuthResponseDTO> getRequests() {
         return adminService.getRequests();
+    }
+
+    @Operation(summary = "인증 요청 복수 승인")
+    @PutMapping("/admin/requests")
+    public ResponseDTO approveRequests(@RequestBody List<AdminApproveRequestDTO> approveList) {
+
+        adminService.approveRequests(approveList);
+
+        return ResponseDTO.of(AdminResponseCode.ADMIN_APPROVE_REQUESTS_OK);
     }
 }

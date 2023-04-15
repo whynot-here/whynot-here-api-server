@@ -1,11 +1,16 @@
 package handong.whynot.service;
 
 import handong.whynot.domain.Account;
+import handong.whynot.domain.Role;
 import handong.whynot.domain.StudentAuth;
+import handong.whynot.dto.account.AccountResponseCode;
+import handong.whynot.dto.account.AdminApproveRequestDTO;
 import handong.whynot.dto.account.StudentAuthRequestDTO;
 import handong.whynot.dto.admin.AdminResponseCode;
 import handong.whynot.dto.admin.AdminStudentAuthResponseDTO;
+import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.account.StudentAuthNotFoundException;
+import handong.whynot.repository.AccountRepository;
 import handong.whynot.repository.StudentAuthRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +24,8 @@ import java.util.stream.Collectors;
 public class AdminService {
 
   private final StudentAuthRepository studentAuthRepository;
+  private final AccountRepository accountRepository;
+  private final RoleService roleService;
 
   public void requestStudentAuth(StudentAuthRequestDTO dto, Account account) {
 
@@ -48,5 +55,21 @@ public class AdminService {
     return studentAuthRepository.findAll().stream()
       .map(AdminStudentAuthResponseDTO::of)
       .collect(Collectors.toList());
+  }
+
+  @Transactional
+  public void approveRequests(List<AdminApproveRequestDTO> approveList) {
+    for (AdminApproveRequestDTO approve: approveList) {
+      StudentAuth studentAuth = studentAuthRepository.findByAccountId(approve.getAccountId())
+        .orElseThrow(() -> new StudentAuthNotFoundException(AdminResponseCode.STUDENT_AUTH_NOT_FOUND));
+      studentAuth.updateIsAuthenticated(true);
+
+      Account account = accountRepository.findById(approve.getAccountId())
+        .orElseThrow(() -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
+      account.approveStudentAuth(approve.getStudentId(), approve.getStudentName());
+
+      final Role role = roleService.getRoleByCode("ROLE_USER");
+      account.addAccountRole(role);
+    }
   }
 }
