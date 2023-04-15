@@ -1,8 +1,12 @@
 package handong.whynot.api.v2;
 
+import handong.whynot.domain.Account;
+import handong.whynot.dto.account.StudentAuthRequestDTO;
 import handong.whynot.dto.admin.AdminResponseCode;
 import handong.whynot.dto.admin.UserFeedbackRequestDTO;
 import handong.whynot.dto.common.ResponseDTO;
+import handong.whynot.service.AccountService;
+import handong.whynot.service.AdminService;
 import handong.whynot.service.UserFeedbackService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +22,8 @@ import static org.springframework.http.HttpStatus.CREATED;
 public class AdminController {
 
     private final UserFeedbackService userFeedbackService;
+    private final AccountService accountService;
+    private final AdminService adminService;
 
     @Operation(summary = "사용자 후기 등록")
     @PostMapping("/admin/feedback")
@@ -29,4 +35,23 @@ public class AdminController {
         return ResponseDTO.of(AdminResponseCode.ADMIN_USER_FEEDBACK_CREATE_OK);
     }
 
+    @Operation(summary = "학생증 인증 요청")
+    @PostMapping("/student/request-auth")
+    public ResponseDTO requestStudentAuth(@RequestBody StudentAuthRequestDTO dto) {
+
+        Account account = accountService.getCurrentAccount();
+        adminService.requestStudentAuth(dto, account);
+
+        return ResponseDTO.of(AdminResponseCode.STUDENT_REQUEST_AUTH_OK);
+    }
+
+    @Operation(summary = "학생증 이미지 변경")
+    @PutMapping("/student/request-auth")
+    public ResponseDTO updateStudentAuth(@RequestBody StudentAuthRequestDTO dto) {
+
+        Account account = accountService.getCurrentAccount();
+        adminService.updateStudentAuth(dto, account);
+
+        return ResponseDTO.of(AdminResponseCode.STUDENT_UPDATE_IMAGE_OK);
+    }
 }
