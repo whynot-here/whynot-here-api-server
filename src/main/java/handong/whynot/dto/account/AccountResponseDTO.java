@@ -2,7 +2,11 @@ package handong.whynot.dto.account;
 
 import handong.whynot.domain.Account;
 import handong.whynot.domain.AuthType;
+import handong.whynot.domain.Role;
 import lombok.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -16,6 +20,7 @@ public class AccountResponseDTO {
     private String nickname;
     private String profileImg;
     private AuthType authType;
+    private List<String> roles;
 
     public static AccountResponseDTO of(Account account) {
         return builder()
@@ -24,6 +29,7 @@ public class AccountResponseDTO {
                 .nickname(account.getNickname())
                 .profileImg(account.getProfileImg())
                 .authType(account.getAuthType())
+                .roles(account.getRoles().stream().map(Role::getCode).collect(Collectors.toList()))
                 .build();
     }
 }

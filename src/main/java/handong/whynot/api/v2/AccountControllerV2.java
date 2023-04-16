@@ -43,13 +43,7 @@ public class AccountControllerV2 {
     public AccountResponseDTO getAccountInfo() {
         Account account = accountService.getCurrentAccount();
 
-        return AccountResponseDTO.builder()
-                .id(account.getId())
-                .email(account.getEmail())
-                .nickname(account.getNickname())
-                .profileImg(account.getProfileImg())
-                .authType(account.getAuthType())
-                .build();
+        return AccountResponseDTO.of(account);
     }
 
     @Operation(summary = "닉네임 변경")
