@@ -395,3 +395,13 @@ VALUES (1, 'ROLE_ADMIN', '운영자'),
        (4, 'ROLE_GUEST', '게스트');
 UNLOCK
 TABLES;
+
+CREATE TABLE `student_auth`
+(
+    `id`               bigint  NOT NULL AUTO_INCREMENT,
+    `account_id`       bigint  NOT NULL,
+    `img_url`          varchar(255),
+    `is_authenticated` boolean DEFAULT false,
+    PRIMARY KEY (`id`),
+    UNIQUE (`account_id`)
+);
