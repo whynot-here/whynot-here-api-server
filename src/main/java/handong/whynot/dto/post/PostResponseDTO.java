@@ -68,6 +68,8 @@ public class PostResponseDTO {
 
     private List<PostImageLinkDTO> imageLinks = new ArrayList<>();
 
+    private int commentCnt;
+
     public static PostResponseDTO of(Post post) {
 
         List<PostImageLinkDTO> imageLinks = post.getLinks().stream()
@@ -92,6 +94,7 @@ public class PostResponseDTO {
                 .likes(post.getLikes())
                 .locationUrl(post.getLocationUrl())
                 .imageLinks(imageLinks)
+                .commentCnt(post.getCommentCnt())
                 .build();
     }
 }

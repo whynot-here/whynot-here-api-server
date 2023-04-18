@@ -5,6 +5,7 @@ import handong.whynot.dto.post.CommunicationType;
 import handong.whynot.dto.post.ContactType;
 import handong.whynot.dto.post.PostRequestDTO;
 import lombok.*;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -73,6 +74,9 @@ public class Post extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImageLink> links = new ArrayList<>();
+
+    @Formula("(select count(*) from comment c where c.post_id = id)")
+    private int commentCnt;
 
     @Builder
     public Post(Account createdBy, String title, String content) {
