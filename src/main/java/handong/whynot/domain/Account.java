@@ -104,13 +104,7 @@ public class Account {
     }
 
     public AccountResponseDTO getAccountDTO() {
-        return AccountResponseDTO.builder()
-                .id(id)
-                .email(email)
-                .nickname(nickname)
-                .profileImg(profileImg)
-                .authType(authType)
-                .build();
+        return AccountResponseDTO.of(this);
     }
 
     public Account addAccountRole(Role role) {
@@ -131,5 +125,13 @@ public class Account {
         this.studentId = studentId;
         this.studentName = studentName;
         this.isAuthenticated = true;
+    }
+
+    public String getDisplayRole() {
+        List<String> roles = getRoles().stream().map(Role::getCode).collect(Collectors.toList());
+        if (roles.contains("ROLE_ADMIN")) return "관리자";
+        else if (roles.contains("ROLE_MANAGER")) return "외부 매니저";
+        else if (roles.contains("ROLE_USER")) return "";
+        else return "미인증";
     }
 }

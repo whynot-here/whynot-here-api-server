@@ -21,6 +21,7 @@ public class AccountResponseDTO {
     private String profileImg;
     private AuthType authType;
     private List<String> roles;
+    private boolean isAuthenticated;
 
     public static AccountResponseDTO of(Account account) {
         return builder()
@@ -30,6 +31,7 @@ public class AccountResponseDTO {
                 .profileImg(account.getProfileImg())
                 .authType(account.getAuthType())
                 .roles(account.getRoles().stream().map(Role::getCode).collect(Collectors.toList()))
+                .isAuthenticated(account.isAuthenticated())
                 .build();
     }
 }
