@@ -14,9 +14,9 @@ public class WebConfig implements WebMvcConfigurer {
                         "http://localhost:3000",
                         "http://localhost:3001",
                         "http://localhost:9000",
+                        "http://localhost:5173",
                         "https://dev.why-not-here.o-r.kr",
                         "https://why-not-here.o-r.kr",
-                        "http://127.0.0.1:5173",
                         "https://appleid.apple.com"
                 )
                 .allowCredentials(true)
