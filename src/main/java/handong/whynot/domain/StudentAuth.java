@@ -26,7 +26,7 @@ public class StudentAuth extends BaseTimeEntity {
     private String imgUrl;
 
     @Column(name="is_authenticated")
-    private boolean isAuthenticated;
+    private Boolean isAuthenticated;
 
     public void updateImageUrl(String url) {
         this.imgUrl = url;

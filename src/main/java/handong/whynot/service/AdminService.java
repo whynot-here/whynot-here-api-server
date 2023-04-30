@@ -51,8 +51,9 @@ public class AdminService {
       .orElseThrow(() -> new StudentAuthNotFoundException(AdminResponseCode.STUDENT_AUTH_NOT_FOUND));
   }
 
-  public List<AdminStudentAuthResponseDTO> getRequests() {
-    return studentAuthRepository.findAll().stream()
+  public List<AdminStudentAuthResponseDTO> getRequests(Boolean isAuthenticated) {
+
+    return studentAuthRepository.findAllByIsAuthenticated(isAuthenticated).stream()
       .map(AdminStudentAuthResponseDTO::of)
       .collect(Collectors.toList());
   }

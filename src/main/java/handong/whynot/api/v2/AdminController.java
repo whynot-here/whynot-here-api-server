@@ -71,14 +71,16 @@ public class AdminController {
         return StudentAuthResponseDTO.builder()
           .accountId(account.getId())
           .imgUrl(auth.getImgUrl())
-          .isAuthenticated(auth.isAuthenticated())
+          .isAuthenticated(auth.getIsAuthenticated())
           .build();
     }
 
     @Operation(summary = "인증 요청 전체 조회")
     @GetMapping("/admin/requests")
-    public List<AdminStudentAuthResponseDTO> getRequests() {
-        return adminService.getRequests();
+    public List<AdminStudentAuthResponseDTO> getRequests(
+      @RequestParam("isAuthenticated") Boolean isAuthenticated) {
+
+        return adminService.getRequests(isAuthenticated);
     }
 
     @Operation(summary = "인증 요청 복수 승인")
