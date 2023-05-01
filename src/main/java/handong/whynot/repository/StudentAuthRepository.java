@@ -1,5 +1,6 @@
 package handong.whynot.repository;
 
+import handong.whynot.domain.Account;
 import handong.whynot.domain.StudentAuth;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,4 +11,6 @@ public interface StudentAuthRepository extends JpaRepository<StudentAuth, Long> 
   Optional<StudentAuth> findByAccountId(Long id);
 
   List<StudentAuth> findAllByIsAuthenticated(Boolean isAuthenticated);
+
+  void deleteByAccount(Account account);
 }

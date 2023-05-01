@@ -36,6 +36,7 @@ public class AccountService implements UserDetailsService {
     private final AuthenticationManager authenticationManager;
     private final PostService postService;
     private final CommentService commentService;
+    private final AdminService adminService;
 
     @Override
     public UserDetails loadUserByUsername(String emailOrNickname) {
@@ -215,6 +216,9 @@ public class AccountService implements UserDetailsService {
 
         // 3. 댓글 삭제
         commentService.deleteByAccount(account);
+
+        // 4. 인증 history 삭제
+        adminService.deleteAuthHistory(account);
 
         accountRepository.delete(account);
     }

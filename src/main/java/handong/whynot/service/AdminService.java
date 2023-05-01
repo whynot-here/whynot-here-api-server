@@ -73,4 +73,9 @@ public class AdminService {
       account.addAccountRole(role);
     }
   }
+
+  public void deleteAuthHistory(Account account) {
+
+    studentAuthRepository.deleteByAccount(account);
+  }
 }

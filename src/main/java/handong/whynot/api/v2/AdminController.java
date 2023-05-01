@@ -84,7 +84,7 @@ public class AdminController {
     }
 
     @Operation(summary = "인증 요청 복수 승인")
-    @PutMapping("/admin/requests")
+    @PostMapping("/admin/requests")
     public ResponseDTO approveRequests(@RequestBody List<AdminApproveRequestDTO> approveList) {
 
         adminService.approveRequests(approveList);
