@@ -59,11 +59,11 @@ public class AdminService {
   }
 
   @Transactional
-  public void approveRequests(List<AdminApproveRequestDTO> approveList) {
+  public void approveRequests(List<AdminApproveRequestDTO> approveList, Account approver) {
     for (AdminApproveRequestDTO approve: approveList) {
       StudentAuth studentAuth = studentAuthRepository.findByAccountId(approve.getAccountId())
         .orElseThrow(() -> new StudentAuthNotFoundException(AdminResponseCode.STUDENT_AUTH_NOT_FOUND));
-      studentAuth.updateIsAuthenticated(true);
+      studentAuth.updateIsAuthenticated(approver.getEmail());
 
       Account account = accountRepository.findById(approve.getAccountId())
         .orElseThrow(() -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));

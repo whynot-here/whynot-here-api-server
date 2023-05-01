@@ -28,11 +28,17 @@ public class AdminStudentAuthResponseDTO {
   private String studentName;
   private String imgUrl;
   private boolean isAuthenticated;
+  private String approver;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = "Asia/Seoul")
   @JsonDeserialize(using = LocalDateTimeDeserializer.class)
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   private LocalDateTime createdDt;
+
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = "Asia/Seoul")
+  @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+  @JsonSerialize(using = LocalDateTimeSerializer.class)
+  private LocalDateTime approvedDt;
 
   public static AdminStudentAuthResponseDTO of(StudentAuth auth) {
     Account account = auth.getAccount();
@@ -48,6 +54,8 @@ public class AdminStudentAuthResponseDTO {
       .imgUrl(auth.getImgUrl())
       .isAuthenticated(auth.getIsAuthenticated())
       .createdDt(auth.getCreatedDt())
+      .approvedDt(auth.getApprovedAt())
+      .approver(auth.getApprover())
       .build();
   }
 }

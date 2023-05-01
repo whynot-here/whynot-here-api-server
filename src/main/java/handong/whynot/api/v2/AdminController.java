@@ -87,7 +87,8 @@ public class AdminController {
     @PostMapping("/admin/requests")
     public ResponseDTO approveRequests(@RequestBody List<AdminApproveRequestDTO> approveList) {
 
-        adminService.approveRequests(approveList);
+        Account approver = accountService.getCurrentAccount();
+        adminService.approveRequests(approveList, approver);
 
         return ResponseDTO.of(AdminResponseCode.ADMIN_APPROVE_REQUESTS_OK);
     }
