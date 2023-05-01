@@ -8,6 +8,7 @@ import handong.whynot.handler.security.oauth2.OAuth2SuccessHandler;
 import handong.whynot.repository.HttpCookieOAuth2AuthorizationRequestRepository;
 import handong.whynot.service.oauth2.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final OAuth2FailureHandler oAuth2FailureHandler;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+
+    @Value("${admin.url}")
+    private String adminUrl;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -113,6 +117,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.addAllowedOrigin("https://why-not-here.o-r.kr");
         configuration.addAllowedOrigin("http://localhost:5173");
         configuration.addAllowedOrigin("https://appleid.apple.com");
+        configuration.addAllowedOrigin(adminUrl);
 
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
