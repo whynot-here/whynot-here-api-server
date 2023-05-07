@@ -19,7 +19,8 @@ public class AccountQueryRepository {
         return queryFactory.selectFrom(qAccount)
                 .where(qAccount.email.eq(email)
                         .and(qAccount.emailVerified.isTrue())
-                        .and(qAccount.authType.eq(AuthType.local)))
+                        .and(qAccount.authType.eq(AuthType.local)
+                          .or(qAccount.authType.eq(AuthType.admin))))
                 .fetchOne();
     }
 
@@ -27,7 +28,8 @@ public class AccountQueryRepository {
         return queryFactory.selectFrom(qAccount)
                 .where(qAccount.nickname.eq(nickname)
                         .and(qAccount.emailVerified.isTrue())
-                        .and(qAccount.authType.eq(AuthType.local)))
+                        .and(qAccount.authType.eq(AuthType.local)
+                          .or(qAccount.authType.eq(AuthType.admin))))
                 .fetchOne();
     }
 
@@ -35,6 +37,13 @@ public class AccountQueryRepository {
         return queryFactory.selectFrom(qAccount)
           .where(qAccount.email.eq(email)
             .and(qAccount.authType.eq(AuthType.local)))
+          .fetchOne();
+    }
+
+    public Account findByAdminEmail(String email) {
+        return queryFactory.selectFrom(qAccount)
+          .where(qAccount.email.eq(email)
+            .and(qAccount.authType.eq(AuthType.admin)))
           .fetchOne();
     }
 }

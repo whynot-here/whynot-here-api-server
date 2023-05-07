@@ -38,6 +38,19 @@ public class AccountControllerV2 {
         return tokenResponseDTO;
     }
 
+    @PostMapping("/admin-sign-in")
+    public TokenResponseDTO adminSignIn(@RequestBody @Valid SignInRequestDTO signInRequest, HttpServletResponse response) {
+
+        TokenResponseDTO tokenResponseDTO = accountService.adminSignIn(signInRequest);
+
+        Cookie cookie = new Cookie("refresh", tokenResponseDTO.getRefreshToken());
+        cookie.setHttpOnly(true);    // 자바스크립트로 쿠키를 조회하는 것을 막는 옵션
+
+        response.addCookie(cookie);
+
+        return tokenResponseDTO;
+    }
+
     @Operation(summary = "계정 정보 조회")
     @GetMapping("/account/info")
     public AccountResponseDTO getAccountInfo() {

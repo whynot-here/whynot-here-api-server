@@ -179,8 +179,28 @@ public class AccountService implements UserDetailsService {
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-//        Account account = accountRepository.findByEmail(signInRequest.getEmail());
         Account account = accountQueryRepository.findByEmail(signInRequest.getEmail());
+        if (Objects.isNull(account)) {
+            throw new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL);
+        }
+
+        String accessToken = signInTokenGenerator.accessToken(account);
+        String refreshToken = signInTokenGenerator.refreshToken(account);
+
+        return TokenResponseDTO.of(account, accessToken, refreshToken);
+    }
+
+    @Transactional
+    public TokenResponseDTO adminSignIn(SignInRequestDTO signInRequest) {
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+          new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword());
+
+        // SecurityContextHolder 에 저장하는 것은 (UserDetailService -> Provider -> AuthenticationManager 로 전달되는) Authentication 객체
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        Account account = accountQueryRepository.findByAdminEmail(signInRequest.getEmail());
         if (Objects.isNull(account)) {
             throw new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL);
         }
