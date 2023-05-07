@@ -1,6 +1,7 @@
 package handong.whynot.service;
 
 import handong.whynot.domain.Account;
+import handong.whynot.domain.AuthType;
 import handong.whynot.dto.account.*;
 import handong.whynot.exception.account.*;
 import handong.whynot.mail.EmailMessage;
@@ -76,6 +77,7 @@ public class AccountService implements UserDetailsService {
         }
         account.setNickname(signUpDTO.getNickname());
         account.setPassword(passwordEncoder.encode(signUpDTO.getPassword()));
+        account.setAuthType(AuthType.local);
 
         account.completeSignUp();
 
@@ -101,7 +103,7 @@ public class AccountService implements UserDetailsService {
 
     public void checkEmail(String token, String email) {
 
-        Account account = accountRepository.findByEmail(email);
+        Account account = accountQueryRepository.findByEmail(email);
         if (account == null) {
             throw new AccountNotValidToken(AccountResponseCode.ACCOUNT_NOT_VALID_TOKEN);
         }
@@ -134,7 +136,7 @@ public class AccountService implements UserDetailsService {
         }
 
         // 동일한 email은 있지만, email 인증이 되지 않은 사용자
-        Account savedAccount = accountRepository.findByEmail(email);
+        Account savedAccount = accountQueryRepository.findByEmail(email);
 
         if (savedAccount == null) {
 
@@ -177,7 +179,8 @@ public class AccountService implements UserDetailsService {
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        Account account = accountRepository.findByEmail(signInRequest.getEmail());
+//        Account account = accountRepository.findByEmail(signInRequest.getEmail());
+        Account account = accountQueryRepository.findByEmail(signInRequest.getEmail());
         if (Objects.isNull(account)) {
             throw new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL);
         }

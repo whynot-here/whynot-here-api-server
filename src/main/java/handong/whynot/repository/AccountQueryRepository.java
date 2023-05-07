@@ -2,6 +2,7 @@ package handong.whynot.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import handong.whynot.domain.Account;
+import handong.whynot.domain.AuthType;
 import handong.whynot.domain.QAccount;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -17,14 +18,23 @@ public class AccountQueryRepository {
     public Account findByVerifiedEmail(String email) {
         return queryFactory.selectFrom(qAccount)
                 .where(qAccount.email.eq(email)
-                        .and(qAccount.emailVerified.isTrue()))
+                        .and(qAccount.emailVerified.isTrue())
+                        .and(qAccount.authType.eq(AuthType.local)))
                 .fetchOne();
     }
 
     public Account findByVerifiedNickname(String nickname) {
         return queryFactory.selectFrom(qAccount)
                 .where(qAccount.nickname.eq(nickname)
-                        .and(qAccount.emailVerified.isTrue()))
+                        .and(qAccount.emailVerified.isTrue())
+                        .and(qAccount.authType.eq(AuthType.local)))
                 .fetchOne();
+    }
+
+    public Account findByEmail(String email) {
+        return queryFactory.selectFrom(qAccount)
+          .where(qAccount.email.eq(email)
+            .and(qAccount.authType.eq(AuthType.local)))
+          .fetchOne();
     }
 }

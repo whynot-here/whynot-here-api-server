@@ -9,7 +9,8 @@ public enum AuthType {
     google,
     naver,
     kakao,
-    apple;
+    apple,
+    admin;
 
     public static Boolean isValidRegistrationId(String registrationId) {
         return Arrays.stream(values()).anyMatch(value -> StringUtils.equals(value.toString(), registrationId));
