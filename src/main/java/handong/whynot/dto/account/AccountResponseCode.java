@@ -15,6 +15,7 @@ public enum AccountResponseCode implements ResponseCode {
     ACCOUNT_VERIFY_OK(20006, "사용자 [이메일 토큰검증]에 성공하였습니다."),
     ACCOUNT_VALID_DUPLICATE(20007, "사용 가능한 인자입니다."),
     ACCOUNT_LOGOUT_SUCCESS(20008, "로그아웃 성공하였습니다."),
+    ACCOUNT_CHANGE_PASSWORD_OK(20009, "비밀번호 변경에 성공하였습니다."),
 
     ACCOUNT_CREATE_FAIL_ALREADY_EXIST(40001, "사용자 [생성]에 실패하였습니다. - 이미 존재함"),
     ACCOUNT_READ_FAIL(40002, "사용자 [조회]에 실패하였습니다."),
@@ -34,7 +35,9 @@ public enum AccountResponseCode implements ResponseCode {
     ACCOUNT_OAUTH2_EXIST_SAME_EMAIL(40016, "동일한 이메일이 사용되고 있습니다."),
     ALREADY_EXIST_ROLE(40017, "이미 가지고 있는 Role 입니다."),
     ROLE_READ_FAIL(40018, "존재하지 않는 Role 입니다."),
-    ACCOUNT_INVALID_NICKNAME(40019, "변경할 수 없는 단어가 포함된 닉네임입니다.");
+    ACCOUNT_INVALID_NICKNAME(40019, "변경할 수 없는 단어가 포함된 닉네임입니다."),
+    ACCOUNT_PASSWORD_NOT_MATCHED(40020, "비밀번호가 일치하지 않습니다."),
+    ACCOUNT_PASSWORD_NOT_VALID(40021, "비밀번호 변경 대상자가 아닙니다.");
 
 
     private final Integer statusCode;

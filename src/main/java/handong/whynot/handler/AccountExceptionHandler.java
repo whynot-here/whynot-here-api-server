@@ -51,4 +51,16 @@ public class AccountExceptionHandler {
     public ErrorResponseDTO notValidTokenExceptionHandle(ResponseCode code) {
         return ErrorResponseDTO.of(code, null);
     }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(PasswordNotMatchedException.class)
+    public ErrorResponseDTO passwordNotMatchedExceptionHandle() {
+        return ErrorResponseDTO.of(AccountResponseCode.ACCOUNT_PASSWORD_NOT_MATCHED, null);
+    }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(PasswordNotSupportedException.class)
+    public ErrorResponseDTO passwordNotSupportedExceptionHandle() {
+        return ErrorResponseDTO.of(AccountResponseCode.ACCOUNT_PASSWORD_NOT_VALID, null);
+    }
 }

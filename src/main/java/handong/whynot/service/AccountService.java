@@ -172,43 +172,51 @@ public class AccountService implements UserDetailsService {
     @Transactional
     public TokenResponseDTO signIn(SignInRequestDTO signInRequest) {
 
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword());
+        try {
+            UsernamePasswordAuthenticationToken authenticationToken =
+              new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword());
 
-        // SecurityContextHolder 에 저장하는 것은 (UserDetailService -> Provider -> AuthenticationManager 로 전달되는) Authentication 객체
-        Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            // SecurityContextHolder 에 저장하는 것은 (UserDetailService -> Provider -> AuthenticationManager 로 전달되는) Authentication 객체
+            Authentication authentication = authenticationManager.authenticate(authenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        Account account = accountQueryRepository.findByEmail(signInRequest.getEmail());
-        if (Objects.isNull(account)) {
-            throw new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL);
+            Account account = accountQueryRepository.findByEmail(signInRequest.getEmail());
+            if (Objects.isNull(account)) {
+                throw new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL);
+            }
+
+            String accessToken = signInTokenGenerator.accessToken(account);
+            String refreshToken = signInTokenGenerator.refreshToken(account);
+
+            return TokenResponseDTO.of(account, accessToken, refreshToken);
+        } catch (Exception e) {
+            throw new PasswordNotMatchedException(AccountResponseCode.ACCOUNT_NOT_VALID);
         }
-
-        String accessToken = signInTokenGenerator.accessToken(account);
-        String refreshToken = signInTokenGenerator.refreshToken(account);
-
-        return TokenResponseDTO.of(account, accessToken, refreshToken);
     }
 
     @Transactional
     public TokenResponseDTO adminSignIn(SignInRequestDTO signInRequest) {
 
-        UsernamePasswordAuthenticationToken authenticationToken =
-          new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword());
+        try {
+            UsernamePasswordAuthenticationToken authenticationToken =
+              new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword());
 
-        // SecurityContextHolder 에 저장하는 것은 (UserDetailService -> Provider -> AuthenticationManager 로 전달되는) Authentication 객체
-        Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            // SecurityContextHolder 에 저장하는 것은 (UserDetailService -> Provider -> AuthenticationManager 로 전달되는) Authentication 객체
+            Authentication authentication = authenticationManager.authenticate(authenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        Account account = accountQueryRepository.findByAdminEmail(signInRequest.getEmail());
-        if (Objects.isNull(account)) {
-            throw new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL);
+            Account account = accountQueryRepository.findByAdminEmail(signInRequest.getEmail());
+            if (Objects.isNull(account)) {
+                throw new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL);
+            }
+
+            String accessToken = signInTokenGenerator.accessToken(account);
+            String refreshToken = signInTokenGenerator.refreshToken(account);
+
+            return TokenResponseDTO.of(account, accessToken, refreshToken);
+        } catch (Exception e) {
+            throw new PasswordNotMatchedException(AccountResponseCode.ACCOUNT_NOT_VALID);
         }
-
-        String accessToken = signInTokenGenerator.accessToken(account);
-        String refreshToken = signInTokenGenerator.refreshToken(account);
-
-        return TokenResponseDTO.of(account, accessToken, refreshToken);
     }
 
     @Transactional
@@ -253,5 +261,15 @@ public class AccountService implements UserDetailsService {
         account.setProfileImg(dto.getProfileImg());
 
         return account;
+    }
+
+    @Transactional
+    public void updatePassword(Account account, String currentPassword, String newPassword) {
+
+        if (! passwordEncoder.matches(currentPassword, account.getPassword())) {
+            throw new PasswordNotMatchedException(AccountResponseCode.ACCOUNT_PASSWORD_NOT_MATCHED);
+        }
+
+        account.setPassword(passwordEncoder.encode(newPassword));
     }
 }

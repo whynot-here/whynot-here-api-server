@@ -1,9 +1,11 @@
 package handong.whynot.api.v2;
 
 import handong.whynot.domain.Account;
+import handong.whynot.domain.AuthType;
 import handong.whynot.dto.account.*;
 import handong.whynot.dto.account.oauth2.AppleServicesResponseDTO;
 import handong.whynot.dto.common.ResponseDTO;
+import handong.whynot.exception.account.PasswordNotSupportedException;
 import handong.whynot.handler.security.oauth2.OAuth2AppleHandler;
 import handong.whynot.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +28,8 @@ public class AccountControllerV2 {
 
     private final AccountService accountService;
     private final OAuth2AppleHandler OAuth2AppleHandler;
+
+    final static List<AuthType> localLoginList  = List.of(AuthType.local, AuthType.admin);
 
     @PostMapping("/sign-in")
     public TokenResponseDTO signIn(@RequestBody @Valid SignInRequestDTO signInRequest, HttpServletResponse response) {
@@ -96,5 +102,19 @@ public class AccountControllerV2 {
         Account account = accountService.updateProfileImg(dto);
 
         return AccountResponseDTO.of(account);
+    }
+
+    @Operation(summary = "비밀번호 변경")
+    @PutMapping("/account/password")
+    public ResponseDTO changeAdminPassword(@RequestBody @Valid PasswordDTO request) {
+
+        Account account = accountService.getCurrentAccount();
+        if (! localLoginList.contains(account.getAuthType())) {
+            throw new PasswordNotSupportedException(AccountResponseCode.ACCOUNT_PASSWORD_NOT_VALID);
+        }
+
+        accountService.updatePassword(account, request.getCurrentPassword(), request.getNewPassword());
+
+        return ResponseDTO.of(AccountResponseCode.ACCOUNT_CHANGE_PASSWORD_OK);
     }
 }
