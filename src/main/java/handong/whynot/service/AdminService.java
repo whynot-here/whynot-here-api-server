@@ -47,8 +47,7 @@ public class AdminService {
   }
 
   public StudentAuth getStudentImg(Account account) {
-    return studentAuthRepository.findByAccountId(account.getId())
-      .orElseThrow(() -> new StudentAuthNotFoundException(AdminResponseCode.STUDENT_AUTH_NOT_FOUND));
+    return studentAuthRepository.findByAccountId(account.getId()).orElse(null);
   }
 
   public List<AdminStudentAuthResponseDTO> getRequests(Boolean isAuthenticated) {

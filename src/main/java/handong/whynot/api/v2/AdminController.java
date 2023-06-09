@@ -67,11 +67,17 @@ public class AdminController {
 
         Account account = accountService.getCurrentAccount();
         StudentAuth auth = adminService.getStudentImg(account);
+        String authImg = null;
+        Boolean isAuthenticated = false;
+        if (auth != null) {
+            authImg = auth.getImgUrl();
+            isAuthenticated = auth.getIsAuthenticated();
+        }
 
         return StudentAuthResponseDTO.builder()
           .accountId(account.getId())
-          .imgUrl(auth.getImgUrl())
-          .isAuthenticated(auth.getIsAuthenticated())
+          .imgUrl(authImg)
+          .isAuthenticated(isAuthenticated)
           .build();
     }
 
