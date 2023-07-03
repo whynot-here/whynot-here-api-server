@@ -71,6 +71,9 @@ public class Account {
     @Column(name = "is_authenticated")
     private boolean isAuthenticated;
 
+    @Column(name = "device_token")
+    private String deviceToken;
+
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<AccountRole> userRoleList = new ArrayList<>();

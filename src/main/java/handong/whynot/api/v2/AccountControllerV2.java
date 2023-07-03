@@ -5,6 +5,7 @@ import handong.whynot.domain.AuthType;
 import handong.whynot.dto.account.*;
 import handong.whynot.dto.account.oauth2.AppleServicesResponseDTO;
 import handong.whynot.dto.common.ResponseDTO;
+import handong.whynot.dto.mobile.DeviceTokenDTO;
 import handong.whynot.exception.account.PasswordNotSupportedException;
 import handong.whynot.handler.security.oauth2.OAuth2AppleHandler;
 import handong.whynot.service.AccountService;
@@ -116,5 +117,14 @@ public class AccountControllerV2 {
         accountService.updatePassword(account, request.getCurrentPassword(), request.getNewPassword());
 
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_CHANGE_PASSWORD_OK);
+    }
+
+    @Operation(summary = "디바이스 토큰 업데이트")
+    @PutMapping("/account/device-token")
+    public ResponseDTO updateDeviceToken(@RequestBody DeviceTokenDTO dto) {
+        Account account = accountService.getCurrentAccount();
+        accountService.updateDeviceToken(account, dto.getToken());
+
+        return ResponseDTO.of(AccountResponseCode.ACCOUNT_UPDATE_DEVICE_TOKEN_OK);
     }
 }

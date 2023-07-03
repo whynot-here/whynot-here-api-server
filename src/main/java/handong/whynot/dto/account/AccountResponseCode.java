@@ -16,6 +16,7 @@ public enum AccountResponseCode implements ResponseCode {
     ACCOUNT_VALID_DUPLICATE(20007, "사용 가능한 인자입니다."),
     ACCOUNT_LOGOUT_SUCCESS(20008, "로그아웃 성공하였습니다."),
     ACCOUNT_CHANGE_PASSWORD_OK(20009, "비밀번호 변경에 성공하였습니다."),
+    ACCOUNT_UPDATE_DEVICE_TOKEN_OK(20010, "Device 토큰 업데이트에 성공하였습니다."),
 
     ACCOUNT_CREATE_FAIL_ALREADY_EXIST(40001, "사용자 [생성]에 실패하였습니다. - 이미 존재함"),
     ACCOUNT_READ_FAIL(40002, "사용자 [조회]에 실패하였습니다."),

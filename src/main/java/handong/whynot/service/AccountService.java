@@ -272,4 +272,9 @@ public class AccountService implements UserDetailsService {
 
         account.setPassword(passwordEncoder.encode(newPassword));
     }
+
+    @Transactional
+    public void updateDeviceToken(Account account, String token) {
+        account.setDeviceToken(token);
+    }
 }
