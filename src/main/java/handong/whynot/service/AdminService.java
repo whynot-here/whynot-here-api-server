@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,7 @@ public class AdminService {
   private final StudentAuthRepository studentAuthRepository;
   private final AccountRepository accountRepository;
   private final RoleService roleService;
+  private final MobilePushService mobilePushService;
 
   public void requestStudentAuth(StudentAuthRequestDTO dto, Account account) {
 
@@ -59,6 +61,8 @@ public class AdminService {
 
   @Transactional
   public void approveRequests(List<AdminApproveRequestDTO> approveList, Account approver) {
+    List<Account> accountList = new ArrayList<>();
+
     for (AdminApproveRequestDTO approve: approveList) {
       StudentAuth studentAuth = studentAuthRepository.findByAccountId(approve.getAccountId())
         .orElseThrow(() -> new StudentAuthNotFoundException(AdminResponseCode.STUDENT_AUTH_NOT_FOUND));
@@ -70,7 +74,11 @@ public class AdminService {
 
       final Role role = roleService.getRoleByCode("ROLE_USER");
       account.addAccountRole(role);
+
+      accountList.add(account);
     }
+
+    mobilePushService.pushApproveStudentAuth(accountList);
   }
 
   public void deleteAuthHistory(Account account) {
