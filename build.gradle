@@ -70,6 +70,9 @@ dependencies {
     // remote
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.5'
 
+    // mobile
+    implementation 'com.google.firebase:firebase-admin:9.1.1'
+
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
