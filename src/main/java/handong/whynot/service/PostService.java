@@ -14,14 +14,13 @@ import handong.whynot.mail.EmailService;
 import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +34,6 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostQueryRepository postQueryRepository;
     private final JobRepository jobRepository;
-    private final JobPostRepository jobPostRepository;
     private final PostFavoriteRepository postFavoriteRepository;
     private final PostApplyRepository postApplyRepository;
     private final EmailService emailService;
@@ -44,6 +42,8 @@ public class PostService {
     public static final String COOKIE_VIEW_COUNT = "viewList";
     private static final int cookieExpireSeconds = 600;        // 10분
     private final CommentService commentService;
+
+    private final MobilePushService mobilePushService;
 
     public List<PostResponseDTO> getPostsByParam(RecruitStatus recruitStatus, List<JobType> jobTypeList) {
 
@@ -244,6 +244,10 @@ public class PostService {
         postFavoriteRepository.save(postFavorite);
 
         post.increaseLikes();
+
+        if (account != post.getCreatedBy()) {
+            mobilePushService.pushFavorite(Collections.singletonList(post.getCreatedBy()), post.getId(), post.getTitle());
+        }
     }
 
     @Transactional
