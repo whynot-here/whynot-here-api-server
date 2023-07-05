@@ -15,6 +15,7 @@ import handong.whynot.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final CommentQueryRepository commentQueryRepository;
     private final PostRepository postRepository;
+    private final MobilePushService mobilePushService;
 
     public List<CommentResponseDTO> getCommentsByPostId(Long postId) {
 
@@ -52,6 +54,10 @@ public class CommentService {
                 .build();
 
         commentRepository.save(comment);
+
+        if (account != entity.getCreatedBy()) {
+            mobilePushService.pushComment(Collections.singletonList(entity.getCreatedBy()), entity.getId(), entity.getTitle(), comment.getContent());
+        }
     }
 
     public void deleteComment(Long commentId, Account account) {
