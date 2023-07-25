@@ -152,3 +152,8 @@ feign:
       oAuth2AppleFeignClient:
         connect-timeout: 5000
         read-timeout: 5000
+
+mobile:
+  push:
+    keyPath: ${mobile.pushKeyPath}
+    scope: ${mobile.pushScope}
