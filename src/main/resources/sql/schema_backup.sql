@@ -405,3 +405,49 @@ CREATE TABLE `student_auth`
     PRIMARY KEY (`id`),
     UNIQUE (`account_id`)
 );
+
+CREATE TABLE `blind_date`
+(
+    `id`                     bigint NOT NULL AUTO_INCREMENT,
+    `created_dt`             datetime,
+    `updated_dt`             datetime,
+    `account_id`             bigint,
+    `matching_blind_date_id` bigint  DEFAULT null,
+    `season`                 int,
+    `is_active`              boolean DEFAULT false,
+    `is_matched`             boolean DEFAULT false,
+    `name`                   varchar(32),
+    `gender`                 varchar(32),
+    `my_age`                 int,
+    `favorite_age`           varchar(32),
+    `date_style`             varchar(32),
+    `hobby`                  varchar(32),
+    `faith`                  varchar(32),
+    `mbti`                   varchar(8),
+    `smoke`                  varchar(8),
+    `comment`                varchar(1000),
+    `kakao_link`             varchar(128),
+    PRIMARY KEY (`id`)
+);
+
+CREATE TABLE `exclude_cond`
+(
+    `id`            bigint NOT NULL AUTO_INCREMENT,
+    `created_dt`    datetime,
+    `updated_dt`    datetime,
+    `blind_date_id` bigint,
+    `name`          varchar(16),
+    `department`    varchar(16),
+    `student_id`    varchar(16),
+    PRIMARY KEY (`id`)
+);
+
+CREATE TABLE `matching_history`
+(
+    `id`                     bigint NOT NULL AUTO_INCREMENT,
+    `created_dt`             datetime,
+    `updated_dt`             datetime,
+    `blind_date_id`          bigint,
+    `matching_blind_date_id` bigint,
+    PRIMARY KEY (`id`)
+);
