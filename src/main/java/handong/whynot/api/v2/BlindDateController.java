@@ -36,4 +36,11 @@ public class BlindDateController {
   public Long getApplicantsCntBySeason(@RequestParam Integer season) {
     return blindDateService.getApplicantsCntBySeason(season);
   }
+
+  @Operation(summary = "소개팅 지원 여부 조회")
+  @GetMapping("/participation")
+  public Boolean getIsParticipatedBySeason(@RequestParam Integer season) {
+    Account account = accountService.getCurrentAccount();
+    return blindDateService.getIsParticipatedBySeason(season, account);
+  }
 }

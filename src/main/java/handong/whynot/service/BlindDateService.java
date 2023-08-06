@@ -58,4 +58,8 @@ public class BlindDateService {
   public Long getApplicantsCntBySeason(Integer season) {
     return blindDateRepository.countBySeason(season);
   }
+
+  public Boolean getIsParticipatedBySeason(Integer season, Account account) {
+    return blindDateRepository.existsByAccountAndSeason(account, season);
+  }
 }

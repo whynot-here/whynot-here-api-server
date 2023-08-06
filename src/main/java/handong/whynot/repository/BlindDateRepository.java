@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface BlindDateRepository extends JpaRepository<BlindDate, Long> {
   Optional<BlindDate> findByAccountAndSeason(Account account, Integer season);
   Long countBySeason(Integer season);
+
+  Boolean existsByAccountAndSeason(Account account, Integer season);
 }
