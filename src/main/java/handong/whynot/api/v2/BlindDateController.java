@@ -30,4 +30,10 @@ public class BlindDateController {
 
     return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_CREATED_OK);
   }
+
+  @Operation(summary = "소개팅 지원자 카운트 조회")
+  @GetMapping("/total-cnt")
+  public Long getApplicantsCntBySeason(@RequestParam Integer season) {
+    return blindDateService.getApplicantsCntBySeason(season);
+  }
 }
