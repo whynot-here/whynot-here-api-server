@@ -3,6 +3,7 @@ package handong.whynot.api.v2;
 import handong.whynot.domain.Account;
 import handong.whynot.dto.blind_date.BlindDateRequestDTO;
 import handong.whynot.dto.blind_date.BlindDateResponseCode;
+import handong.whynot.dto.blind_date.BlindDateResponseDTO;
 import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.service.AccountService;
 import handong.whynot.service.BlindDateService;
@@ -43,4 +44,12 @@ public class BlindDateController {
     Account account = accountService.getCurrentAccount();
     return blindDateService.getIsParticipatedBySeason(season, account);
   }
+
+  @Operation(summary = "매칭 후 상대방 정보 조회")
+  @GetMapping("/matching-result")
+  public BlindDateResponseDTO getMatchingResultBySeason(@RequestParam Integer season) {
+    Account account = accountService.getCurrentAccount();
+    return blindDateService.getMatchingResultBySeason(season, account);
+  }
+
 }

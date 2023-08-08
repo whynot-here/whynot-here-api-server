@@ -5,8 +5,11 @@ import handong.whynot.domain.BlindDate;
 import handong.whynot.domain.ExcludeCond;
 import handong.whynot.dto.blind_date.BlindDateRequestDTO;
 import handong.whynot.dto.blind_date.BlindDateResponseCode;
+import handong.whynot.dto.blind_date.BlindDateResponseDTO;
 import handong.whynot.exception.blind_date.BlindDateDuplicatedException;
 import handong.whynot.exception.blind_date.BlindDateNotAuthenticatedException;
+import handong.whynot.exception.blind_date.BlindDateNotFoundException;
+import handong.whynot.exception.blind_date.BlindDateNotMatchedException;
 import handong.whynot.repository.BlindDateRepository;
 import handong.whynot.repository.ExcludeCondRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -61,5 +65,21 @@ public class BlindDateService {
 
   public Boolean getIsParticipatedBySeason(Integer season, Account account) {
     return blindDateRepository.existsByAccountAndSeason(account, season);
+  }
+
+  public BlindDateResponseDTO getMatchingResultBySeason(Integer season, Account account) {
+    // 소개팅 지원 확인
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    // 매칭 대상 여부 확인
+    if (Objects.isNull(blindDate.getMatchingBlindDateId())) {
+      throw new BlindDateNotMatchedException(BlindDateResponseCode.BLIND_DATE_NOT_MATCHED);
+    }
+
+    BlindDate matchedBlindDate = blindDateRepository.findById(blindDate.getMatchingBlindDateId())
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    return BlindDateResponseDTO.of(matchedBlindDate);
   }
 }
