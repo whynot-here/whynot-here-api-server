@@ -88,4 +88,9 @@ public class BlindDate extends BaseTimeEntity {
       .account(account)
       .build();
   }
+
+  public void updateMatchingBlindDate(Boolean approval) {
+    isActive = true;
+    isMatched = approval;
+  }
 }

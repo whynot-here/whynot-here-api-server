@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum BlindDateResponseCode implements ResponseCode {
   BLIND_DATE_CREATED_OK(20001, "소개팅 지원에 성공하였습니다."),
+  BLIND_DATE_SUBMIT_APPLY_OK(20002, "소개팅 매칭에 대한 응답에 성공하였습니다."),
   BLIND_DATE_CREATED_FAIL(40001, "소개팅 지원에 실패하였습니다."),
   BLIND_DATE_READ_FAIL(40002, "소개팅 [조회]에 실패하였습니다."),
   BLIND_DATE_NOT_AUTHENTICATED(40003, "학생증 인증이 되지 않은 사용자입니다."),

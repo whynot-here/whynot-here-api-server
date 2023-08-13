@@ -82,4 +82,14 @@ public class BlindDateService {
 
     return BlindDateResponseDTO.of(matchedBlindDate);
   }
+
+  @Transactional
+  public void submitApply(Boolean approval, Integer season, Account account) {
+    // 소개팅 지원 확인
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    // 지원 의사 업데이트
+    blindDate.updateMatchingBlindDate(approval);
+  }
 }

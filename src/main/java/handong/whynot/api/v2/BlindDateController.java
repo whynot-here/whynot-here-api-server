@@ -1,6 +1,7 @@
 package handong.whynot.api.v2;
 
 import handong.whynot.domain.Account;
+import handong.whynot.dto.blind_date.BlindDateApplyDTO;
 import handong.whynot.dto.blind_date.BlindDateRequestDTO;
 import handong.whynot.dto.blind_date.BlindDateResponseCode;
 import handong.whynot.dto.blind_date.BlindDateResponseDTO;
@@ -52,4 +53,11 @@ public class BlindDateController {
     return blindDateService.getMatchingResultBySeason(season, account);
   }
 
+  @Operation(summary = "매칭 승인 or 거절")
+  @PostMapping("/apply")
+  public ResponseDTO submitApply(@RequestBody BlindDateApplyDTO applyDTO) {
+    Account account = accountService.getCurrentAccount();
+    blindDateService.submitApply(applyDTO.getApproval(), applyDTO.getSeason(), account);
+    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_SUBMIT_APPLY_OK);
+  }
 }
