@@ -48,4 +48,26 @@ public class MobilePushService {
 
     eventPublisher.publishEvent(event);
   }
+
+  public void pushAdminAuth(List<Account> accountList, Integer count) {
+    NotificationEvent event = NotificationEvent.builder()
+      .accountList(accountList)
+      .url("")
+      .title(("💡 학생증 인증 요청"))
+      .body(String.format("관리자님, 승인되지 않은 요청이 %d건 있습니다.", count))
+      .build();
+
+    eventPublisher.publishEvent(event);
+  }
+
+  public void pushAdminPostAccusation(List<Account> accountList, Long postId) {
+    NotificationEvent event = NotificationEvent.builder()
+      .accountList(accountList)
+      .url(String.format("gather/posts/%d", postId))
+      .title(("게시글 신고가 접수되었습니다. 🚨"))
+      .body("")
+      .build();
+
+    eventPublisher.publishEvent(event);
+  }
 }

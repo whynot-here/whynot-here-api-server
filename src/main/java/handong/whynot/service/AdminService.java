@@ -10,6 +10,7 @@ import handong.whynot.dto.admin.AdminResponseCode;
 import handong.whynot.dto.admin.AdminStudentAuthResponseDTO;
 import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.account.StudentAuthNotFoundException;
+import handong.whynot.repository.AccountQueryRepository;
 import handong.whynot.repository.AccountRepository;
 import handong.whynot.repository.StudentAuthRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,9 @@ public class AdminService {
   private final AccountRepository accountRepository;
   private final RoleService roleService;
   private final MobilePushService mobilePushService;
+  private final AccountQueryRepository accountQueryRepository;
 
+  @Transactional
   public void requestStudentAuth(StudentAuthRequestDTO dto, Account account) {
 
     StudentAuth studentAuth = StudentAuth.builder()
@@ -38,6 +41,8 @@ public class AdminService {
       .build();
 
     studentAuthRepository.save(studentAuth);
+
+    mobilePushService.pushAdminAuth(getAdminAccount(), getRequests(false).size());
   }
 
   @Transactional
@@ -84,5 +89,9 @@ public class AdminService {
   public void deleteAuthHistory(Account account) {
 
     studentAuthRepository.deleteByAccount(account);
+  }
+
+  public List<Account> getAdminAccount() {
+    return accountQueryRepository.getAdminAccountList();
   }
 }
