@@ -5,11 +5,15 @@ import handong.whynot.domain.StudentAuth;
 import handong.whynot.dto.account.AdminApproveRequestDTO;
 import handong.whynot.dto.account.StudentAuthRequestDTO;
 import handong.whynot.dto.account.StudentAuthResponseDTO;
+import handong.whynot.dto.accusation.AccusationApproveRequestDTO;
+import handong.whynot.dto.accusation.AccusationResponseCode;
+import handong.whynot.dto.accusation.AccusationResponseDTO;
 import handong.whynot.dto.admin.AdminResponseCode;
 import handong.whynot.dto.admin.AdminStudentAuthResponseDTO;
 import handong.whynot.dto.admin.UserFeedbackRequestDTO;
 import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.service.AccountService;
+import handong.whynot.service.AccusationService;
 import handong.whynot.service.AdminService;
 import handong.whynot.service.UserFeedbackService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,6 +34,7 @@ public class AdminController {
     private final UserFeedbackService userFeedbackService;
     private final AccountService accountService;
     private final AdminService adminService;
+    private final AccusationService accusationService;
 
     @Operation(summary = "사용자 후기 등록")
     @PostMapping("/admin/feedback")
@@ -97,5 +102,19 @@ public class AdminController {
         adminService.approveRequests(approveList, approver);
 
         return ResponseDTO.of(AdminResponseCode.ADMIN_APPROVE_REQUESTS_OK);
+    }
+
+    @Operation(summary = "신고 게시글 전체 조회")
+    @GetMapping("/admin/accusation")
+    public List<AccusationResponseDTO> getAllAccusation(@RequestParam("isApproved") Boolean isApproved) {
+        return accusationService.getAllAccusation(isApproved);
+    }
+
+    @Operation(summary = "신고 게시글 신고 승인")
+    @PutMapping("/admin/accusation")
+    public ResponseDTO approveAccusation(@RequestBody AccusationApproveRequestDTO request) {
+        accusationService.approveAccusation(request.getAccusationId(), request.getApproval());
+
+        return ResponseDTO.of(AccusationResponseCode.ACCUSATION_SUBMIT_OK);
     }
 }
