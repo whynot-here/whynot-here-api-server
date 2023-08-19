@@ -8,6 +8,8 @@ import handong.whynot.service.AccountService;
 import handong.whynot.service.AccusationService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,6 +21,12 @@ public class AccusationController {
   private final AccusationService accusationService;
 
   @Operation(summary = "게시글 신고 생성")
+  @Caching(
+    evict = {
+      @CacheEvict(value="MainPosts", key="'MainPosts'"),
+      @CacheEvict(value="CategoryPosts", allEntries = true)
+    }
+  )
   @PostMapping("")
   public ResponseDTO createAccusation(@RequestBody AccusationRequestDTO request) {
     Account account = accountService.getCurrentAccount();
