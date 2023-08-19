@@ -451,3 +451,40 @@ CREATE TABLE `matching_history`
     `matching_blind_date_id` bigint,
     PRIMARY KEY (`id`)
 );
+
+CREATE TABLE `accusation`
+(
+    `id`             bigint NOT NULL AUTO_INCREMENT,
+    `created_dt`     datetime,
+    `updated_dt`     datetime,
+    `reporter_id`    bigint,
+    `reason`         varchar(128),
+    `post_id`        bigint,
+    `post_writer_id` bigint,
+    `is_approved`    boolean DEFAULT false,
+    PRIMARY KEY (`id`)
+);
+
+CREATE TABLE `forbidden_post`
+(
+    `id`                  bigint NOT NULL AUTO_INCREMENT,
+    `created_dt`          datetime                                 DEFAULT NULL,
+    `updated_dt`          datetime                                 DEFAULT NULL,
+    `closed_dt`           datetime                                 DEFAULT NULL,
+    `content`             varchar(2500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+    `is_recruiting`       bit(1)                                   DEFAULT NULL,
+    `title`               varchar(255) COLLATE utf8mb4_unicode_ci  DEFAULT NULL,
+    `account_id`          bigint                                   DEFAULT NULL,
+    `owner_contact_type`  varchar(20),
+    `owner_contact_value` varchar(50),
+    `recruit_total_cnt`   int,
+    `recruit_current_cnt` int,
+    `communication_tool`  varchar(20),
+    `category_id`         bigint,
+    `views`               int                                      DEFAULT 0,
+    `likes`               int                                      DEFAULT 0,
+    `location_url`        varchar(255)                             DEFAULT NULL,
+    `post_img_links`      varchar(1500)                            DEFAULT NULL,
+    `comments`            varchar(2500)                            DEFAULT NULL,
+    PRIMARY KEY (`id`)
+);
