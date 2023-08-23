@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class MatchingHistoryService {
   private final MatchingHistoryRepository matchingHistoryRepository;
 
-  public List<AdminBlindMatchingResponseDTO> getBlindMatchingList(Integer season) {
+  public List<AdminBlindMatchingResponseDTO> getBlindMatchingListBySeason(Integer season) {
 
     return matchingHistoryRepository.findAllBySeason(season).stream()
       .map(AdminBlindMatchingResponseDTO::of)

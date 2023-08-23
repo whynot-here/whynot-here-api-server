@@ -123,16 +123,16 @@ public class AdminController {
 
     @Operation(summary = "남, 여 매칭 생성")
     @PostMapping("/admin/blind-matching")
-    public ResponseDTO createMatching(@RequestParam Integer season,
+    public ResponseDTO createMatchingBySeason(@RequestParam Integer season,
                                       @RequestBody MatchingRequestDTO request) {
-        blindDateService.createMatching(request.getMaleId(), request.getFemaleId(), season);
+        blindDateService.createMatchingBySeason(request.getMaleId(), request.getFemaleId(), season);
 
         return ResponseDTO.of(BlindDateResponseCode.MATCHING_CREATED_OK);
     }
 
     @Operation(summary = "매칭 리스트 조회")
     @GetMapping("/admin/blind-matching")
-    public List<AdminBlindMatchingResponseDTO> getBlindMatchingList(@RequestParam Integer season) {
-        return matchingHistoryService.getBlindMatchingList(season);
+    public List<AdminBlindMatchingResponseDTO> getBlindMatchingListBySeason(@RequestParam Integer season) {
+        return matchingHistoryService.getBlindMatchingListBySeason(season);
     }
 }

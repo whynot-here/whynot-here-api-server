@@ -95,7 +95,7 @@ public class BlindDateService {
   }
 
   @Transactional
-  public void createMatching(Long maleId, Long femaleId, Integer season) {
+  public void createMatchingBySeason(Long maleId, Long femaleId, Integer season) {
     // 남자인지 확인
     BlindDate male = blindDateRepository.findById(maleId)
       .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
