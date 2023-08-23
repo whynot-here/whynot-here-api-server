@@ -4,6 +4,7 @@ import handong.whynot.domain.Account;
 import handong.whynot.domain.BlindDate;
 import handong.whynot.domain.ExcludeCond;
 import handong.whynot.domain.MatchingHistory;
+import handong.whynot.dto.admin.AdminBlindDateResponseDTO;
 import handong.whynot.dto.blind_date.BlindDateRequestDTO;
 import handong.whynot.dto.blind_date.BlindDateResponseCode;
 import handong.whynot.dto.blind_date.BlindDateResponseDTO;
@@ -125,5 +126,11 @@ public class BlindDateService {
       .season(season)
       .build();
     matchingHistoryRepository.save(history);
+  }
+
+  public List<AdminBlindDateResponseDTO> getBlindDateListBySeason(Integer season) {
+    return blindDateRepository.findAllBySeason(season).stream()
+      .map(AdminBlindDateResponseDTO::of)
+      .collect(Collectors.toList());
   }
 }
