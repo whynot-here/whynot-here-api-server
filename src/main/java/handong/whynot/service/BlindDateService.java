@@ -3,16 +3,16 @@ package handong.whynot.service;
 import handong.whynot.domain.Account;
 import handong.whynot.domain.BlindDate;
 import handong.whynot.domain.ExcludeCond;
+import handong.whynot.domain.MatchingHistory;
 import handong.whynot.dto.blind_date.BlindDateRequestDTO;
 import handong.whynot.dto.blind_date.BlindDateResponseCode;
 import handong.whynot.dto.blind_date.BlindDateResponseDTO;
-import handong.whynot.exception.blind_date.BlindDateDuplicatedException;
-import handong.whynot.exception.blind_date.BlindDateNotAuthenticatedException;
-import handong.whynot.exception.blind_date.BlindDateNotFoundException;
-import handong.whynot.exception.blind_date.BlindDateNotMatchedException;
+import handong.whynot.exception.blind_date.*;
 import handong.whynot.repository.BlindDateRepository;
 import handong.whynot.repository.ExcludeCondRepository;
+import handong.whynot.repository.MatchingHistoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -28,6 +28,7 @@ public class BlindDateService {
   private final BlindDateRepository blindDateRepository;
   private final ExcludeCondRepository excludeCondRepository;
   private final MobilePushService mobilePushService;
+  private final MatchingHistoryRepository matchingHistoryRepository;
 
   @Transactional
   public void createBlindDate(BlindDateRequestDTO request, Account account) {
@@ -90,6 +91,39 @@ public class BlindDateService {
       .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
 
     // 지원 의사 업데이트
-    blindDate.updateMatchingBlindDate(approval);
+    blindDate.updateMatchingApproval(approval);
+  }
+
+  @Transactional
+  public void createMatching(Long maleId, Long femaleId, Integer season) {
+    // 남자인지 확인
+    BlindDate male = blindDateRepository.findById(maleId)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+    if (! StringUtils.equals(male.getGender(), "M")) {
+      throw new InvalidMatchingException(BlindDateResponseCode.MATCHING_INVALID);
+    }
+
+    // 여자인지 확인
+    BlindDate female = blindDateRepository.findById(femaleId)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+    if (! StringUtils.equals(female.getGender(), "F")) {
+      throw new InvalidMatchingException(BlindDateResponseCode.MATCHING_INVALID);
+    }
+
+    // 이미 매칭이 된 경우
+    if (Objects.nonNull(male.getMatchingBlindDateId())) {
+      throw new InvalidMatchingException(BlindDateResponseCode.MATCHING_INVALID);
+    }
+
+    // 매칭 업데이트
+    male.updateMatchingBlindDate(femaleId);
+    female.updateMatchingBlindDate(maleId);
+
+    MatchingHistory history = MatchingHistory.builder()
+      .maleId(maleId)
+      .femaleId(femaleId)
+      .season(season)
+      .build();
+    matchingHistoryRepository.save(history);
   }
 }

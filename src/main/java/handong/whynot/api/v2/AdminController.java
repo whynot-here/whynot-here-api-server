@@ -11,11 +11,10 @@ import handong.whynot.dto.accusation.AccusationResponseDTO;
 import handong.whynot.dto.admin.AdminResponseCode;
 import handong.whynot.dto.admin.AdminStudentAuthResponseDTO;
 import handong.whynot.dto.admin.UserFeedbackRequestDTO;
+import handong.whynot.dto.blind_date.BlindDateResponseCode;
+import handong.whynot.dto.blind_date.MatchingRequestDTO;
 import handong.whynot.dto.common.ResponseDTO;
-import handong.whynot.service.AccountService;
-import handong.whynot.service.AccusationService;
-import handong.whynot.service.AdminService;
-import handong.whynot.service.UserFeedbackService;
+import handong.whynot.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +34,7 @@ public class AdminController {
     private final AccountService accountService;
     private final AdminService adminService;
     private final AccusationService accusationService;
+    private final BlindDateService blindDateService;
 
     @Operation(summary = "사용자 후기 등록")
     @PostMapping("/admin/feedback")
@@ -116,5 +116,14 @@ public class AdminController {
         accusationService.approveAccusation(request.getAccusationId(), request.getApproval());
 
         return ResponseDTO.of(AccusationResponseCode.ACCUSATION_SUBMIT_OK);
+    }
+
+    @Operation(summary = "남, 여 매칭 생성")
+    @PostMapping("/admin/blind-matching")
+    public ResponseDTO createMatching(@RequestParam Integer season,
+                                      @RequestBody MatchingRequestDTO request) {
+        blindDateService.createMatching(request.getMaleId(), request.getFemaleId(), season);
+
+        return ResponseDTO.of(BlindDateResponseCode.MATCHING_CREATED_OK);
     }
 }

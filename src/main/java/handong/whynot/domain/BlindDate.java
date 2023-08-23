@@ -89,7 +89,11 @@ public class BlindDate extends BaseTimeEntity {
       .build();
   }
 
-  public void updateMatchingBlindDate(Boolean approval) {
+  public void updateMatchingBlindDate(Long matchingId) {
+    matchingBlindDateId = matchingId;
+  }
+
+  public void updateMatchingApproval(Boolean approval) {
     isActive = true;
     isMatched = approval;
   }
