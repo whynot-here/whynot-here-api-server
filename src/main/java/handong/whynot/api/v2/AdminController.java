@@ -8,10 +8,12 @@ import handong.whynot.dto.account.StudentAuthResponseDTO;
 import handong.whynot.dto.accusation.AccusationApproveRequestDTO;
 import handong.whynot.dto.accusation.AccusationResponseCode;
 import handong.whynot.dto.accusation.AccusationResponseDTO;
+import handong.whynot.dto.admin.AdminBlindMatchingResponseDTO;
 import handong.whynot.dto.admin.AdminResponseCode;
 import handong.whynot.dto.admin.AdminStudentAuthResponseDTO;
 import handong.whynot.dto.admin.UserFeedbackRequestDTO;
 import handong.whynot.dto.blind_date.BlindDateResponseCode;
+import handong.whynot.dto.blind_date.BlindDateResponseDTO;
 import handong.whynot.dto.blind_date.MatchingRequestDTO;
 import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.service.*;
@@ -35,6 +37,7 @@ public class AdminController {
     private final AdminService adminService;
     private final AccusationService accusationService;
     private final BlindDateService blindDateService;
+    private final MatchingHistoryService matchingHistoryService;
 
     @Operation(summary = "사용자 후기 등록")
     @PostMapping("/admin/feedback")
@@ -125,5 +128,11 @@ public class AdminController {
         blindDateService.createMatching(request.getMaleId(), request.getFemaleId(), season);
 
         return ResponseDTO.of(BlindDateResponseCode.MATCHING_CREATED_OK);
+    }
+
+    @Operation(summary = "매칭 리스트 조회")
+    @GetMapping("/admin/blind-matching")
+    public List<AdminBlindMatchingResponseDTO> getBlindMatchingList(@RequestParam Integer season) {
+        return matchingHistoryService.getBlindMatchingList(season);
     }
 }
