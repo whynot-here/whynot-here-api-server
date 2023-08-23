@@ -398,8 +398,8 @@ TABLES;
 
 CREATE TABLE `student_auth`
 (
-    `id`               bigint  NOT NULL AUTO_INCREMENT,
-    `account_id`       bigint  NOT NULL,
+    `id`               bigint NOT NULL AUTO_INCREMENT,
+    `account_id`       bigint NOT NULL,
     `img_url`          varchar(255),
     `is_authenticated` boolean DEFAULT false,
     PRIMARY KEY (`id`),
@@ -444,11 +444,12 @@ CREATE TABLE `exclude_cond`
 
 CREATE TABLE `matching_history`
 (
-    `id`                     bigint NOT NULL AUTO_INCREMENT,
-    `created_dt`             datetime,
-    `updated_dt`             datetime,
-    `blind_date_id`          bigint,
-    `matching_blind_date_id` bigint,
+    `id`         bigint NOT NULL AUTO_INCREMENT,
+    `created_dt` datetime,
+    `updated_dt` datetime,
+    `male_id`    bigint,
+    `female_id`  bigint,
+    `season`     int,
     PRIMARY KEY (`id`)
 );
 

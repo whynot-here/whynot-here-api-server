@@ -18,9 +18,12 @@ public class MatchingHistory extends BaseTimeEntity {
   @Column(name = "id")
   private Long id;
 
-  @Column(name = "blind_date_id")
-  private Long blindDateId;
+  @Column(name = "male_id")
+  private Long maleId;
 
-  @Column(name = "matching_blind_date_id")
-  private Long matchingBlindDateId;
+  @Column(name = "female_id")
+  private Long femaleId;
+
+  @Column(name = "season")
+  private Integer season;
 }
