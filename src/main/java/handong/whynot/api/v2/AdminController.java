@@ -137,4 +137,12 @@ public class AdminController {
     public List<AdminBlindDateResponseDTO> getBlindDateListBySeason(@RequestParam Integer season) {
         return blindDateService.getBlindDateListBySeason(season);
     }
+
+    @Operation(summary = "매칭 삭제")
+    @DeleteMapping("/admin/blind-matching/{matchingId}")
+    public ResponseDTO deleteBlindMatching(@PathVariable Long matchingId) {
+        matchingHistoryService.deleteBlindMatching(matchingId);
+
+        return ResponseDTO.of(BlindDateResponseCode.MATCHING_DELETED_OK);
+    }
 }

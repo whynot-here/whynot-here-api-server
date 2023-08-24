@@ -44,4 +44,10 @@ public class BlindDateExceptionHandler {
     ErrorResponseDTO invalidMatchingExceptionHandle() {
         return ErrorResponseDTO.of(BlindDateResponseCode.BLIND_DATE_NOT_MATCHED, null);
     }
+
+    @ResponseStatus(NOT_FOUND)
+    @ExceptionHandler(MatchingNotFoundException.class)
+    public ErrorResponseDTO matchingNotFoundExceptionHandle() {
+        return ErrorResponseDTO.of(BlindDateResponseCode.MATCHING_READ_FAIL, null);
+    }
 }
