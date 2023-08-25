@@ -70,4 +70,15 @@ public class MobilePushService {
 
     eventPublisher.publishEvent(event);
   }
+
+  public void pushMatchingInfo(List<Account> accountList) {
+    NotificationEvent event = NotificationEvent.builder()
+      .accountList(accountList)
+      .url("blind-date/result")
+      .title(("[한대소] 상대방 매칭 완료 🎁"))
+      .body("매칭된 상대방의 정보를 확인하고, 응답을 해주세요~!")
+      .build();
+
+    eventPublisher.publishEvent(event);
+  }
 }

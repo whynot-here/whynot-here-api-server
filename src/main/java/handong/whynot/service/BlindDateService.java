@@ -133,4 +133,15 @@ public class BlindDateService {
       .map(AdminBlindDateResponseDTO::of)
       .collect(Collectors.toList());
   }
+
+
+  public void noticeMatchingInfo(Integer season) {
+    List<BlindDate> blindDateList = blindDateRepository.findAllBySeason(season);
+    List<Account> accountList = blindDateList.stream()
+      .filter(it -> Objects.nonNull(it.getMatchingBlindDateId()))
+      .map(BlindDate::getAccount)
+      .collect(Collectors.toList());
+
+    mobilePushService.pushMatchingInfo(accountList);
+  }
 }

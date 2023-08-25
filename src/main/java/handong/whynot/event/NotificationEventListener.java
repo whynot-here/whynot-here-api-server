@@ -3,6 +3,7 @@ package handong.whynot.event;
 import handong.whynot.domain.Account;
 import handong.whynot.service.FirebaseService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ public class NotificationEventListener {
     List<String> fcmTokenList = accountList
       .stream()
       .map(Account::getDeviceToken)
-      .filter(deviceToken -> !deviceToken.isBlank()).collect(toList());
+      .filter(deviceToken -> !StringUtils.isBlank(deviceToken)).collect(toList());
 
     if (fcmTokenList.size()!=0){
       firebaseService.sendByTokenList(fcmTokenList,

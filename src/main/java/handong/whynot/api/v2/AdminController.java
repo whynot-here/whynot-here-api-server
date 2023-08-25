@@ -145,4 +145,12 @@ public class AdminController {
 
         return ResponseDTO.of(BlindDateResponseCode.MATCHING_DELETED_OK);
     }
+
+    @Operation(summary = "매칭 상대방 정보 일괄 발송")
+    @PostMapping("/admin/blind-matching/announce-partner-info")
+    public ResponseDTO noticeMatchingInfo(@RequestParam Integer season) {
+        blindDateService.noticeMatchingInfo(season);
+
+        return ResponseDTO.of(BlindDateResponseCode.MATCHING_NOTICE_OK);
+    }
 }
