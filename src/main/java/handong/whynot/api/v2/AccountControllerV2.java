@@ -9,6 +9,7 @@ import handong.whynot.dto.mobile.DeviceTokenDTO;
 import handong.whynot.exception.account.PasswordNotSupportedException;
 import handong.whynot.handler.security.oauth2.OAuth2AppleHandler;
 import handong.whynot.service.AccountService;
+import handong.whynot.service.BlockAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class AccountControllerV2 {
 
     private final AccountService accountService;
     private final OAuth2AppleHandler OAuth2AppleHandler;
+    private final BlockAccountService blockAccountService;
 
     final static List<AuthType> localLoginList  = List.of(AuthType.local, AuthType.admin);
 
@@ -126,5 +128,31 @@ public class AccountControllerV2 {
         accountService.updateDeviceToken(account, dto.getToken());
 
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_UPDATE_DEVICE_TOKEN_OK);
+    }
+
+    @Operation(summary = "차단 사용자 조회")
+    @GetMapping("/account/block-account")
+    public List<BlockAccountResponseDTO> getAllBlockAccount() {
+        Account account = accountService.getCurrentAccount();
+
+        return blockAccountService.getAllBlockAccount(account);
+    }
+
+    @Operation(summary = "사용자 차단")
+    @PostMapping("/account/block-account")
+    public ResponseDTO createBlockAccount(@RequestBody BlockAccountRequestDTO request) {
+        Account account = accountService.getCurrentAccount();
+        blockAccountService.createBlockAccount(account, request);
+
+        return ResponseDTO.of(AccountResponseCode.BLOCK_ACCOUNT_CREATED_OK);
+    }
+
+    @Operation(summary = "사용자 차단 해제")
+    @DeleteMapping("/account/block-account")
+    public ResponseDTO deleteBlockAccount(@RequestBody BlockAccountRequestDTO request) {
+        Account account = accountService.getCurrentAccount();
+        blockAccountService.deleteBlockAccount(account, request);
+
+        return ResponseDTO.of(AccountResponseCode.BLOCK_ACCOUNT_DELETED_OK);
     }
 }

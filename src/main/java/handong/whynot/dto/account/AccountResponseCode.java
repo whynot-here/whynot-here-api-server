@@ -17,6 +17,8 @@ public enum AccountResponseCode implements ResponseCode {
     ACCOUNT_LOGOUT_SUCCESS(20008, "로그아웃 성공하였습니다."),
     ACCOUNT_CHANGE_PASSWORD_OK(20009, "비밀번호 변경에 성공하였습니다."),
     ACCOUNT_UPDATE_DEVICE_TOKEN_OK(20010, "Device 토큰 업데이트에 성공하였습니다."),
+    BLOCK_ACCOUNT_CREATED_OK(20011, "사용자 차단에 성공하였습니다."),
+    BLOCK_ACCOUNT_DELETED_OK(20012, "사용자 차단 해제에 성공하였습니다."),
 
     ACCOUNT_CREATE_FAIL_ALREADY_EXIST(40001, "사용자 [생성]에 실패하였습니다. - 이미 존재함"),
     ACCOUNT_READ_FAIL(40002, "사용자 [조회]에 실패하였습니다."),
@@ -38,7 +40,9 @@ public enum AccountResponseCode implements ResponseCode {
     ROLE_READ_FAIL(40018, "존재하지 않는 Role 입니다."),
     ACCOUNT_INVALID_NICKNAME(40019, "변경할 수 없는 단어가 포함된 닉네임입니다."),
     ACCOUNT_PASSWORD_NOT_MATCHED(40020, "비밀번호가 일치하지 않습니다."),
-    ACCOUNT_PASSWORD_NOT_VALID(40021, "비밀번호 변경 대상자가 아닙니다.");
+    ACCOUNT_PASSWORD_NOT_VALID(40021, "비밀번호 변경 대상자가 아닙니다."),
+    ALREADY_EXIST_BLOCK_ACCOUNT(40022, "이미 차단된 사용자입니다."),
+    BLOCK_ACCOUNT_READ_FAIL(40023, "차단 사용자 [조회]에 실패하였습니다."),;
 
 
     private final Integer statusCode;

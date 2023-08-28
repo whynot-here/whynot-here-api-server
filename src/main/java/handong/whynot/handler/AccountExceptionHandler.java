@@ -18,7 +18,7 @@ public class AccountExceptionHandler {
 
     @ResponseStatus(NOT_FOUND)
     @ExceptionHandler(AccountNotFoundException.class)
-    public ErrorResponseDTO postNotFoundExceptionHandle() {
+    public ErrorResponseDTO accountNotFoundExceptionHandle() {
         return ErrorResponseDTO.of(AccountResponseCode.ACCOUNT_READ_FAIL, null);
     }
 
@@ -62,5 +62,17 @@ public class AccountExceptionHandler {
     @ExceptionHandler(PasswordNotSupportedException.class)
     public ErrorResponseDTO passwordNotSupportedExceptionHandle() {
         return ErrorResponseDTO.of(AccountResponseCode.ACCOUNT_PASSWORD_NOT_VALID, null);
+    }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(BlockAccountExistException.class)
+    ErrorResponseDTO blockAccountExistExceptionHandle() {
+        return ErrorResponseDTO.of(AccountResponseCode.ALREADY_EXIST_BLOCK_ACCOUNT, null);
+    }
+
+    @ResponseStatus(NOT_FOUND)
+    @ExceptionHandler(BlockAccountNotFoundException.class)
+    public ErrorResponseDTO blockAccountNotFoundExceptionHandle() {
+        return ErrorResponseDTO.of(AccountResponseCode.BLOCK_ACCOUNT_READ_FAIL, null);
     }
 }

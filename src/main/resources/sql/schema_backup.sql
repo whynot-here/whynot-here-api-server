@@ -489,3 +489,13 @@ CREATE TABLE `forbidden_post`
     `comments`            varchar(2500)                            DEFAULT NULL,
     PRIMARY KEY (`id`)
 );
+
+CREATE TABLE `block_account`
+(
+    `id`               bigint NOT NULL AUTO_INCREMENT,
+    `created_dt`       datetime,
+    `updated_dt`       datetime,
+    `account_id`       bigint,
+    `block_account_id` bigint,
+    PRIMARY KEY (`id`)
+);
