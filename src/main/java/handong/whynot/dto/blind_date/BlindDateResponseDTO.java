@@ -2,6 +2,7 @@ package handong.whynot.dto.blind_date;
 
 import handong.whynot.domain.BlindDate;
 import lombok.*;
+import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Setter
@@ -21,8 +22,10 @@ public class BlindDateResponseDTO {
   private String smoke;
   private String comment;
   private String kakaoLink;
+  private String profileImg;
+  private String myName;
 
-  public static BlindDateResponseDTO of(BlindDate blindDate) {
+  public static BlindDateResponseDTO of(BlindDate blindDate, String profileImg, String myName) {
     return builder()
       .name(blindDate.getName())
       .gender(blindDate.getGender())
@@ -35,6 +38,8 @@ public class BlindDateResponseDTO {
       .smoke(blindDate.getSmoke())
       .comment(blindDate.getComment())
       .kakaoLink(blindDate.getKakaoLink())
+      .profileImg(profileImg)
+      .myName(myName)
       .build();
   }
 }

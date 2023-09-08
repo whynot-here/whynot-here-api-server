@@ -4,11 +4,14 @@ import handong.whynot.domain.Account;
 import handong.whynot.domain.BlindDate;
 import handong.whynot.domain.ExcludeCond;
 import handong.whynot.domain.MatchingHistory;
+import handong.whynot.dto.account.AccountResponseCode;
 import handong.whynot.dto.admin.AdminBlindDateResponseDTO;
 import handong.whynot.dto.blind_date.BlindDateRequestDTO;
 import handong.whynot.dto.blind_date.BlindDateResponseCode;
 import handong.whynot.dto.blind_date.BlindDateResponseDTO;
+import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.blind_date.*;
+import handong.whynot.repository.AccountRepository;
 import handong.whynot.repository.BlindDateRepository;
 import handong.whynot.repository.ExcludeCondRepository;
 import handong.whynot.repository.MatchingHistoryRepository;
@@ -30,6 +33,7 @@ public class BlindDateService {
   private final ExcludeCondRepository excludeCondRepository;
   private final MobilePushService mobilePushService;
   private final MatchingHistoryRepository matchingHistoryRepository;
+  private final AccountRepository accountRepository;
 
   @Transactional
   public void createBlindDate(BlindDateRequestDTO request, Account account) {
@@ -82,7 +86,21 @@ public class BlindDateService {
     BlindDate matchedBlindDate = blindDateRepository.findById(blindDate.getMatchingBlindDateId())
       .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
 
-    return BlindDateResponseDTO.of(matchedBlindDate);
+   // 상대방 이름 한글자 masking
+    if (matchedBlindDate.getName().length() >= 2) {
+      matchedBlindDate.setName(matchedBlindDate.getName().charAt(0) + "*" + matchedBlindDate.getName().substring(2));
+    }
+
+    // 상대방 프로필 이미지 조회
+    Account matchedAccount = accountRepository.findById(matchedBlindDate.getAccount().getId())
+      .orElseThrow(() -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
+
+    // 공용 링크는 Female 링크 사용
+    if (StringUtils.equals(blindDate.getGender(), "F")) {
+      matchedBlindDate.setKakaoLink(blindDate.getKakaoLink());
+    }
+
+    return BlindDateResponseDTO.of(matchedBlindDate, matchedAccount.getProfileImg(), blindDate.getName());
   }
 
   @Transactional
