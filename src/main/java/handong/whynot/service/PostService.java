@@ -19,10 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static handong.whynot.dto.job.JobType.getJobInfoBy;
@@ -33,6 +30,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final PostQueryRepository postQueryRepository;
+    private final PostForCacheRepository postForCacheRepository;
     private final JobRepository jobRepository;
     private final PostFavoriteRepository postFavoriteRepository;
     private final PostApplyRepository postApplyRepository;
@@ -361,18 +359,25 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public List<PostResponseDTO> getPostsV2(RecruitStatus recruitStatus) {
+    public List<PostResponseDTO> getPostsByRecruit(RecruitStatus recruitStatus) {
 
         if (recruitStatus != null) {
-
             Boolean isRecruiting = recruitStatus.getIsRecruiting();
-
             return getPostByRecruit(isRecruiting);
         }
 
-        return postQueryRepository.getPostsV2().stream()
-                .map(PostResponseDTO::of)
-                .collect(Collectors.toList());
+        return postForCacheRepository.getAllPostsByCache();
+    }
+
+    public List<PostResponseDTO> getPostsV2(RecruitStatus recruitStatus, List<Long> blockPostList) {
+
+        if (blockPostList.isEmpty()) {
+            return getPostsByRecruit(recruitStatus);
+        }
+
+        return getPostsByRecruit(recruitStatus).stream()
+          .filter(it -> ! blockPostList.contains(it.getId()))
+          .collect(Collectors.toList());
     }
 
     public List<PostResponseDTO> getPostsByCategory(Long id) {

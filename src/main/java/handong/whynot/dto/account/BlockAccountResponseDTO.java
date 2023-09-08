@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 public class BlockAccountResponseDTO {
   private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm";
 
+  private Long accountId;
   private String name;
   private String profileImg;
 
@@ -28,6 +29,7 @@ public class BlockAccountResponseDTO {
 
   public static BlockAccountResponseDTO of(Account account, LocalDateTime dateTime) {
     return builder()
+      .accountId(account.getId())
       .name(account.getNickname())
       .profileImg(account.getProfileImg())
       .createdDt(dateTime)

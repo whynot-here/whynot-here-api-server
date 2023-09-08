@@ -1,13 +1,13 @@
 server:
-  port: 443
-  ssl:
-    enabled: true
-    enabled-protocols:
-      - TLSv1.1
-      - TLSv1.2
-    key-store: classpath:whynot-config/apple-oauth-keys/keystore.p12
-    key-store-type: PKCS12
-    key-store-password: 1234
+  port: 9000
+#  ssl:
+#    enabled: true
+#    enabled-protocols:
+#      - TLSv1.1
+#      - TLSv1.2
+#    key-store: classpath:whynot-config/apple-oauth-keys/keystore.p12
+#    key-store-type: PKCS12
+#    key-store-password: 1234
   error:
     include-stacktrace: never
   servlet:

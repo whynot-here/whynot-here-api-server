@@ -9,6 +9,7 @@ import handong.whynot.mail.EmailService;
 import handong.whynot.repository.AccountQueryRepository;
 import handong.whynot.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,6 +40,7 @@ public class AccountService implements UserDetailsService {
     private final PostService postService;
     private final CommentService commentService;
     private final AdminService adminService;
+    private final BlockAccountService blockAccountService;
 
     @Override
     public UserDetails loadUserByUsername(String emailOrNickname) {
@@ -167,6 +170,18 @@ public class AccountService implements UserDetailsService {
         Account account = accountRepository.findById(Long.valueOf(authentication.getName()))
                 .orElseThrow(() -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
         return account;
+    }
+
+    public List<Long> getCurrentAccountForGetPosts() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (StringUtils.equals(authentication.getName(), "anonymousUser")) {
+            return Collections.emptyList();
+        }
+
+        Account account = accountRepository.findById(Long.valueOf(authentication.getName()))
+          .orElseThrow(() -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
+
+        return blockAccountService.getAllBlockPostIds(account.getId());
     }
 
     @Transactional

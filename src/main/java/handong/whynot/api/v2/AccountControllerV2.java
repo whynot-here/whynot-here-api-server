@@ -13,6 +13,8 @@ import handong.whynot.service.BlockAccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -139,8 +141,13 @@ public class AccountControllerV2 {
     }
 
     @Operation(summary = "사용자 차단")
+    @Caching(
+      evict = {
+        @CacheEvict(value="BlockPost", allEntries = true)
+      }
+    )
     @PostMapping("/account/block-account")
-    public ResponseDTO createBlockAccount(@RequestBody BlockAccountRequestDTO request) {
+    public ResponseDTO createBlockAccount(@RequestBody BlockAccountCreateRequestDTO request) {
         Account account = accountService.getCurrentAccount();
         blockAccountService.createBlockAccount(account, request);
 
@@ -148,10 +155,15 @@ public class AccountControllerV2 {
     }
 
     @Operation(summary = "사용자 차단 해제")
-    @DeleteMapping("/account/block-account")
-    public ResponseDTO deleteBlockAccount(@RequestBody BlockAccountRequestDTO request) {
+    @Caching(
+      evict = {
+        @CacheEvict(value="BlockPost", allEntries = true)
+      }
+    )
+    @DeleteMapping("/account/block-account/{accountId}")
+    public ResponseDTO deleteBlockAccount(@PathVariable Long accountId) {
         Account account = accountService.getCurrentAccount();
-        blockAccountService.deleteBlockAccount(account, request);
+        blockAccountService.deleteBlockAccount(account, accountId);
 
         return ResponseDTO.of(AccountResponseCode.BLOCK_ACCOUNT_DELETED_OK);
     }

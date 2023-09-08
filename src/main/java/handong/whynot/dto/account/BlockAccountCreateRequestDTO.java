@@ -3,6 +3,6 @@ package handong.whynot.dto.account;
 import lombok.Getter;
 
 @Getter
-public class BlockAccountRequestDTO {
-  private Long accountId;
+public class BlockAccountCreateRequestDTO {
+  private Long postId;
 }

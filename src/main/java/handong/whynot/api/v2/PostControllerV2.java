@@ -28,12 +28,12 @@ public class PostControllerV2 {
     private final AccountService accountService;
 
     @Operation(summary = "공고 전체 조회")
-    @Cacheable(value="MainPosts", key="'MainPosts'")
     @GetMapping("")
     public List<PostResponseDTO> getPostsV2(
             @RequestParam(name = "recruit", required = false) RecruitStatus status) {
 
-        return postService.getPostsV2(status);
+        List<Long> blockPostList = accountService.getCurrentAccountForGetPosts();
+        return postService.getPostsV2(status, blockPostList);
     }
 
     @Operation(summary = "선택한 카테고리 공고 전체 조회")
