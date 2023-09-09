@@ -65,7 +65,6 @@ public class PostControllerV2 {
     @Caching(
       evict = {
         @CacheEvict(value="Post", key="'Post#' + #id"),
-        @CacheEvict(value="MainPosts", key="'MainPosts'"),
         @CacheEvict(value="CategoryPosts", allEntries = true)
       }
     )
