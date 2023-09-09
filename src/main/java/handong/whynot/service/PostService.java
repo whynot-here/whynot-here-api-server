@@ -14,6 +14,8 @@ import handong.whynot.mail.EmailService;
 import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -170,6 +172,7 @@ public class PostService {
     }
 
     @Transactional
+    @CacheEvict(value="FavoritePost", key="'Account#' + #account.id + '-FavoritePost'")
     public void deletePost(Long id, Account account) {
         Post post = postRepository.findByIdAndCreatedBy(id, account)
                 .orElseThrow(() -> new PostNotFoundException(PostResponseCode.POST_READ_FAIL));
@@ -194,6 +197,7 @@ public class PostService {
     }
 
     @Transactional
+    @CacheEvict(value="FavoritePost", key="'Account#' + #account.id + '-FavoritePost'")
     public void updatePost(Long postId, PostRequestDTO request, Account account) {
 
         // 존재하는 post인지 확인
@@ -214,6 +218,7 @@ public class PostService {
     }
 
 
+    @Cacheable(value="FavoritePost", key="'Account#' + #account.id + '-FavoritePost'")
     public List<PostResponseDTO> getFavorites(Account account) {
 
         List<Post> posts = postQueryRepository.getFavorites(account);
@@ -225,6 +230,7 @@ public class PostService {
 
 
     @Transactional
+    @CacheEvict(value="FavoritePost", key="'Account#' + #account.id + '-FavoritePost'")
     public void createFavorite(Long postId, Account account) {
 
         Post post = postRepository.findById(postId)
@@ -249,6 +255,7 @@ public class PostService {
     }
 
     @Transactional
+    @CacheEvict(value="FavoritePost", key="'Account#' + #account.id + '-FavoritePost'")
     public void deleteFavorite(Long postId, Account account) {
 
         Post post = postRepository.findById(postId)

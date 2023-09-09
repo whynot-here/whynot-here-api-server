@@ -62,12 +62,6 @@ public class PostControllerV2 {
     }
 
     @Operation(summary = "공고 단건 조회")
-    @Caching(
-      evict = {
-        @CacheEvict(value="Post", key="'Post#' + #id"),
-        @CacheEvict(value="CategoryPosts", allEntries = true)
-      }
-    )
     @GetMapping("/{postId}")
     public PostResponseDTO getPost(HttpServletRequest request, HttpServletResponse response, @PathVariable Long postId) {
         return postService.getPost(request, response, postId);
