@@ -64,6 +64,9 @@ public class BlindDate extends BaseTimeEntity {
   @Column(name = "kakao_link")
   private String kakaoLink;
 
+  @Column(name = "is_reveal")
+  private Boolean isReveal;
+
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "account_id")
   private Account account;

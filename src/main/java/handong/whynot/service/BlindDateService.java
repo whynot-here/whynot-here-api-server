@@ -11,10 +11,7 @@ import handong.whynot.dto.blind_date.BlindDateResponseCode;
 import handong.whynot.dto.blind_date.BlindDateResponseDTO;
 import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.blind_date.*;
-import handong.whynot.repository.AccountRepository;
-import handong.whynot.repository.BlindDateRepository;
-import handong.whynot.repository.ExcludeCondRepository;
-import handong.whynot.repository.MatchingHistoryRepository;
+import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -30,6 +27,7 @@ import java.util.stream.Collectors;
 public class BlindDateService {
 
   private final BlindDateRepository blindDateRepository;
+  private final BlindDateForCacheRepository blindDateForCacheRepository;
   private final ExcludeCondRepository excludeCondRepository;
   private final MobilePushService mobilePushService;
   private final MatchingHistoryRepository matchingHistoryRepository;
@@ -160,6 +158,17 @@ public class BlindDateService {
       .map(BlindDate::getAccount)
       .collect(Collectors.toList());
 
+    // 사용자 매칭 결과 노출 ON
+    for (BlindDate blindDate : blindDateList) {
+      blindDate.setIsReveal(true);
+    }
+
     mobilePushService.pushMatchingInfo(accountList);
+  }
+
+  public Boolean getIsRevealResultBySeason(Integer season, Account account) {
+    List<Long> accountList = blindDateForCacheRepository.getMatchedAccountListByCache(season);
+
+    return accountList.contains(account.getId());
   }
 }

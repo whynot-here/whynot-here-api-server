@@ -10,6 +10,7 @@ import handong.whynot.service.AccountService;
 import handong.whynot.service.BlindDateService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -46,6 +47,13 @@ public class BlindDateController {
     return blindDateService.getIsParticipatedBySeason(season, account);
   }
 
+  @Operation(summary = "매칭 결과 노출 여부 조회")
+  @GetMapping("/reveal-result")
+  public Boolean getIsRevealResultBySeason(@RequestParam Integer season) {
+    Account account = accountService.getCurrentAccount();
+    return blindDateService.getIsRevealResultBySeason(season, account);
+  }
+
   @Operation(summary = "매칭 후 상대방 정보 조회")
   @GetMapping("/matching-result")
   public BlindDateResponseDTO getMatchingResultBySeason(@RequestParam Integer season) {
@@ -54,6 +62,7 @@ public class BlindDateController {
   }
 
   @Operation(summary = "매칭 승인 or 거절")
+  @CacheEvict(value="MatchedAccountList", key="'MatchedAccountList'")
   @PostMapping("/apply")
   public ResponseDTO submitApply(@RequestBody BlindDateApplyDTO applyDTO) {
     Account account = accountService.getCurrentAccount();
