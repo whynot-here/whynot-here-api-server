@@ -24,6 +24,8 @@ import javax.validation.Valid;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -166,5 +168,14 @@ public class AccountControllerV2 {
         blockAccountService.deleteBlockAccount(account, accountId);
 
         return ResponseDTO.of(AccountResponseCode.BLOCK_ACCOUNT_DELETED_OK);
+    }
+
+    @Operation(summary = "한대소 알림 on/off")
+    @PutMapping("/account/blind-date-push")
+    public ResponseDTO pushBlindDateOnOff(@RequestParam boolean pushOn) {
+        Account account = accountService.getCurrentAccount();
+        accountService.pushBlindDateOnOff(account, pushOn);
+
+        return ResponseDTO.of(AccountResponseCode.BLIND_DATE_PUSH_ON_OFF_OK);
     }
 }

@@ -74,6 +74,9 @@ public class Account {
     @Column(name = "device_token")
     private String deviceToken;
 
+    @Column(name = "blind_date_push")
+    private boolean blindDatePush;
+
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<AccountRole> userRoleList = new ArrayList<>();

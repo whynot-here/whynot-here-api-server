@@ -23,6 +23,12 @@ CREATE TABLE `account`
     `oauth_ci`                       varchar(50),
     `auth_type`                      varchar(20),
     `category_order`                 varchar(255),
+    `student_id`                     int,
+    `student_name`                   varchar(32),
+    `is_authenticated`               boolean                                 DEFAULT false,
+    `device_token`                   varchar(255),
+    `device_token`                   varchar(255),
+    `blind_date_push`                boolean                                 DEFAULT false,
     PRIMARY KEY (`id`),
     UNIQUE KEY `UK_s2a5omeaik0sruawqpvs18qfk` (`nickname`)
 ) ENGINE = InnoDB

@@ -19,6 +19,7 @@ public enum AccountResponseCode implements ResponseCode {
     ACCOUNT_UPDATE_DEVICE_TOKEN_OK(20010, "Device 토큰 업데이트에 성공하였습니다."),
     BLOCK_ACCOUNT_CREATED_OK(20011, "사용자 차단에 성공하였습니다."),
     BLOCK_ACCOUNT_DELETED_OK(20012, "사용자 차단 해제에 성공하였습니다."),
+    BLIND_DATE_PUSH_ON_OFF_OK(20013, "한대소 알림 받기 상태 변경에 성공하였습니다."),
 
     ACCOUNT_CREATE_FAIL_ALREADY_EXIST(40001, "사용자 [생성]에 실패하였습니다. - 이미 존재함"),
     ACCOUNT_READ_FAIL(40002, "사용자 [조회]에 실패하였습니다."),

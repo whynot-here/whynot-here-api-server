@@ -292,4 +292,9 @@ public class AccountService implements UserDetailsService {
     public void updateDeviceToken(Account account, String token) {
         account.setDeviceToken(token);
     }
+
+    @Transactional
+    public void pushBlindDateOnOff(Account account, boolean pushOn) {
+        account.setBlindDatePush(pushOn);
+    }
 }
