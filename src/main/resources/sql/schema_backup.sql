@@ -499,3 +499,14 @@ CREATE TABLE `block_account`
     `block_account_id` bigint,
     PRIMARY KEY (`id`)
 );
+
+CREATE TABLE `blind_date_summary`
+(
+    `id`          bigint NOT NULL AUTO_INCREMENT,
+    `total_cnt`   int,
+    `male_cnt`    int,
+    `female_cnt`  int,
+    `matched_cnt` int,
+    `season`      int,
+    PRIMARY KEY (`id`)
+);
