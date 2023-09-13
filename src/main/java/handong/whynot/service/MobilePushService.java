@@ -74,9 +74,20 @@ public class MobilePushService {
   public void pushMatchingInfo(List<Account> accountList) {
     NotificationEvent event = NotificationEvent.builder()
       .accountList(accountList)
-      .url("blind-date/result")
+      .url("blind-date/matching")
       .title(("[한대소] 상대방 매칭 완료 🎁"))
       .body("매칭된 상대방의 정보를 확인하고, 응답을 해주세요~!")
+      .build();
+
+    eventPublisher.publishEvent(event);
+  }
+
+  public void rejectAuth(List<Account> accountList) {
+    NotificationEvent event = NotificationEvent.builder()
+      .accountList(accountList)
+      .url("blind-date")
+      .title(("한대소 신청에 실패하였습니다. 😭"))
+      .body("일시적 서버 장애로 인해 신청 접수가 되지 않은 것으로 확인됩니다. 다시 신청 부탁드립니다🙏")
       .build();
 
     eventPublisher.publishEvent(event);

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,5 +94,12 @@ public class AdminService {
 
   public List<Account> getAdminAccount() {
     return accountQueryRepository.getAdminAccountList();
+  }
+
+  public void sendCustomPush() {
+    Account account = accountRepository.findById(31L)
+      .orElseThrow(() -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
+    List<Account> accountList = Collections.singletonList(account);
+    mobilePushService.rejectAuth(accountList);
   }
 }

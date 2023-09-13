@@ -15,6 +15,7 @@ import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -152,5 +153,12 @@ public class AdminController {
         blindDateService.noticeMatchingInfo(season);
 
         return ResponseDTO.of(BlindDateResponseCode.MATCHING_NOTICE_OK);
+    }
+
+    @PostMapping("/admin/custom-push")
+    @Profile("local")
+    public String sendCustomPush() {
+        adminService.sendCustomPush();
+        return "done";
     }
 }
