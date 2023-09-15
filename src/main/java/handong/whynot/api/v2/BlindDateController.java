@@ -24,12 +24,12 @@ public class BlindDateController {
   @Operation(summary = "소개팅 지원")
   @PostMapping("")
   @ResponseStatus(CREATED)
-  public ResponseDTO createBlindDate(@RequestBody BlindDateRequestDTO request) {
+  public void createBlindDate(@RequestBody BlindDateRequestDTO request) {
 
-    Account account = accountService.getCurrentAccount();
-    blindDateService.createBlindDate(request, account);
-
-    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_CREATED_OK);
+//    Account account = accountService.getCurrentAccount();
+//    blindDateService.createBlindDate(request, account);
+//
+//    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_CREATED_OK);
   }
 
   @Operation(summary = "소개팅 지원자 카운트 조회")
