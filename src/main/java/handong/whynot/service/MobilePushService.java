@@ -71,12 +71,23 @@ public class MobilePushService {
     eventPublisher.publishEvent(event);
   }
 
-  public void pushMatchingInfo(List<Account> accountList) {
+  public void pushMatchingSuccess(List<Account> accountList) {
     NotificationEvent event = NotificationEvent.builder()
       .accountList(accountList)
       .url("blind-date/matching")
       .title(("[한대소] 상대방 매칭 완료 🎁"))
       .body("매칭된 상대방의 정보를 확인하고, 응답을 해주세요~!")
+      .build();
+
+    eventPublisher.publishEvent(event);
+  }
+
+  public void pushMatchingFail(List<Account> accountList) {
+    NotificationEvent event = NotificationEvent.builder()
+      .accountList(accountList)
+      .url("blind-date/matching-fail")
+      .title(("[한대소] 상대방 매칭 실패 😥"))
+      .body("아쉽지만 학우님과 딱 맞는 매칭 상대를 찾지 못했어요 😥")
       .build();
 
     eventPublisher.publishEvent(event);

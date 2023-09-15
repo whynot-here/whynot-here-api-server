@@ -96,6 +96,8 @@ public class BlindDateService {
       matchedBlindDate.setKakaoLink(blindDate.getKakaoLink());
     }
 
+    // reveal 여부 확인
+
     return BlindDateResponseDTO.of(matchedBlindDate, matchedAccount.getProfileImg(), blindDate.getName());
   }
 
@@ -151,17 +153,26 @@ public class BlindDateService {
 
   public void noticeMatchingInfo(Integer season) {
     List<BlindDate> blindDateList = blindDateRepository.findAllBySeason(season);
-    List<Account> accountList = blindDateList.stream()
-      .filter(it -> Objects.nonNull(it.getMatchingBlindDateId()))
-      .map(BlindDate::getAccount)
-      .collect(Collectors.toList());
-
     // 사용자 매칭 결과 노출 ON
     for (BlindDate blindDate : blindDateList) {
       blindDate.setIsReveal(true);
     }
 
-    mobilePushService.pushMatchingInfo(accountList);
+    // 매칭 성공 사용자 push
+    List<Account> accountSuccessList = blindDateList.stream()
+      .filter(it -> Objects.nonNull(it.getMatchingBlindDateId()))
+      .map(BlindDate::getAccount)
+      .collect(Collectors.toList());
+
+    mobilePushService.pushMatchingSuccess(accountSuccessList);
+
+    // 매칭 실패한 사용자 push
+    List<Account> accountFailList = blindDateList.stream()
+      .filter(it -> Objects.isNull(it.getMatchingBlindDateId()))
+      .map(BlindDate::getAccount)
+      .collect(Collectors.toList());
+
+    mobilePushService.pushMatchingFail(accountFailList);
   }
 
   public Boolean getIsRevealResultBySeason(Integer season, Account account) {
