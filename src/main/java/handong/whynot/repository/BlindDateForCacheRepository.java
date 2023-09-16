@@ -21,7 +21,6 @@ public class BlindDateForCacheRepository {
     List<BlindDate> blindDateList = blindDateRepository.findAllBySeason(season);
 
     return blindDateList.stream()
-      .filter(it -> Objects.nonNull(it.getMatchingBlindDateId()))
       .filter(BlindDate::getIsReveal)
       .map(it -> it.getAccount().getId())
       .collect(Collectors.toList());
