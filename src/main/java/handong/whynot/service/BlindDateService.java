@@ -92,7 +92,7 @@ public class BlindDateService {
       .orElseThrow(() -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
 
     // 공용 링크는 Female 링크 사용
-    if (StringUtils.equals(blindDate.getGender(), "F")) {
+    if (StringUtils.equals(blindDate.getGender(), "M")) {
       matchedBlindDate.setKakaoLink(blindDate.getKakaoLink());
     }
 
