@@ -50,4 +50,10 @@ public class BlindDateExceptionHandler {
     public ErrorResponseDTO matchingNotFoundExceptionHandle() {
         return ErrorResponseDTO.of(BlindDateResponseCode.MATCHING_READ_FAIL, null);
     }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(BlindDateNotOpenedException.class)
+    public ErrorResponseDTO blindDateNotOpenedExceptionHandle() {
+        return ErrorResponseDTO.of(BlindDateResponseCode.REVEAL_FAIL, null);
+    }
 }

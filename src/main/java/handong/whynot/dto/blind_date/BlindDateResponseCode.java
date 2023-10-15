@@ -18,7 +18,8 @@ public enum BlindDateResponseCode implements ResponseCode {
   BLIND_DATE_DUPLICATED(40004, "이번 시즌에 소개팅 지원한 이력이 있습니다."),
   BLIND_DATE_NOT_MATCHED(40005, "매칭된 대상이 없습니다."),
   MATCHING_INVALID(40006, "매칭 조건이 올바르지 않습니다. (남여 매칭이 아니거나, 이미 매칭된 인원이 있습니다.)"),
-  MATCHING_READ_FAIL(40007, "매칭 내역 조회에 실패하였습니다.");
+  MATCHING_READ_FAIL(40007, "매칭 내역 조회에 실패하였습니다."),
+  REVEAL_FAIL(40008, "매칭 오픈 시간이 아닙니다.");
 
   private final Integer statusCode;
   private final String message;

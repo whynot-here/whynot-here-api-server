@@ -82,6 +82,11 @@ public class BlindDateService {
     BlindDate matchedBlindDate = blindDateRepository.findById(blindDate.getMatchingBlindDateId())
       .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
 
+    // reveal 여부 확인
+    if (! blindDate.getIsReveal()) {
+      throw new BlindDateNotOpenedException(BlindDateResponseCode.REVEAL_FAIL);
+    }
+
    // 상대방 이름 한글자 masking
     if (matchedBlindDate.getName().length() >= 2) {
       matchedBlindDate.setName(matchedBlindDate.getName().charAt(0) + "*" + matchedBlindDate.getName().substring(2));
@@ -90,13 +95,6 @@ public class BlindDateService {
     // 상대방 프로필 이미지 조회
     Account matchedAccount = accountRepository.findById(matchedBlindDate.getAccount().getId())
       .orElseThrow(() -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
-
-    // 공용 링크는 Female 링크 사용
-    if (StringUtils.equals(blindDate.getGender(), "F")) {
-      matchedBlindDate.setKakaoLink(blindDate.getKakaoLink());
-    }
-
-    // reveal 여부 확인
 
     return BlindDateResponseDTO.of(matchedBlindDate, matchedAccount.getProfileImg(), blindDate.getName());
   }
