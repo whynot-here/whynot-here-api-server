@@ -12,14 +12,13 @@ import handong.whynot.dto.admin.*;
 import handong.whynot.dto.blind_date.BlindDateResponseCode;
 import handong.whynot.dto.blind_date.MatchingRequestDTO;
 import handong.whynot.dto.common.ResponseDTO;
+import handong.whynot.dto.mobile.CustomPushRequestDTO;
 import handong.whynot.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -156,9 +155,9 @@ public class AdminController {
     }
 
     @PostMapping("/admin/custom-push")
-    @Profile("local")
-    public String sendCustomPush() {
-        adminService.sendCustomPush();
-        return "done";
+    public ResponseDTO sendCustomPush(@RequestBody CustomPushRequestDTO customPushRequestDTO) {
+        adminService.sendCustomPush(customPushRequestDTO);
+
+        return ResponseDTO.of(AdminResponseCode.ADMIN_CUSTOM_PUSH_OK);
     }
 }

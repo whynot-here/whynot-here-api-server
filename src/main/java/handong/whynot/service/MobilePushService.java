@@ -93,12 +93,12 @@ public class MobilePushService {
     eventPublisher.publishEvent(event);
   }
 
-  public void rejectAuth(List<Account> accountList) {
+  public void pushCustomMessage(List<Account> accountList, String url, String title, String body) {
     NotificationEvent event = NotificationEvent.builder()
       .accountList(accountList)
-      .url("blind-date")
-      .title(("한대소 신청에 실패하였습니다. 😭"))
-      .body("일시적 서버 장애로 인해 신청 접수가 되지 않은 것으로 확인됩니다. 다시 신청 부탁드립니다🙏")
+      .url(url)
+      .title(title)
+      .body(body)
       .build();
 
     eventPublisher.publishEvent(event);

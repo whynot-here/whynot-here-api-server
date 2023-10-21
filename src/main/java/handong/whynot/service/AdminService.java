@@ -8,6 +8,7 @@ import handong.whynot.dto.account.AdminApproveRequestDTO;
 import handong.whynot.dto.account.StudentAuthRequestDTO;
 import handong.whynot.dto.admin.AdminResponseCode;
 import handong.whynot.dto.admin.AdminStudentAuthResponseDTO;
+import handong.whynot.dto.mobile.CustomPushRequestDTO;
 import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.account.StudentAuthNotFoundException;
 import handong.whynot.repository.AccountQueryRepository;
@@ -96,10 +97,19 @@ public class AdminService {
     return accountQueryRepository.getAdminAccountList();
   }
 
-  public void sendCustomPush() {
-    Account account = accountRepository.findById(31L)
-      .orElseThrow(() -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
-    List<Account> accountList = Collections.singletonList(account);
-    mobilePushService.rejectAuth(accountList);
+  public void sendCustomPush(CustomPushRequestDTO customPushRequestDTO) {
+    List<Long> accountIds = customPushRequestDTO.getAccountIds();
+    String url = customPushRequestDTO.getUrl();
+    String title = customPushRequestDTO.getTitle();
+    String body = customPushRequestDTO.getBody();
+
+    List<Account> accountList = new ArrayList<>();
+    for (Long id : accountIds) {
+      Account account = accountRepository.findById(id)
+        .orElseThrow(() -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
+      accountList.add(account);
+    }
+
+    mobilePushService.pushCustomMessage(accountList, url, title, body);
   }
 }
