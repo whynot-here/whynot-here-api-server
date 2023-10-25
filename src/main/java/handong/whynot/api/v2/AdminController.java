@@ -154,10 +154,19 @@ public class AdminController {
         return ResponseDTO.of(BlindDateResponseCode.MATCHING_NOTICE_OK);
     }
 
+    @Operation(summary = "관리자 수동 푸시")
     @PostMapping("/admin/custom-push")
     public ResponseDTO sendCustomPush(@RequestBody CustomPushRequestDTO customPushRequestDTO) {
         adminService.sendCustomPush(customPushRequestDTO);
 
         return ResponseDTO.of(AdminResponseCode.ADMIN_CUSTOM_PUSH_OK);
+    }
+
+    @Operation(summary = "보증금 납부 동의 삭제")
+    @PutMapping("/admin/blind-date/delete-fee")
+    public ResponseDTO deleteBlindDateFee(@RequestParam Long accountId) {
+        adminService.deleteBlindDateFee(accountId);
+
+        return ResponseDTO.of(AdminResponseCode.ADMIN_DELETE_BLIND_DATE_FEE_OK);
     }
 }

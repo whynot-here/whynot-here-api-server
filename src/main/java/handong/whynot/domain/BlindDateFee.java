@@ -48,4 +48,8 @@ public class BlindDateFee extends BaseTimeEntity {
       .useYn("Y")
       .build();
   }
+
+  public void deleteBlindDateFee() {
+    useYn = "Y";
+  }
 }

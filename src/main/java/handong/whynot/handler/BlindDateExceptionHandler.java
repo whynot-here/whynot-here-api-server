@@ -56,4 +56,10 @@ public class BlindDateExceptionHandler {
     public ErrorResponseDTO blindDateNotOpenedExceptionHandle() {
         return ErrorResponseDTO.of(BlindDateResponseCode.REVEAL_FAIL, null);
     }
+
+    @ResponseStatus(NOT_FOUND)
+    @ExceptionHandler(BlindDateFeeNotFoundException.class)
+    public ErrorResponseDTO blindDateFeeNotFoundExceptionHandle() {
+        return ErrorResponseDTO.of(BlindDateResponseCode.BLIND_DATE_FEE_READ_FAIL, null);
+    }
 }

@@ -1,6 +1,7 @@
 package handong.whynot.service;
 
 import handong.whynot.domain.Account;
+import handong.whynot.domain.BlindDateFee;
 import handong.whynot.domain.Role;
 import handong.whynot.domain.StudentAuth;
 import handong.whynot.dto.account.AccountResponseCode;
@@ -13,6 +14,7 @@ import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.account.StudentAuthNotFoundException;
 import handong.whynot.repository.AccountQueryRepository;
 import handong.whynot.repository.AccountRepository;
+import handong.whynot.repository.BlindDateFeeRepository;
 import handong.whynot.repository.StudentAuthRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,7 @@ public class AdminService {
   private final RoleService roleService;
   private final MobilePushService mobilePushService;
   private final AccountQueryRepository accountQueryRepository;
+  private final BlindDateFeeRepository blindDateFeeRepository;
 
   @Transactional
   public void requestStudentAuth(StudentAuthRequestDTO dto, Account account) {
@@ -111,5 +114,18 @@ public class AdminService {
     }
 
     mobilePushService.pushCustomMessage(accountList, url, title, body);
+  }
+
+  @Transactional
+  public void deleteBlindDateFee(Long accountId) {
+    Account account = accountRepository.findById(accountId)
+      .orElseThrow(() -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
+
+    BlindDateFee blindDateFee = blindDateFeeRepository.findByAccountId(accountId);
+    blindDateFee.deleteBlindDateFee();
+
+    // 푸시 알림
+    List<Account> accountList = Collections.singletonList(account);
+    mobilePushService.pushDeleteBlindDateFee(accountList);
   }
 }
