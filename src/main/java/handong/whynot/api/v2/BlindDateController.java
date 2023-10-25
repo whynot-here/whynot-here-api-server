@@ -74,4 +74,13 @@ public class BlindDateController {
 
     return blindDateService.getMatchingResultSummary(season);
   }
+
+  @Operation(summary = "보증금 납부 동의")
+  @PostMapping("/fee")
+  public ResponseDTO createBlindDateFee(BlindDateFeeRequestDTO dto) {
+    Account account = accountService.getCurrentAccount();
+    blindDateService.createBlindDateFee(account, dto);
+
+    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_FEE_CREATED_OK);
+  }
 }

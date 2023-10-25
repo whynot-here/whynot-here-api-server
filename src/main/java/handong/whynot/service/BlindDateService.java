@@ -3,6 +3,7 @@ package handong.whynot.service;
 import handong.whynot.domain.*;
 import handong.whynot.dto.account.AccountResponseCode;
 import handong.whynot.dto.admin.AdminBlindDateResponseDTO;
+import handong.whynot.dto.blind_date.BlindDateFeeRequestDTO;
 import handong.whynot.dto.blind_date.BlindDateRequestDTO;
 import handong.whynot.dto.blind_date.BlindDateResponseCode;
 import handong.whynot.dto.blind_date.BlindDateResponseDTO;
@@ -30,6 +31,7 @@ public class BlindDateService {
   private final MatchingHistoryRepository matchingHistoryRepository;
   private final AccountRepository accountRepository;
   private final BlindDateSummaryRepository blindDateSummaryRepository;
+  private final BlindDateFeeRepository blindDateFeeRepository;
 
   @Transactional
   public void createBlindDate(BlindDateRequestDTO request, Account account) {
@@ -181,5 +183,12 @@ public class BlindDateService {
 
   public BlindDateSummary getMatchingResultSummary(Integer season) {
     return blindDateSummaryRepository.findBySeason(season);
+  }
+
+  @Transactional
+  public void createBlindDateFee(Account account, BlindDateFeeRequestDTO dto) {
+
+    BlindDateFee dateFee = BlindDateFee.of(account.getId(), dto);
+    blindDateFeeRepository.save(dateFee);
   }
 }
