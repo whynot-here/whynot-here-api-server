@@ -21,7 +21,8 @@ public enum BlindDateResponseCode implements ResponseCode {
   MATCHING_INVALID(40006, "매칭 조건이 올바르지 않습니다. (남여 매칭이 아니거나, 이미 매칭된 인원이 있습니다.)"),
   MATCHING_READ_FAIL(40007, "매칭 내역 조회에 실패하였습니다."),
   REVEAL_FAIL(40008, "매칭 오픈 시간이 아닙니다."),
-  BLIND_DATE_FEE_READ_FAIL(40009, "보증금 납부 내역 조회에 실패하였습니다.");
+  BLIND_DATE_FEE_READ_FAIL(40009, "보증금 납부 내역 조회에 실패하였습니다."),
+  BLIND_DATE_FEE_DUPLICATED(40010, "이미 보증금 납부 내역이 존재합니다.");
 
   private final Integer statusCode;
   private final String message;

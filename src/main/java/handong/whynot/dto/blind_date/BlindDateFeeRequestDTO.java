@@ -8,4 +8,5 @@ public class BlindDateFeeRequestDTO {
   private String name;
   private String bankName;
   private String bankNumber;
+  private Integer season;
 }

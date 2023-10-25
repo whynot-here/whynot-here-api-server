@@ -187,8 +187,24 @@ public class BlindDateService {
 
   @Transactional
   public void createBlindDateFee(Account account, BlindDateFeeRequestDTO dto) {
+    // 신청한 내역이 있는지 확인
+    if (isDuplicatedBlindDateFee(account, dto.getSeason())) {
+      throw new BlindDateFeeDuplicatedException(BlindDateResponseCode.BLIND_DATE_FEE_DUPLICATED);
+    }
 
     BlindDateFee dateFee = BlindDateFee.of(account.getId(), dto);
     blindDateFeeRepository.save(dateFee);
+  }
+
+  private Boolean isDuplicatedBlindDateFee(Account account, Integer season) {
+    Optional<BlindDateFee> blindDateFee = blindDateFeeRepository.findByAccountIdAndSeasonAndUseYn(account.getId(), season, "Y");
+    return blindDateFee.isPresent();
+  }
+
+  public Boolean getIsSubmitted(Account account, Integer season) {
+
+    BlindDateFee blindDateFee = blindDateFeeRepository.findByAccountIdAndSeasonAndUseYn(account.getId(), season, "Y")
+      .orElseThrow(() -> new BlindDateFeeNotFoundException(BlindDateResponseCode.BLIND_DATE_FEE_READ_FAIL));
+    return blindDateFee.getIsSubmitted();
   }
 }

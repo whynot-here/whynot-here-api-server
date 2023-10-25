@@ -62,4 +62,10 @@ public class BlindDateExceptionHandler {
     public ErrorResponseDTO blindDateFeeNotFoundExceptionHandle() {
         return ErrorResponseDTO.of(BlindDateResponseCode.BLIND_DATE_FEE_READ_FAIL, null);
     }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(BlindDateFeeDuplicatedException.class)
+    public ErrorResponseDTO blindDateFeeDuplicatedExceptionHandle() {
+        return ErrorResponseDTO.of(BlindDateResponseCode.BLIND_DATE_FEE_DUPLICATED, null);
+    }
 }

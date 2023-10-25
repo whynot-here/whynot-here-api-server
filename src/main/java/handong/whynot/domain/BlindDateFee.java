@@ -32,6 +32,9 @@ public class BlindDateFee extends BaseTimeEntity {
   @Column(name = "bank_number")
   private String bankNumber;
 
+  @Column(name = "season")
+  private Integer season;
+
   @Column(name = "is_submitted")
   private Boolean isSubmitted;
 
@@ -42,14 +45,15 @@ public class BlindDateFee extends BaseTimeEntity {
     return builder()
       .accountId(accountId)
       .name(dto.getName())
-      .bankName(dto.getName())
+      .bankName(dto.getBankName())
       .bankNumber(dto.getBankNumber())
+      .season(dto.getSeason())
       .isSubmitted(false)
       .useYn("Y")
       .build();
   }
 
   public void deleteBlindDateFee() {
-    useYn = "Y";
+    useYn = "N";
   }
 }

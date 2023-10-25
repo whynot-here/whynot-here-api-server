@@ -77,10 +77,17 @@ public class BlindDateController {
 
   @Operation(summary = "보증금 납부 동의")
   @PostMapping("/fee")
-  public ResponseDTO createBlindDateFee(BlindDateFeeRequestDTO dto) {
+  public ResponseDTO createBlindDateFee(@RequestBody BlindDateFeeRequestDTO dto) {
     Account account = accountService.getCurrentAccount();
     blindDateService.createBlindDateFee(account, dto);
 
     return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_FEE_CREATED_OK);
+  }
+
+  @Operation(summary = "보증금 납부 확인 여부 조회")
+  @GetMapping("/fee/confirm")
+  public Boolean getIsSubmittedBySeason(@RequestParam Integer season) {
+    Account account = accountService.getCurrentAccount();
+    return blindDateService.getIsSubmitted(account, season);
   }
 }
