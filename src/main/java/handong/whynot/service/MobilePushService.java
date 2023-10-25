@@ -114,4 +114,15 @@ public class MobilePushService {
 
     eventPublisher.publishEvent(event);
   }
+
+  public void pushApproveBlindDateFee(List<Account> accountList) {
+    NotificationEvent event = NotificationEvent.builder()
+      .accountList(accountList)
+      .url("")   // todo: 프론트 주소 나오면 채우기
+      .title(("[한대소] 보증금 납부 확인 완료"))
+      .body("신청 정보를 작성하고, 한대소 참여를 완료해주세요~! ☺️")
+      .build();
+
+    eventPublisher.publishEvent(event);
+  }
 }

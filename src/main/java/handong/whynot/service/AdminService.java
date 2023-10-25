@@ -9,9 +9,12 @@ import handong.whynot.dto.account.AdminApproveRequestDTO;
 import handong.whynot.dto.account.StudentAuthRequestDTO;
 import handong.whynot.dto.admin.AdminResponseCode;
 import handong.whynot.dto.admin.AdminStudentAuthResponseDTO;
+import handong.whynot.dto.blind_date.BlindDateRequestDTO;
+import handong.whynot.dto.blind_date.BlindDateResponseCode;
 import handong.whynot.dto.mobile.CustomPushRequestDTO;
 import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.account.StudentAuthNotFoundException;
+import handong.whynot.exception.blind_date.BlindDateFeeNotFoundException;
 import handong.whynot.repository.AccountQueryRepository;
 import handong.whynot.repository.AccountRepository;
 import handong.whynot.repository.BlindDateFeeRepository;
@@ -35,6 +38,7 @@ public class AdminService {
   private final MobilePushService mobilePushService;
   private final AccountQueryRepository accountQueryRepository;
   private final BlindDateFeeRepository blindDateFeeRepository;
+  private final BlindDateService blindDateService;
 
   @Transactional
   public void requestStudentAuth(StudentAuthRequestDTO dto, Account account) {
@@ -127,5 +131,27 @@ public class AdminService {
     // 푸시 알림
     List<Account> accountList = Collections.singletonList(account);
     mobilePushService.pushDeleteBlindDateFee(accountList);
+  }
+
+  @Transactional
+  public void approveBlindDateFee(Long feeId, Integer season) {
+    // 1. is_submitted true 업데이트
+    BlindDateFee blindDateFee = blindDateFeeRepository.findById(feeId)
+      .orElseThrow(() -> new BlindDateFeeNotFoundException(BlindDateResponseCode.BLIND_DATE_FEE_READ_FAIL));
+
+    blindDateFee.approveBlindDateFee();
+
+    // 2. blind_date 생성
+    Account account = accountRepository.findById(blindDateFee.getAccountId())
+      .orElseThrow(() -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
+    BlindDateRequestDTO requestDTO = BlindDateRequestDTO.builder()
+      .season(season)
+      .excludeCondList(new ArrayList<>())
+      .build();
+    blindDateService.createBlindDate(requestDTO, account);
+
+    // 3. 푸시 알림
+    List<Account> accountList = Collections.singletonList(account);
+    mobilePushService.pushApproveBlindDateFee(accountList);
   }
 }

@@ -56,4 +56,8 @@ public class BlindDateFee extends BaseTimeEntity {
   public void deleteBlindDateFee() {
     useYn = "N";
   }
+
+  public void approveBlindDateFee() {
+    isSubmitted = true;
+  }
 }

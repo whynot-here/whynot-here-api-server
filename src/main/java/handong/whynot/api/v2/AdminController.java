@@ -169,4 +169,12 @@ public class AdminController {
 
         return ResponseDTO.of(AdminResponseCode.ADMIN_DELETE_BLIND_DATE_FEE_OK);
     }
+
+    @Operation(summary = "관리자 보증금 납부 확인")
+    @PutMapping("/admin/blind-date/fee/{feeId}")
+    public ResponseDTO approveBlindDateFeeBySeason(@PathVariable Long feeId, @RequestParam Integer season) {
+        adminService.approveBlindDateFee(feeId, season);
+
+        return ResponseDTO.of(AdminResponseCode.ADMIN_APPROVE_BLIND_DATE_FEE_OK);
+    }
 }

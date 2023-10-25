@@ -54,8 +54,6 @@ public class BlindDateService {
       .peek(it -> it.setBlindDate(blindDate))
       .collect(Collectors.toList());
     excludeCondRepository.saveAll(excludeConds);
-
-    // todo: 4. 확인 모바일 푸시
   }
 
   private Boolean isDuplicatedApply(Account account, Integer season) {
