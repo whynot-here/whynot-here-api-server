@@ -125,4 +125,15 @@ public class MobilePushService {
 
     eventPublisher.publishEvent(event);
   }
+
+  public void pushApproveMatchingImage(List<Account> accountList) {
+    NotificationEvent event = NotificationEvent.builder()
+      .accountList(accountList)
+      .url("")   // todo: 프론트 주소 나오면 채우기
+      .title(("[한대소] 만남 인증 완료 ✨"))
+      .body("보증금은 시즌 종료 후 순차 환급됩니다 ☺️")
+      .build();
+
+    eventPublisher.publishEvent(event);
+  }
 }

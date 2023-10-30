@@ -12,6 +12,7 @@ import handong.whynot.dto.mobile.CustomPushRequestDTO;
 import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.account.StudentAuthNotFoundException;
 import handong.whynot.exception.blind_date.BlindDateFeeNotFoundException;
+import handong.whynot.exception.blind_date.BlindDateNotFoundException;
 import handong.whynot.exception.blind_date.MatchingNotFoundException;
 import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class AdminService {
   private final BlindDateFeeRepository blindDateFeeRepository;
   private final BlindDateService blindDateService;
   private final MatchingHistoryRepository matchingHistoryRepository;
+  private final BlindDateRepository blindDateRepository;
 
   @Transactional
   public void requestStudentAuth(StudentAuthRequestDTO dto, Account account) {
@@ -161,5 +163,16 @@ public class AdminService {
       .orElseThrow(() -> new MatchingNotFoundException(BlindDateResponseCode.MATCHING_READ_FAIL));
 
     matchingHistory.setIsApproved(true);
+
+    // 푸시 알림
+    List<Account> accountList = new ArrayList<>();
+    BlindDate male = blindDateRepository.findById(matchingHistory.getMaleId())
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+    BlindDate female = blindDateRepository.findById(matchingHistory.getFemaleId())
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    accountList.add(male.getAccount());
+    accountList.add(female.getAccount());
+    mobilePushService.pushApproveMatchingImage(accountList);
   }
 }
