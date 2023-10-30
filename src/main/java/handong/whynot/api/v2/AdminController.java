@@ -184,4 +184,12 @@ public class AdminController {
 
         return adminService.getBlindDateFeeListBySeason(season);
     }
+
+    @Operation(summary = "관리자 만남 인증 승인")
+    @PutMapping("/admin/blind-date/matching/image/{matchingId}")
+    public ResponseDTO approveMatchingImage(@PathVariable Long matchingId) {
+        adminService.approveMatchingImage(matchingId);
+
+        return ResponseDTO.of(AdminResponseCode.ADMIN_APPROVE_MATCHING_IMAGE_OK);
+    }
 }

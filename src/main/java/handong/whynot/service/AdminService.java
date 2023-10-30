@@ -1,25 +1,19 @@
 package handong.whynot.service;
 
-import handong.whynot.domain.Account;
-import handong.whynot.domain.BlindDateFee;
-import handong.whynot.domain.Role;
-import handong.whynot.domain.StudentAuth;
+import handong.whynot.domain.*;
 import handong.whynot.dto.account.AccountResponseCode;
 import handong.whynot.dto.account.AdminApproveRequestDTO;
 import handong.whynot.dto.account.StudentAuthRequestDTO;
 import handong.whynot.dto.admin.AdminResponseCode;
 import handong.whynot.dto.admin.AdminStudentAuthResponseDTO;
 import handong.whynot.dto.blind_date.BlindDateFeeResponseDTO;
-import handong.whynot.dto.blind_date.BlindDateRequestDTO;
 import handong.whynot.dto.blind_date.BlindDateResponseCode;
 import handong.whynot.dto.mobile.CustomPushRequestDTO;
 import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.account.StudentAuthNotFoundException;
 import handong.whynot.exception.blind_date.BlindDateFeeNotFoundException;
-import handong.whynot.repository.AccountQueryRepository;
-import handong.whynot.repository.AccountRepository;
-import handong.whynot.repository.BlindDateFeeRepository;
-import handong.whynot.repository.StudentAuthRepository;
+import handong.whynot.exception.blind_date.MatchingNotFoundException;
+import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +34,7 @@ public class AdminService {
   private final AccountQueryRepository accountQueryRepository;
   private final BlindDateFeeRepository blindDateFeeRepository;
   private final BlindDateService blindDateService;
+  private final MatchingHistoryRepository matchingHistoryRepository;
 
   @Transactional
   public void requestStudentAuth(StudentAuthRequestDTO dto, Account account) {
@@ -158,5 +153,13 @@ public class AdminService {
     return blindDateFeeRepository.findAllBySeason(season).stream()
       .map(BlindDateFeeResponseDTO::of)
       .collect(Collectors.toList());
+  }
+
+  @Transactional
+  public void approveMatchingImage(Long matchingId) {
+    MatchingHistory matchingHistory = matchingHistoryRepository.findById(matchingId)
+      .orElseThrow(() -> new MatchingNotFoundException(BlindDateResponseCode.MATCHING_READ_FAIL));
+
+    matchingHistory.setIsApproved(true);
   }
 }
