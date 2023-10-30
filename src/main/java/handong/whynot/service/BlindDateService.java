@@ -164,6 +164,7 @@ public class BlindDateService {
       .maleId(maleId)
       .femaleId(femaleId)
       .season(male.getSeason())
+      .isApproved(false)
       .build();
     matchingHistoryRepository.save(history);
   }
@@ -263,5 +264,12 @@ public class BlindDateService {
     return MatchingImageResponseDTO.builder()
       .imageLink(imageLink)
       .build();
+  }
+
+  public Boolean getMatchingApprovedBySeason(Account account, Integer season) {
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    return matchingHistoryService.getMatchingApprovedByBlindDate(blindDate);
   }
 }

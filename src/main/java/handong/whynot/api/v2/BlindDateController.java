@@ -135,4 +135,12 @@ public class BlindDateController {
 
     return blindDateService.getMatchingImageBySeason(account, season);
   }
+
+  @Operation(summary = "만남 인증 승인 여부 조회")
+  @GetMapping("/matching/confirm")
+  public Boolean getMatchingApprovedBySeason(@RequestParam Integer season) {
+    Account account = accountService.getCurrentAccount();
+
+    return blindDateService.getMatchingApprovedBySeason(account, season);
+  }
 }

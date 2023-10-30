@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,5 +70,20 @@ public class MatchingHistoryService {
         .orElseThrow(() -> new MatchingNotFoundException(BlindDateResponseCode.MATCHING_READ_FAIL));
       return femaleHistory.getFemaleImageLink();
     }
+  }
+
+  public Boolean getMatchingApprovedByBlindDate(BlindDate blindDate) {
+    MatchingHistory matchingHistory;
+    
+    if (StringUtils.equals(blindDate.getGender(), "M")) {
+      matchingHistory = matchingHistoryRepository.findByMaleId(blindDate.getId())
+        .orElseThrow(() -> new MatchingNotFoundException(BlindDateResponseCode.MATCHING_READ_FAIL));
+    }
+    else {
+      matchingHistory = matchingHistoryRepository.findByFemaleId(blindDate.getId())
+        .orElseThrow(() -> new MatchingNotFoundException(BlindDateResponseCode.MATCHING_READ_FAIL));
+    }
+
+    return matchingHistory.getIsApproved();
   }
 }
