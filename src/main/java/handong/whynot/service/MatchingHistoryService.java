@@ -9,8 +9,10 @@ import handong.whynot.exception.blind_date.MatchingNotFoundException;
 import handong.whynot.repository.BlindDateRepository;
 import handong.whynot.repository.MatchingHistoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,5 +44,19 @@ public class MatchingHistoryService {
     female.updateMatchingBlindDate(null);
 
     matchingHistoryRepository.deleteById(matchingId);
+  }
+
+  @Transactional
+  public void updateImageLink(BlindDate blindDate, String link) {
+    if (StringUtils.equals(blindDate.getGender(), "M")) {
+      MatchingHistory maleHistory = matchingHistoryRepository.findByMaleId(blindDate.getId())
+        .orElseThrow(() -> new MatchingNotFoundException(BlindDateResponseCode.MATCHING_READ_FAIL));
+      maleHistory.setMaleImageLink(link);
+    }
+    else {
+      MatchingHistory femaleHistory = matchingHistoryRepository.findByFemaleId(blindDate.getId())
+        .orElseThrow(() -> new MatchingNotFoundException(BlindDateResponseCode.MATCHING_READ_FAIL));
+      femaleHistory.setFemaleImageLink(link);
+    }
   }
 }

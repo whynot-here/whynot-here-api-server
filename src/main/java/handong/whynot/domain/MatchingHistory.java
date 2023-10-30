@@ -26,4 +26,13 @@ public class MatchingHistory extends BaseTimeEntity {
 
   @Column(name = "season")
   private Integer season;
+
+  @Column(name = "male_image_link")
+  private String maleImageLink;
+
+  @Column(name = "female_image_link")
+  private String femaleImageLink;
+
+  @Column(name = "is_approved")
+  private Boolean isApproved;
 }

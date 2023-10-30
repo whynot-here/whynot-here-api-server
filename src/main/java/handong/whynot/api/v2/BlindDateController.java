@@ -117,4 +117,14 @@ public class BlindDateController {
 
     return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_APPLY_FINISH_OK);
   }
+
+  @Operation(summary = "만남 인증 사진 업로드")
+  @PutMapping("/matching/image")
+  public ResponseDTO createMatchingImageBySeason(@RequestParam Integer season,
+                                                 @RequestBody MatchingImageRequestDTO request) {
+    Account account = accountService.getCurrentAccount();
+    blindDateService.createMatchingImage(account, season, request.getImageLink());
+
+    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_MATCHING_IMAGE_CREATED_OK);
+  }
 }

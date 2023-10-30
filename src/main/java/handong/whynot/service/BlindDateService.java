@@ -29,6 +29,7 @@ public class BlindDateService {
   private final ExcludeCondRepository excludeCondRepository;
   private final MobilePushService mobilePushService;
   private final MatchingHistoryRepository matchingHistoryRepository;
+  private final MatchingHistoryService matchingHistoryService;
   private final AccountRepository accountRepository;
   private final BlindDateSummaryRepository blindDateSummaryRepository;
   private final BlindDateFeeRepository blindDateFeeRepository;
@@ -138,7 +139,7 @@ public class BlindDateService {
   }
 
   @Transactional
-  public void createMatchingBySeason(Long maleId, Long femaleId, Integer season) {
+  public void createMatching(Long maleId, Long femaleId) {
     // 남자인지 확인
     BlindDate male = blindDateRepository.findById(maleId)
       .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
@@ -165,7 +166,7 @@ public class BlindDateService {
     MatchingHistory history = MatchingHistory.builder()
       .maleId(maleId)
       .femaleId(femaleId)
-      .season(season)
+      .season(male.getSeason())
       .build();
     matchingHistoryRepository.save(history);
   }
@@ -247,5 +248,13 @@ public class BlindDateService {
       .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
 
     blindDate.setIsSubmitted(true);
+  }
+
+  @Transactional
+  public void createMatchingImage(Account account, Integer season, String link) {
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    matchingHistoryService.updateImageLink(blindDate, link);
   }
 }

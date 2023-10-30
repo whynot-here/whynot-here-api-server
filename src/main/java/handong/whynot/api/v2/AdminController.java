@@ -120,9 +120,8 @@ public class AdminController {
 
     @Operation(summary = "남, 여 매칭 생성")
     @PostMapping("/admin/blind-matching")
-    public ResponseDTO createMatchingBySeason(@RequestParam Integer season,
-                                      @RequestBody MatchingRequestDTO request) {
-        blindDateService.createMatchingBySeason(request.getMaleId(), request.getFemaleId(), season);
+    public ResponseDTO createMatching(@RequestBody MatchingRequestDTO request) {
+        blindDateService.createMatching(request.getMaleId(), request.getFemaleId());
 
         return ResponseDTO.of(BlindDateResponseCode.MATCHING_CREATED_OK);
     }
