@@ -178,6 +178,15 @@ public class BlindDateService {
 
   public void noticeMatchingInfoBySeason(Integer season) {
     List<BlindDate> blindDateList = blindDateRepository.findAllBySeason(season);
+    noticeResult(blindDateList);
+  }
+
+  public void noticeRetryBySeason(Integer season) {
+    List<BlindDate> blindDateList = blindDateRepository.findAllBySeasonAndIsRetry(season, true);
+    noticeResult(blindDateList);
+  }
+
+  private void noticeResult(List<BlindDate> blindDateList) {
     // 사용자 매칭 결과 노출 ON
     for (BlindDate blindDate : blindDateList) {
       blindDate.setIsReveal(true);
@@ -280,6 +289,11 @@ public class BlindDateService {
 
     blindDate.setIsRetry(true);
     blindDate.setRetryReason(reason);
+
+    // 매칭 결과 노출 여부 False
+    blindDate.setIsReveal(false);
+
+    // todo: 상대방 재매칭 처리, 푸시 알림
   }
 
   public Boolean getIsRetryBySeason(Account account, Integer season) {

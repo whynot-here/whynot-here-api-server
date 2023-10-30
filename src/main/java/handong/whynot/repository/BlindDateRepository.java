@@ -15,4 +15,5 @@ public interface BlindDateRepository extends JpaRepository<BlindDate, Long> {
   Boolean existsByAccountAndSeason(Account account, Integer season);
 
   List<BlindDate> findAllBySeason(Integer season);
+  List<BlindDate> findAllBySeasonAndIsRetry(Integer season, boolean isRetry);
 }

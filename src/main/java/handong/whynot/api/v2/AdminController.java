@@ -192,4 +192,12 @@ public class AdminController {
 
         return ResponseDTO.of(AdminResponseCode.ADMIN_APPROVE_MATCHING_IMAGE_OK);
     }
+
+    @Operation(summary = "재매칭 정보 일괄 발송")
+    @PostMapping("/admin/blind-date/retry/notification")
+    public ResponseDTO noticeRetryBySeason(@RequestParam Integer season) {
+        blindDateService.noticeRetryBySeason(season);
+
+        return ResponseDTO.of(BlindDateResponseCode.MATCHING_NOTICE_OK);
+    }
 }
