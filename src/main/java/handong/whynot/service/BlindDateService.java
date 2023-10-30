@@ -93,7 +93,8 @@ public class BlindDateService {
   }
 
   public Boolean getIsParticipatedBySeason(Integer season, Account account) {
-    return blindDateRepository.existsByAccountAndSeason(account, season);
+
+    return blindDateFeeRepository.existsByAccountIdAndSeasonAndUseYn(account.getId(), season, "Y");
   }
 
   public BlindDateResponseDTO getMatchingResultBySeason(Integer season, Account account) {

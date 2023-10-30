@@ -10,4 +10,5 @@ public interface BlindDateFeeRepository extends JpaRepository<BlindDateFee, Long
   BlindDateFee findByAccountId(Long accountId);
   Optional<BlindDateFee> findByAccountIdAndSeasonAndUseYn(Long id, Integer season, String useYn);
   List<BlindDateFee> findAllBySeason(Integer season);
+  Boolean existsByAccountIdAndSeasonAndUseYn(Long id, Integer season, String useYn);
 }
