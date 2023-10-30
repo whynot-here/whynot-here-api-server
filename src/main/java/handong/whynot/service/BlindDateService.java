@@ -3,10 +3,7 @@ package handong.whynot.service;
 import handong.whynot.domain.*;
 import handong.whynot.dto.account.AccountResponseCode;
 import handong.whynot.dto.admin.AdminBlindDateResponseDTO;
-import handong.whynot.dto.blind_date.BlindDateFeeRequestDTO;
-import handong.whynot.dto.blind_date.BlindDateRequestDTO;
-import handong.whynot.dto.blind_date.BlindDateResponseCode;
-import handong.whynot.dto.blind_date.BlindDateResponseDTO;
+import handong.whynot.dto.blind_date.*;
 import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.blind_date.*;
 import handong.whynot.repository.*;
@@ -256,5 +253,15 @@ public class BlindDateService {
       .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
 
     matchingHistoryService.updateImageLink(blindDate, link);
+  }
+
+  public MatchingImageResponseDTO getMatchingImageBySeason(Account account, Integer season) {
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    String imageLink = matchingHistoryService.getMatchingImageByBlindDate(blindDate);
+    return MatchingImageResponseDTO.builder()
+      .imageLink(imageLink)
+      .build();
   }
 }

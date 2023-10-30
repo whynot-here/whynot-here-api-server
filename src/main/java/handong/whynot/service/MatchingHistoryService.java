@@ -59,4 +59,17 @@ public class MatchingHistoryService {
       femaleHistory.setFemaleImageLink(link);
     }
   }
+
+  public String getMatchingImageByBlindDate(BlindDate blindDate) {
+    if (StringUtils.equals(blindDate.getGender(), "M")) {
+      MatchingHistory maleHistory = matchingHistoryRepository.findByMaleId(blindDate.getId())
+        .orElseThrow(() -> new MatchingNotFoundException(BlindDateResponseCode.MATCHING_READ_FAIL));
+      return maleHistory.getMaleImageLink();
+    }
+    else {
+      MatchingHistory femaleHistory = matchingHistoryRepository.findByFemaleId(blindDate.getId())
+        .orElseThrow(() -> new MatchingNotFoundException(BlindDateResponseCode.MATCHING_READ_FAIL));
+      return femaleHistory.getFemaleImageLink();
+    }
+  }
 }
