@@ -101,6 +101,14 @@ public class BlindDateController {
     return blindDateService.getFeeIsSubmitted(account, season);
   }
 
+  @Operation(summary = "소개팅 최종 제출 여부 조회")
+  @GetMapping("/finish")
+  public Boolean getBlindDateSubmittedBySeason(@RequestParam Integer season) {
+    Account account = accountService.getCurrentAccount();
+
+    return blindDateService.getBlindDateSubmitted(account, season);
+  }
+
   @Operation(summary = "소개팅 최종 제출")
   @PutMapping("/finish")
   public ResponseDTO finishEditingBySeason(@RequestParam Integer season) {

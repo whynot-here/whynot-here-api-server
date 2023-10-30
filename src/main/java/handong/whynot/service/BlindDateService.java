@@ -233,6 +233,13 @@ public class BlindDateService {
     return blindDateFee.getIsSubmitted();
   }
 
+  public Boolean getBlindDateSubmitted(Account account, Integer season) {
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    return blindDate.getIsSubmitted();
+  }
+
   @Transactional
   public void finishEditing(Account account, Integer season) {
     BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
