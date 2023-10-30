@@ -226,10 +226,18 @@ public class BlindDateService {
     return blindDateFee.isPresent();
   }
 
-  public Boolean getIsSubmitted(Account account, Integer season) {
+  public Boolean getFeeIsSubmitted(Account account, Integer season) {
 
     BlindDateFee blindDateFee = blindDateFeeRepository.findByAccountIdAndSeasonAndUseYn(account.getId(), season, "Y")
       .orElseThrow(() -> new BlindDateFeeNotFoundException(BlindDateResponseCode.BLIND_DATE_FEE_READ_FAIL));
     return blindDateFee.getIsSubmitted();
+  }
+
+  @Transactional
+  public void finishEditing(Account account, Integer season) {
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    blindDate.setIsSubmitted(true);
   }
 }
