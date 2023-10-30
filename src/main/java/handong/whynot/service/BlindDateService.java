@@ -32,28 +32,55 @@ public class BlindDateService {
   private final AccountRepository accountRepository;
   private final BlindDateSummaryRepository blindDateSummaryRepository;
   private final BlindDateFeeRepository blindDateFeeRepository;
+  private final BlindDateImageLinkRepository blindDateImageLinkRepository;
 
   @Transactional
-  public void createBlindDate(BlindDateRequestDTO request, Account account) {
+  public void createBlindDate(Integer season, Account account) {
     // 1. 학생증 인증이 된 사용자인지 확인
     if (! account.isAuthenticated()) {
       throw new BlindDateNotAuthenticatedException(BlindDateResponseCode.BLIND_DATE_NOT_AUTHENTICATED);
     };
 
     // 2. (진행 중인 시즌 기간) 소개팅에 지원한 적이 있는지 확인
-    if (isDuplicatedApply(account, request.getSeason())) {
+    if (isDuplicatedApply(account, season)) {
       throw new BlindDateDuplicatedException(BlindDateResponseCode.BLIND_DATE_DUPLICATED);
     }
 
     // 3. 소개팅 지원
-    BlindDate blindDate = BlindDate.of(request, account);
+    BlindDate blindDate = BlindDate.of(season, account);
     blindDateRepository.save(blindDate);
+  }
 
-    // exclude condition 저장
-    List<ExcludeCond> excludeConds = request.getExcludeCondList().stream()
+  @Transactional
+  public void updateBlindDate(BlindDateRequestDTO request, Account account) {
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, request.getSeason())
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    blindDate.updateBlindDate(request);
+
+    // 1. exclude condition 저장
+    saveExcludeConds(blindDate, request.getExcludeCondList());
+
+    // 2. image links 저장
+    saveImageLinks(account, blindDate, request.getImageLinks());
+  }
+
+  private void saveExcludeConds(BlindDate blindDate, List<ExcludeCond> excludeCondList) {
+    excludeCondRepository.deleteAllByBlindDate(blindDate);
+
+    List<ExcludeCond> excludeConds = excludeCondList.stream()
       .peek(it -> it.setBlindDate(blindDate))
       .collect(Collectors.toList());
     excludeCondRepository.saveAll(excludeConds);
+  }
+
+  private void saveImageLinks(Account account, BlindDate blindDate, List<String> links) {
+    blindDateImageLinkRepository.deleteAllByBlindDate(blindDate);
+
+    List<BlindDateImageLink> imageLinks = links.stream()
+      .map(it -> BlindDateImageLink.of(account.getId(), blindDate, it))
+      .collect(Collectors.toList());
+    blindDateImageLinkRepository.saveAll(imageLinks);
   }
 
   private Boolean isDuplicatedApply(Account account, Integer season) {

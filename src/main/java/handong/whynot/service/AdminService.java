@@ -145,11 +145,8 @@ public class AdminService {
     // 2. blind_date 생성
     Account account = accountRepository.findById(blindDateFee.getAccountId())
       .orElseThrow(() -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
-    BlindDateRequestDTO requestDTO = BlindDateRequestDTO.builder()
-      .season(season)
-      .excludeCondList(new ArrayList<>())
-      .build();
-    blindDateService.createBlindDate(requestDTO, account);
+
+    blindDateService.createBlindDate(season, account);
 
     // 3. 푸시 알림
     List<Account> accountList = Collections.singletonList(account);
