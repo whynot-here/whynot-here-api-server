@@ -281,4 +281,11 @@ public class BlindDateService {
     blindDate.setIsRetry(true);
     blindDate.setRetryReason(reason);
   }
+
+  public Boolean getIsRetryBySeason(Account account, Integer season) {
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    return blindDate.getIsRetry();
+  }
 }

@@ -153,4 +153,12 @@ public class BlindDateController {
 
     return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_RETRY_APPLY_OK);
   }
+
+  @Operation(summary = "재매칭 신청 여부 조회")
+  @GetMapping("/retry")
+  public Boolean getIsRetryBySeason(@RequestParam Integer season) {
+    Account account = accountService.getCurrentAccount();
+
+    return blindDateService.getIsRetryBySeason(account, season);
+  }
 }
