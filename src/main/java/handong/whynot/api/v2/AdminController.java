@@ -9,6 +9,7 @@ import handong.whynot.dto.accusation.AccusationApproveRequestDTO;
 import handong.whynot.dto.accusation.AccusationResponseCode;
 import handong.whynot.dto.accusation.AccusationResponseDTO;
 import handong.whynot.dto.admin.*;
+import handong.whynot.dto.blind_date.BlindDateFeeResponseDTO;
 import handong.whynot.dto.blind_date.BlindDateResponseCode;
 import handong.whynot.dto.blind_date.MatchingRequestDTO;
 import handong.whynot.dto.common.ResponseDTO;
@@ -148,8 +149,8 @@ public class AdminController {
 
     @Operation(summary = "매칭 상대방 정보 일괄 발송")
     @PostMapping("/admin/blind-matching/announce-partner-info")
-    public ResponseDTO noticeMatchingInfo(@RequestParam Integer season) {
-        blindDateService.noticeMatchingInfo(season);
+    public ResponseDTO noticeMatchingInfoBySeason(@RequestParam Integer season) {
+        blindDateService.noticeMatchingInfoBySeason(season);
 
         return ResponseDTO.of(BlindDateResponseCode.MATCHING_NOTICE_OK);
     }
@@ -176,5 +177,12 @@ public class AdminController {
         adminService.approveBlindDateFee(feeId, season);
 
         return ResponseDTO.of(AdminResponseCode.ADMIN_APPROVE_BLIND_DATE_FEE_OK);
+    }
+
+    @Operation(summary = "보증금 납부 동의 리스트 조회")
+    @GetMapping("/admin/blind-date/fee")
+    public List<BlindDateFeeResponseDTO> getBlindDateFeeListBySeason(@RequestParam Integer season) {
+
+        return adminService.getBlindDateFeeListBySeason(season);
     }
 }

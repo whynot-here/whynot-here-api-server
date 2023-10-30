@@ -149,7 +149,7 @@ public class BlindDateService {
   }
 
 
-  public void noticeMatchingInfo(Integer season) {
+  public void noticeMatchingInfoBySeason(Integer season) {
     List<BlindDate> blindDateList = blindDateRepository.findAllBySeason(season);
     // 사용자 매칭 결과 노출 ON
     for (BlindDate blindDate : blindDateList) {

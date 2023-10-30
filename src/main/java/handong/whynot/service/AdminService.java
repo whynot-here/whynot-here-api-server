@@ -9,6 +9,7 @@ import handong.whynot.dto.account.AdminApproveRequestDTO;
 import handong.whynot.dto.account.StudentAuthRequestDTO;
 import handong.whynot.dto.admin.AdminResponseCode;
 import handong.whynot.dto.admin.AdminStudentAuthResponseDTO;
+import handong.whynot.dto.blind_date.BlindDateFeeResponseDTO;
 import handong.whynot.dto.blind_date.BlindDateRequestDTO;
 import handong.whynot.dto.blind_date.BlindDateResponseCode;
 import handong.whynot.dto.mobile.CustomPushRequestDTO;
@@ -153,5 +154,12 @@ public class AdminService {
     // 3. 푸시 알림
     List<Account> accountList = Collections.singletonList(account);
     mobilePushService.pushApproveBlindDateFee(accountList);
+  }
+
+  public List<BlindDateFeeResponseDTO> getBlindDateFeeListBySeason(Integer season) {
+
+    return blindDateFeeRepository.findAllBySeason(season).stream()
+      .map(BlindDateFeeResponseDTO::of)
+      .collect(Collectors.toList());
   }
 }
