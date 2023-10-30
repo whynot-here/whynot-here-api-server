@@ -272,4 +272,13 @@ public class BlindDateService {
 
     return matchingHistoryService.getMatchingApprovedByBlindDate(blindDate);
   }
+
+  @Transactional
+  public void applyRetryBySeason(Account account, Integer season, String reason) {
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    blindDate.setIsRetry(true);
+    blindDate.setRetryReason(reason);
+  }
 }

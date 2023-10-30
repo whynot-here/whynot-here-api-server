@@ -143,4 +143,14 @@ public class BlindDateController {
 
     return blindDateService.getMatchingApprovedBySeason(account, season);
   }
+
+  @Operation(summary = "재매칭 신청")
+  @PutMapping("/retry")
+  public ResponseDTO applyRetryBySeason(@RequestParam Integer season,
+                                        @RequestBody BlindDateRetryRequestDTO request) {
+    Account account = accountService.getCurrentAccount();
+    blindDateService.applyRetryBySeason(account, season, request.getReason());
+
+    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_RETRY_APPLY_OK);
+  }
 }
