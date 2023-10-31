@@ -325,6 +325,13 @@ public class BlindDateService {
     return blindDate.getIsRetry();
   }
 
+  public Boolean getIsReportMannersBySeason(Account account, Integer season) {
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    return StringUtils.isNotBlank(blindDate.getMannersReason());
+  }
+
   @Transactional
   public void reportManners(Account account, Integer season, MannerReportRequestDTO request) {
     BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)

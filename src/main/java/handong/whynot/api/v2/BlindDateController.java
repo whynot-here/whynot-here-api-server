@@ -162,6 +162,14 @@ public class BlindDateController {
     return blindDateService.getIsRetryBySeason(account, season);
   }
 
+  @Operation(summary = "비매너 신고 여부 조회")
+  @GetMapping("/manners")
+  public Boolean getIsReportMannersBySeason(@RequestParam Integer season) {
+    Account account = accountService.getCurrentAccount();
+
+    return blindDateService.getIsReportMannersBySeason(account, season);
+  }
+
   @Operation(summary = "비매너 신고")
   @PutMapping("/manners")
   public ResponseDTO reportMannersBySeason(@RequestParam Integer season,
