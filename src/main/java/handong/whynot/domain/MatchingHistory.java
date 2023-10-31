@@ -35,4 +35,7 @@ public class MatchingHistory extends BaseTimeEntity {
 
   @Column(name = "is_approved")
   private Boolean isApproved;
+
+  @Column(name = "is_retry")
+  private Boolean isRetry;
 }

@@ -72,7 +72,7 @@ public class MatchingHistoryService {
     }
   }
 
-  public Boolean getMatchingApprovedByBlindDate(BlindDate blindDate) {
+  public MatchingHistory getMatchingHistoryByBlindDate(BlindDate blindDate) {
     MatchingHistory matchingHistory;
     
     if (StringUtils.equals(blindDate.getGender(), "M")) {
@@ -84,6 +84,6 @@ public class MatchingHistoryService {
         .orElseThrow(() -> new MatchingNotFoundException(BlindDateResponseCode.MATCHING_READ_FAIL));
     }
 
-    return matchingHistory.getIsApproved();
+    return matchingHistory;
   }
 }

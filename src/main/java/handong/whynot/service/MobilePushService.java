@@ -136,4 +136,15 @@ public class MobilePushService {
 
     eventPublisher.publishEvent(event);
   }
+
+  public void pushIsRetriedByMatching(List<Account> accountList) {
+    NotificationEvent event = NotificationEvent.builder()
+      .accountList(accountList)
+      .url("")   // todo: 프론트 주소 나오면 채우기
+      .title(("[한대소] 재매칭 진행 대상자 알림 😥"))
+      .body("상대방이 재매칭 신청을 요청하여, 24시간 후 새로운 매칭 대상자와 매칭될 예정입니다.")
+      .build();
+
+    eventPublisher.publishEvent(event);
+  }
 }

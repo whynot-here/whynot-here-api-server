@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -165,6 +166,7 @@ public class BlindDateService {
       .femaleId(femaleId)
       .season(male.getSeason())
       .isApproved(false)
+      .isRetry(false)
       .build();
     matchingHistoryRepository.save(history);
   }
@@ -279,21 +281,41 @@ public class BlindDateService {
     BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
       .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
 
-    return matchingHistoryService.getMatchingApprovedByBlindDate(blindDate);
+    MatchingHistory matchingHistory = matchingHistoryService.getMatchingHistoryByBlindDate(blindDate);
+    return matchingHistory.getIsApproved();
   }
 
   @Transactional
   public void applyRetryBySeason(Account account, Integer season, String reason) {
     BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
       .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
-
-    blindDate.setIsRetry(true);
     blindDate.setRetryReason(reason);
 
-    // 매칭 결과 노출 여부 False
+    BlindDate matched = blindDateRepository.findById(blindDate.getMatchingBlindDateId())
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    // 상태 업데이트
+    updateRetryState(blindDate);   // 본인
+    updateRetryState(matched);     // 상대방
+
+    // 매칭 내역 재매칭으로 수정
+    MatchingHistory matchingHistory = matchingHistoryService.getMatchingHistoryByBlindDate(blindDate);
+    matchingHistory.setIsRetry(true);
+
+    // 상대방 재매칭 대상자 안내 (푸시 알림)
+    List<Account> accountList = Collections.singletonList(matched.getAccount());
+    mobilePushService.pushIsRetriedByMatching(accountList);
+  }
+
+  private void updateRetryState(BlindDate blindDate) {
+    // 1. isRetry True 로 업데이트
+    blindDate.setIsRetry(true);
+
+    // 2. 매칭 결과 노출 False
     blindDate.setIsReveal(false);
 
-    // todo: 상대방 재매칭 처리, 푸시 알림
+    // 3. 매칭 대상자 초기화
+    blindDate.setMatchingBlindDateId(null);
   }
 
   public Boolean getIsRetryBySeason(Account account, Integer season) {
