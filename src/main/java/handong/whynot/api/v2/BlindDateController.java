@@ -161,4 +161,14 @@ public class BlindDateController {
 
     return blindDateService.getIsRetryBySeason(account, season);
   }
+
+  @Operation(summary = "비매너 신고")
+  @PutMapping("/manners")
+  public ResponseDTO reportMannersBySeason(@RequestParam Integer season,
+                                           @RequestBody MannerReportRequestDTO request) {
+    Account account = accountService.getCurrentAccount();
+    blindDateService.reportManners(account, season, request);
+
+    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_REPORT_MANNERS_OK);
+  }
 }

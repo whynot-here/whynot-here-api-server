@@ -324,4 +324,16 @@ public class BlindDateService {
 
     return blindDate.getIsRetry();
   }
+
+  @Transactional
+  public void reportManners(Account account, Integer season, MannerReportRequestDTO request) {
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    blindDate.setMannersReason(request.getReason());
+    blindDate.setMannersReasonDesc(request.getReasonDesc());
+
+    // todo: 상대방 비매너 신고 안내 (푸시 알림)
+    // 1안) 신고내용을 관리자에게 알림 보낸다,  2안) 신고내용을 상대방에게 알림 보낸다
+  }
 }
