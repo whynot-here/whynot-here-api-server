@@ -1,6 +1,7 @@
 package handong.whynot.api.v2;
 
 import handong.whynot.domain.Account;
+import handong.whynot.domain.FriendMatchingHistory;
 import handong.whynot.domain.StudentAuth;
 import handong.whynot.dto.account.AdminApproveRequestDTO;
 import handong.whynot.dto.account.StudentAuthRequestDTO;
@@ -38,6 +39,7 @@ public class AdminController {
     private final BlindDateService blindDateService;
     private final MatchingHistoryService matchingHistoryService;
     private final FriendMeetingService friendMeetingService;
+    private final FriendMatchingHistoryService friendMatchingHistoryService;
 
     @Operation(summary = "사용자 후기 등록")
     @PostMapping("/admin/feedback")
@@ -210,5 +212,12 @@ public class AdminController {
         friendMeetingService.createFriendMeetingMatching(request.getFriend1(), request.getFriend2());
 
         return ResponseDTO.of(FriendMeetingResponseCode.MATCHING_CREATED_OK);
+    }
+
+    @Operation(summary = "친구 만남 매칭 리스트 조회")
+    @GetMapping("/admin/friend-matching")
+    public List<AdminFriendMatchingResponseDTO> getFriendMatchingListBySeason(@RequestParam Integer season) {
+
+        return friendMatchingHistoryService.getFriendMatchingListBySeason(season);
     }
 }
