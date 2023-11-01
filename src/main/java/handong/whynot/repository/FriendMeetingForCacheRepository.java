@@ -1,6 +1,6 @@
 package handong.whynot.repository;
 
-import handong.whynot.domain.BlindDate;
+import handong.whynot.domain.FriendMeeting;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -10,16 +10,16 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class BlindDateForCacheRepository {
+public class FriendMeetingForCacheRepository {
 
-  private final BlindDateRepository blindDateRepository;
+  private final FriendMeetingRepository friendMeetingRepository;
 
-  @Cacheable(value="MatchedAccountList", key="'MatchedAccountList'")
+  @Cacheable(value="FriendMatchedAccountList", key="'FriendMatchedAccountList'")
   public List<Long> getMatchedAccountListByCache(Integer season) {
-    List<BlindDate> blindDateList = blindDateRepository.findAllBySeason(season);
+    List<FriendMeeting> friendMeetingList = friendMeetingRepository.findAllBySeason(season);
 
-    return blindDateList.stream()
-      .filter(BlindDate::getIsReveal)
+    return friendMeetingList.stream()
+      .filter(FriendMeeting::getIsReveal)
       .map(it -> it.getAccount().getId())
       .collect(Collectors.toList());
   }

@@ -4,8 +4,10 @@ import handong.whynot.domain.*;
 import handong.whynot.dto.account.AccountResponseCode;
 import handong.whynot.dto.admin.AdminBlindDateResponseDTO;
 import handong.whynot.dto.blind_date.*;
+import handong.whynot.dto.friend_meeting.FriendMeetingResponseCode;
 import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.blind_date.*;
+import handong.whynot.exception.friend_meeting.FriendMeetingDuplicatedException;
 import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +34,7 @@ public class BlindDateService {
   private final BlindDateSummaryRepository blindDateSummaryRepository;
   private final BlindDateFeeRepository blindDateFeeRepository;
   private final BlindDateImageLinkRepository blindDateImageLinkRepository;
+  private final FriendMeetingRepository friendMeetingRepository;
 
   @Transactional
   public void createBlindDate(Integer season, Account account) {
@@ -228,6 +231,11 @@ public class BlindDateService {
       throw new BlindDateFeeDuplicatedException(BlindDateResponseCode.BLIND_DATE_FEE_DUPLICATED);
     }
 
+    // 친구 만남 신청한 내역이 있는지 확인
+    if (isDuplicatedFriendMeeting(account, dto.getSeason())) {
+      throw new FriendMeetingDuplicatedException(FriendMeetingResponseCode.FRIEND_MEETING_DUPLICATED);
+    }
+
     BlindDateFee dateFee = BlindDateFee.of(account.getId(), dto);
     blindDateFeeRepository.save(dateFee);
   }
@@ -235,6 +243,11 @@ public class BlindDateService {
   private Boolean isDuplicatedBlindDateFee(Account account, Integer season) {
     Optional<BlindDateFee> blindDateFee = blindDateFeeRepository.findByAccountIdAndSeasonAndUseYn(account.getId(), season, "Y");
     return blindDateFee.isPresent();
+  }
+
+  private Boolean isDuplicatedFriendMeeting(Account account, Integer season) {
+    Optional<FriendMeeting> friendMeeting = friendMeetingRepository.findByAccountAndSeason(account, season);
+    return friendMeeting.isPresent();
   }
 
   public Boolean getFeeIsSubmitted(Account account, Integer season) {
