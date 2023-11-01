@@ -13,6 +13,8 @@ import handong.whynot.dto.blind_date.BlindDateFeeResponseDTO;
 import handong.whynot.dto.blind_date.BlindDateResponseCode;
 import handong.whynot.dto.blind_date.MatchingRequestDTO;
 import handong.whynot.dto.common.ResponseDTO;
+import handong.whynot.dto.friend_meeting.FriendMatchingRequestDTO;
+import handong.whynot.dto.friend_meeting.FriendMeetingResponseCode;
 import handong.whynot.dto.mobile.CustomPushRequestDTO;
 import handong.whynot.service.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,6 +37,7 @@ public class AdminController {
     private final AccusationService accusationService;
     private final BlindDateService blindDateService;
     private final MatchingHistoryService matchingHistoryService;
+    private final FriendMeetingService friendMeetingService;
 
     @Operation(summary = "사용자 후기 등록")
     @PostMapping("/admin/feedback")
@@ -199,5 +202,13 @@ public class AdminController {
         blindDateService.noticeRetryBySeason(season);
 
         return ResponseDTO.of(BlindDateResponseCode.MATCHING_NOTICE_OK);
+    }
+
+    @Operation(summary = "친구 만남 매칭 생성")
+    @PostMapping("/admin/friend-matching")
+    public ResponseDTO createFriendMeetingMatching(@RequestBody FriendMatchingRequestDTO request) {
+        friendMeetingService.createFriendMeetingMatching(request.getFriend1(), request.getFriend2());
+
+        return ResponseDTO.of(FriendMeetingResponseCode.MATCHING_CREATED_OK);
     }
 }

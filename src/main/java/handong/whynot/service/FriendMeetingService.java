@@ -30,6 +30,7 @@ public class FriendMeetingService {
   private final AccountRepository accountRepository;
   private final MobilePushService mobilePushService;
   private final BlindDateFeeRepository blindDateFeeRepository;
+  private final FriendMatchingHistoryRepository friendMatchingHistoryRepository;
 
   @Transactional
   public void createFriendMeeting(FriendMeetingRequestDTO request, Account account) {
@@ -148,5 +149,31 @@ public class FriendMeetingService {
 
     // todo: 상대방 비매너 신고 안내 (푸시 알림)
     // 1안) 신고내용을 관리자에게 알림 보낸다,  2안) 신고내용을 상대방에게 알림 보낸다
+  }
+
+  public void createFriendMeetingMatching(Long friend1, Long friend2) {
+    FriendMeeting friendMeeting1 = friendMeetingRepository.findById(friend1)
+      .orElseThrow(() -> new FriendMeetingNotFoundException(FriendMeetingResponseCode.FRIEND_MEETING_READ_FAIL));
+
+    FriendMeeting friendMeeting2 = friendMeetingRepository.findById(friend2)
+      .orElseThrow(() -> new FriendMeetingNotFoundException(FriendMeetingResponseCode.FRIEND_MEETING_READ_FAIL));
+
+    // 이미 매칭이 된 경우
+    if (Objects.nonNull(friendMeeting1.getMatchingFriendMeetingId()) ||
+      Objects.nonNull(friendMeeting2.getMatchingFriendMeetingId())
+    ) {
+      throw new InvalidMatchingException(BlindDateResponseCode.MATCHING_INVALID);
+    }
+
+    // 매칭 업데이트
+    friendMeeting1.updateMatchingFriendMeeting(friend2);
+    friendMeeting2.updateMatchingFriendMeeting(friend1);
+
+    FriendMatchingHistory history = FriendMatchingHistory.builder()
+      .friendId1(friend1)
+      .friendId2(friend2)
+      .season(friendMeeting1.getSeason())
+      .build();
+    friendMatchingHistoryRepository.save(history);
   }
 }
