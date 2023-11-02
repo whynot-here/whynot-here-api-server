@@ -220,4 +220,27 @@ public class AdminController {
 
         return friendMatchingHistoryService.getFriendMatchingListBySeason(season);
     }
+
+    @Operation(summary = "친구 만남 신청자 리스트 조회")
+    @GetMapping("/admin/friend-meeting")
+    public List<AdminFriendMeetingResponseDTO> getFriendMeetingListBySeason(@RequestParam Integer season) {
+
+        return friendMeetingService.getFriendMeetingListBySeason(season);
+    }
+
+    @Operation(summary = "친구 만남 매칭 삭제")
+    @DeleteMapping("/admin/friend-matching/{matchingId}")
+    public ResponseDTO deleteFriendMatching(@PathVariable Long matchingId) {
+        friendMatchingHistoryService.deleteFriendMatching(matchingId);
+
+        return ResponseDTO.of(FriendMeetingResponseCode.MATCHING_DELETED_OK);
+    }
+
+    @Operation(summary = "친구 만남 매칭 상대방 정보 일괄 발송")
+    @PostMapping("/admin/friend-matching/announce-partner-info")
+    public ResponseDTO noticeFriendMatchingInfoBySeason(@RequestParam Integer season) {
+        friendMeetingService.noticeFriendMatchingInfoBySeason(season);
+
+        return ResponseDTO.of(FriendMeetingResponseCode.MATCHING_NOTICE_OK);
+    }
 }

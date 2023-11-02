@@ -2,6 +2,8 @@ package handong.whynot.service;
 
 import handong.whynot.domain.*;
 import handong.whynot.dto.account.AccountResponseCode;
+import handong.whynot.dto.admin.AdminBlindDateResponseDTO;
+import handong.whynot.dto.admin.AdminFriendMeetingResponseDTO;
 import handong.whynot.dto.blind_date.*;
 import handong.whynot.dto.friend_meeting.FriendMeetingRequestDTO;
 import handong.whynot.dto.friend_meeting.FriendMeetingResponseCode;
@@ -99,34 +101,6 @@ public class FriendMeetingService {
     return FriendMeetingResponseDTO.of(matchedFriendMeeting, matchedAccount.getProfileImg(), friendMeeting.getName());
   }
 
-  public void noticeMatchingInfoBySeason(Integer season) {
-    List<FriendMeeting> friendMeetingList = friendMeetingRepository.findAllBySeason(season);
-    noticeResult(friendMeetingList);
-  }
-
-  private void noticeResult(List<FriendMeeting> friendMeetingList) {
-    // 사용자 매칭 결과 노출 ON
-    for (FriendMeeting friendMeeting : friendMeetingList) {
-      friendMeeting.setIsReveal(true);
-    }
-
-    // 매칭 성공 사용자 push
-    List<Account> accountSuccessList = friendMeetingList.stream()
-      .filter(it -> Objects.nonNull(it.getMatchingFriendMeetingId()))
-      .map(FriendMeeting::getAccount)
-      .collect(Collectors.toList());
-
-    mobilePushService.pushMatchingSuccess(accountSuccessList);
-
-    // 매칭 실패한 사용자 push
-    List<Account> accountFailList = friendMeetingList.stream()
-      .filter(it -> Objects.isNull(it.getMatchingFriendMeetingId()))
-      .map(FriendMeeting::getAccount)
-      .collect(Collectors.toList());
-
-    mobilePushService.pushMatchingFail(accountFailList);
-  }
-
   public Boolean getIsRevealResultBySeason(Integer season, Account account) {
     List<Long> accountList = friendMeetingForCacheRepository.getMatchedAccountListByCache(season);
 
@@ -175,5 +149,40 @@ public class FriendMeetingService {
       .season(friendMeeting1.getSeason())
       .build();
     friendMatchingHistoryRepository.save(history);
+  }
+
+  public List<AdminFriendMeetingResponseDTO> getFriendMeetingListBySeason(Integer season) {
+
+    return friendMeetingRepository.findAllBySeason(season).stream()
+      .map(AdminFriendMeetingResponseDTO::of)
+      .collect(Collectors.toList());
+  }
+
+  public void noticeFriendMatchingInfoBySeason(Integer season) {
+    List<FriendMeeting> friendMeetingList = friendMeetingRepository.findAllBySeason(season);
+    noticeResult(friendMeetingList);
+  }
+
+  private void noticeResult(List<FriendMeeting> friendMeetingList) {
+    // 사용자 매칭 결과 노출 ON
+    for (FriendMeeting friendMeeting : friendMeetingList) {
+      friendMeeting.setIsReveal(true);
+    }
+
+    // 매칭 성공 사용자 push
+    List<Account> accountSuccessList = friendMeetingList.stream()
+      .filter(it -> Objects.nonNull(it.getMatchingFriendMeetingId()))
+      .map(FriendMeeting::getAccount)
+      .collect(Collectors.toList());
+
+    mobilePushService.pushMatchingSuccess(accountSuccessList);
+
+    // 매칭 실패한 사용자 push
+    List<Account> accountFailList = friendMeetingList.stream()
+      .filter(it -> Objects.isNull(it.getMatchingFriendMeetingId()))
+      .map(FriendMeeting::getAccount)
+      .collect(Collectors.toList());
+
+    mobilePushService.pushMatchingFail(accountFailList);
   }
 }
