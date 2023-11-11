@@ -178,7 +178,8 @@ public class AdminController {
     @Operation(summary = "관리자 보증금 납부 확인")
     @PutMapping("/admin/blind-date/fee/{feeId}")
     public ResponseDTO approveBlindDateFeeBySeason(@PathVariable Long feeId, @RequestParam Integer season) {
-        adminService.approveBlindDateFee(feeId, season);
+        Account account = accountService.getCurrentAccount();
+        adminService.approveBlindDateFee(feeId, season, account);
 
         return ResponseDTO.of(AdminResponseCode.ADMIN_APPROVE_BLIND_DATE_FEE_OK);
     }

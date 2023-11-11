@@ -41,6 +41,9 @@ public class BlindDateFee extends BaseTimeEntity {
   @Column(name = "use_yn")
   private String useYn;
 
+  @Column(name = "approver")
+  private String approver;
+
   public static BlindDateFee of(Long accountId, BlindDateFeeRequestDTO dto) {
     return builder()
       .accountId(accountId)
@@ -57,7 +60,8 @@ public class BlindDateFee extends BaseTimeEntity {
     useYn = "N";
   }
 
-  public void approveBlindDateFee() {
+  public void approveBlindDateFee(String email) {
     isSubmitted = true;
+    approver = email;
   }
 }

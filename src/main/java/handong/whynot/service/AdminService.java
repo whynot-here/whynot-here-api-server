@@ -132,12 +132,12 @@ public class AdminService {
   }
 
   @Transactional
-  public void approveBlindDateFee(Long feeId, Integer season) {
+  public void approveBlindDateFee(Long feeId, Integer season, Account approver) {
     // 1. is_submitted true 업데이트
     BlindDateFee blindDateFee = blindDateFeeRepository.findById(feeId)
       .orElseThrow(() -> new BlindDateFeeNotFoundException(BlindDateResponseCode.BLIND_DATE_FEE_READ_FAIL));
 
-    blindDateFee.approveBlindDateFee();
+    blindDateFee.approveBlindDateFee(approver.getEmail());
 
     // 2. blind_date 생성
     Account account = accountRepository.findById(blindDateFee.getAccountId())
