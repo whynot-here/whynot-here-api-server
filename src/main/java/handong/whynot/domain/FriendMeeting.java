@@ -49,9 +49,6 @@ public class FriendMeeting extends BaseTimeEntity {
   @Column(name = "my_age")
   private Integer myAge;
 
-  @Column(name = "my_height")
-  private Integer myHeight;
-
   @Column(name = "my_smoke")
   private String mySmoke;
 
@@ -70,8 +67,11 @@ public class FriendMeeting extends BaseTimeEntity {
   @Column(name = "my_hobby_desc")
   private String myHobbyDesc;
 
-  @Column(name = "comment")
-  private String comment;
+  @Column(name = "comment_for_mate")
+  private String commentForMate;
+
+  @Column(name = "comment_for_admin")
+  private String commentForAdmin;
 
   @Column(name = "kakao_link")
   private String kakaoLink;
@@ -81,6 +81,9 @@ public class FriendMeeting extends BaseTimeEntity {
 
   @Column(name = "manners_reason_desc")
   private String mannersReasonDesc;
+
+  @Column(name = "department")
+  private String department;
 
   public static FriendMeeting of(FriendMeetingRequestDTO request, Account account) {
     return builder()
@@ -95,15 +98,16 @@ public class FriendMeeting extends BaseTimeEntity {
       .name(request.getName())
       .gender(request.getGender())
       .myAge(request.getMyAge())
-      .myHeight(request.getMyHeight())
       .mySmoke(request.getMySmoke())
       .myDrink(request.getMyDrink())
       .myLocation(request.getMyLocation())
       .myLocationDesc(request.getMyLocationDesc())
       .myHobby(request.getMyHobby())
       .myHobbyDesc(request.getMyHobbyDesc())
-      .comment(request.getComment())
+      .commentForMate(request.getCommentForMate())
+      .commentForAdmin(request.getCommentForAdmin())
       .kakaoLink(request.getKakaoLink())
+      .department(request.getDepartment())
       .build();
   }
 

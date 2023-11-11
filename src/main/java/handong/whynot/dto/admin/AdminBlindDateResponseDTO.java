@@ -32,7 +32,8 @@ public class AdminBlindDateResponseDTO {
   private String faith;
   private String mbti;
   private String smoke;
-  private String comment;
+  private String commentForMate;
+  private String commentForAdmin;
   private String kakaoLink;
   private String retryReason;
   private String mannersReason;
@@ -72,7 +73,8 @@ public class AdminBlindDateResponseDTO {
       .faith(blindDate.getFaith())
       .mbti(blindDate.getMbti())
       .smoke(blindDate.getSmoke())
-      .comment(blindDate.getComment())
+      .commentForMate(blindDate.getCommentForMate())
+      .commentForAdmin(blindDate.getCommentForAdmin())
       .kakaoLink(blindDate.getKakaoLink())
       .retryReason(blindDate.getRetryReason())
       .mannersReason(blindDate.getMannersReason())

@@ -31,7 +31,8 @@ public class BlindDateRequestDTO {
   private String faith;
   private String mbti;
   private String smoke;
-  private String comment;
+  private String commentForMate;
+  private String commentForAdmin;
   private String kakaoLink;
   private List<ExcludeCond> excludeCondList;
   private List<String> imageLinks;

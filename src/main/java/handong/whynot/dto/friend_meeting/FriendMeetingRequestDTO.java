@@ -15,13 +15,14 @@ public class FriendMeetingRequestDTO {
   private String name;
   private String gender;
   private Integer myAge;
-  private Integer myHeight;
   private String mySmoke;
   private String myDrink;
   private String myLocation;
   private String myLocationDesc;
   private String myHobby;
   private String myHobbyDesc;
-  private String comment;
+  private String commentForMate;
+  private String commentForAdmin;
   private String kakaoLink;
+  private String department;
 }

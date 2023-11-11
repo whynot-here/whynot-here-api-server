@@ -18,14 +18,15 @@ public class AdminFriendMeetingResponseDTO {
   private String name;
   private String gender;
   private Integer myAge;
-  private Integer myHeight;
+  private String department;
   private String mySmoke;
   private String myDrink;
   private String myLocation;
   private String myLocationDesc;
   private String myHobby;
   private String myHobbyDesc;
-  private String comment;
+  private String commentForMate;
+  private String commentForAdmin;
   private String kakaoLink;
   private String mannersReason;
   private String mannersReasonDesc;
@@ -39,14 +40,15 @@ public class AdminFriendMeetingResponseDTO {
       .name(friendMeeting.getName())
       .gender(friendMeeting.getGender())
       .myAge(friendMeeting.getMyAge())
-      .myHeight(friendMeeting.getMyHeight())
+      .department(friendMeeting.getDepartment())
       .mySmoke(friendMeeting.getMySmoke())
       .myDrink(friendMeeting.getMyDrink())
       .myLocation(friendMeeting.getMyLocation())
       .myLocationDesc(friendMeeting.getMyLocationDesc())
       .myHobby(friendMeeting.getMyHobby())
       .myHobbyDesc(friendMeeting.getMyHobbyDesc())
-      .comment(friendMeeting.getComment())
+      .commentForMate(friendMeeting.getCommentForMate())
+      .commentForAdmin(friendMeeting.getCommentForAdmin())
       .kakaoLink(friendMeeting.getKakaoLink())
       .mannersReason(friendMeeting.getMannersReason())
       .mannersReasonDesc(friendMeeting.getMannersReasonDesc())

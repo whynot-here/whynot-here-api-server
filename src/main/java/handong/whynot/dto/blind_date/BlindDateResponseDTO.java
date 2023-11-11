@@ -20,7 +20,7 @@ public class BlindDateResponseDTO {
   private String faith;
   private String mbti;
   private String smoke;
-  private String comment;
+  private String commentForMate;
   private String kakaoLink;
   private String profileImg;
   private String myName;
@@ -36,7 +36,7 @@ public class BlindDateResponseDTO {
       .faith(blindDate.getFaith())
       .mbti(blindDate.getMbti())
       .smoke(blindDate.getSmoke())
-      .comment(blindDate.getComment())
+      .commentForMate(blindDate.getCommentForMate())
       .kakaoLink(blindDate.getKakaoLink())
       .profileImg(profileImg)
       .myName(myName)

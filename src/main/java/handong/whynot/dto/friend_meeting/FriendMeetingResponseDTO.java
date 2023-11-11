@@ -17,14 +17,14 @@ public class FriendMeetingResponseDTO {
   private String name;
   private String gender;
   private Integer age;
-  private Integer height;
+  private String department;
   private String smoke;
   private String drink;
   private String location;
   private String locationDesc;
   private String hobby;
   private String hobbyDesc;
-  private String comment;
+  private String commentForMate;
   private String kakaoLink;
   private String profileImg;
 
@@ -34,13 +34,13 @@ public class FriendMeetingResponseDTO {
       .name(friendMeeting.getName())
       .gender(friendMeeting.getGender())
       .age(friendMeeting.getMyAge())
-      .height(friendMeeting.getMyHeight())
+      .department(friendMeeting.getDepartment())
       .location(friendMeeting.getMyLocation())
       .locationDesc(friendMeeting.getMyLocationDesc())
       .hobby(friendMeeting.getMyHobby())
       .hobbyDesc(friendMeeting.getMyHobbyDesc())
-      .comment(friendMeeting.getComment())
-      .kakaoLink(friendMeeting.getComment())
+      .commentForMate(friendMeeting.getCommentForMate())
+      .kakaoLink(friendMeeting.getKakaoLink())
       .profileImg(profileImg)
       .build();
   }

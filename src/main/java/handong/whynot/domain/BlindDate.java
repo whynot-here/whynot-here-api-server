@@ -91,8 +91,11 @@ public class BlindDate extends BaseTimeEntity {
   @Column(name = "smoke")
   private String smoke;
 
-  @Column(name = "comment")
-  private String comment;
+  @Column(name = "comment_for_mate")
+  private String commentForMate;
+
+  @Column(name = "comment_for_admin")
+  private String commentForAdmin;
 
   @Column(name = "kakao_link")
   private String kakaoLink;
@@ -177,7 +180,8 @@ public class BlindDate extends BaseTimeEntity {
     this.faith = request.getFaith();
     this.mbti = request.getMbti();
     this.smoke = request.getSmoke();
-    this.comment = request.getComment();
+    this.commentForMate = request.getCommentForMate();
+    this.commentForAdmin = request.getCommentForAdmin();
     this.kakaoLink = request.getKakaoLink();
 
     // =========== 선호하는 상대방 정보 ===========
