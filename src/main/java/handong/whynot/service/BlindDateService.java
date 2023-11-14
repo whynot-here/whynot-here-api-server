@@ -366,7 +366,9 @@ public class BlindDateService {
   public void updateBlindDateBaseMatching(Integer season) {
     blindDateMatchingHelperRepository.deleteAll();
 
-    List<BlindDate> dateList = blindDateRepository.findAllBySeason(season);
+    List<BlindDate> dateList = blindDateRepository.findAllBySeason(season).stream()
+      .filter(it -> it.getMatchingBlindDateId() == null)
+      .collect(Collectors.toList());
     List<BlindDate> femaleList = dateList.stream()
       .filter(it -> Objects.equals(it.getGender(), "F"))
       .collect(Collectors.toList());
