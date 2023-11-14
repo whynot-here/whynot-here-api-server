@@ -36,10 +36,13 @@ public class BlindDateRequestDTO {
   private String kakaoLink;
   private List<ExcludeCond> excludeCondList;
   private List<String> imageLinks;
+  private String department;
 
   // =========== 선호하는 상대방 정보 ===========
   private String favoriteAge;
+  private Boolean favoriteAgeImportant;
   private String favoriteHeight;
+  private Boolean favoriteHeightImportant;
   private String favoriteSmoke;
   private Boolean favoriteSmokeImportant;
   private String favoriteDrink;

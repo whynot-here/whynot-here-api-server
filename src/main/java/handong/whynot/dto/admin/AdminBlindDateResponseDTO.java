@@ -3,6 +3,8 @@ package handong.whynot.dto.admin;
 import handong.whynot.domain.BlindDate;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -38,9 +40,13 @@ public class AdminBlindDateResponseDTO {
   private String retryReason;
   private String mannersReason;
   private String mannersReasonDesc;
+  private String department;
+
   // =========== 선호하는 상대방 정보 ===========
   private String favoriteAge;
+  private Boolean favoriteAgeImportant;
   private String favoriteHeight;
+  private Boolean favoriteHeightImportant;
   private String favoriteSmoke;
   private Boolean favoriteSmokeImportant;
   private String favoriteDrink;
@@ -49,6 +55,7 @@ public class AdminBlindDateResponseDTO {
   private Boolean favoriteFaithImportant;
   private String favoriteLocation;
   private Boolean favoriteLocationImportant;
+  private List<Long> baseMatching;
 
   public static AdminBlindDateResponseDTO of(BlindDate blindDate) {
     return builder()
@@ -79,9 +86,12 @@ public class AdminBlindDateResponseDTO {
       .retryReason(blindDate.getRetryReason())
       .mannersReason(blindDate.getMannersReason())
       .mannersReasonDesc(blindDate.getMannersReasonDesc())
+      .department(blindDate.getDepartment())
       // =========== 선호하는 상대방 정보 ===========
       .favoriteAge(blindDate.getFavoriteAge())
+      .favoriteAgeImportant(blindDate.getFavoriteAgeImportant())
       .favoriteHeight(blindDate.getFavoriteHeight())
+      .favoriteHeightImportant(blindDate.getFavoriteHeightImportant())
       .favoriteSmoke(blindDate.getFavoriteSmoke())
       .favoriteSmokeImportant(blindDate.getFavoriteSmokeImportant())
       .favoriteDrink(blindDate.getFavoriteDrink())

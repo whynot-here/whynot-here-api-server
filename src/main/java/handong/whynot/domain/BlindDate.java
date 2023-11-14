@@ -109,12 +109,21 @@ public class BlindDate extends BaseTimeEntity {
   @Column(name = "manners_reason_desc")
   private String mannersReasonDesc;
 
+  @Column(name = "department")
+  private String department;
+
   // =========== 선호하는 상대방 정보 ===========
   @Column(name = "favorite_age")
   private String favoriteAge;
 
+  @Column(name = "favorite_age_important")
+  private Boolean favoriteAgeImportant;
+
   @Column(name = "favorite_height")
   private String favoriteHeight;
+
+  @Column(name = "favorite_height_important")
+  private Boolean favoriteHeightImportant;
 
   @Column(name = "favorite_smoke")
   private String favoriteSmoke;
@@ -183,10 +192,13 @@ public class BlindDate extends BaseTimeEntity {
     this.commentForMate = request.getCommentForMate();
     this.commentForAdmin = request.getCommentForAdmin();
     this.kakaoLink = request.getKakaoLink();
+    this.department = request.getDepartment();
 
     // =========== 선호하는 상대방 정보 ===========
     this.favoriteAge = request.getFavoriteAge();
+    this.favoriteAgeImportant = request.getFavoriteAgeImportant();
     this.favoriteHeight = request.getFavoriteHeight();
+    this.favoriteHeightImportant = request.getFavoriteHeightImportant();
     this.favoriteSmoke = request.getFavoriteSmoke();
     this.favoriteSmokeImportant = request.getFavoriteSmokeImportant();
     this.favoriteDrink = request.getFavoriteDrink();
