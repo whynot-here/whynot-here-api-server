@@ -14,10 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +32,7 @@ public class BlindDateService {
   private final BlindDateFeeRepository blindDateFeeRepository;
   private final BlindDateImageLinkRepository blindDateImageLinkRepository;
   private final FriendMeetingRepository friendMeetingRepository;
+  private final BlindDateMatchingHelperRepository blindDateMatchingHelperRepository;
 
   @Transactional
   public void createBlindDate(Integer season, Account account) {
@@ -175,11 +173,18 @@ public class BlindDateService {
   }
 
   public List<AdminBlindDateResponseDTO> getBlindDateListBySeason(Integer season) {
-    return blindDateRepository.findAllBySeason(season).stream()
+    List<AdminBlindDateResponseDTO> responseList = blindDateRepository.findAllBySeason(season).stream()
       .map(AdminBlindDateResponseDTO::of)
       .collect(Collectors.toList());
-  }
 
+    HashMap<Long, List<Long>> baseMap = getBlindDateBaseMatching(season);
+    List<Long> empty = new ArrayList<>();
+    for (AdminBlindDateResponseDTO blindDate : responseList) {
+      blindDate.setBaseMatching(baseMap.getOrDefault(blindDate.getBlindDateId(), empty));
+    }
+
+    return responseList;
+  }
 
   public void noticeMatchingInfoBySeason(Integer season) {
     List<BlindDate> blindDateList = blindDateRepository.findAllBySeason(season);
@@ -355,5 +360,87 @@ public class BlindDateService {
 
     // todo: 상대방 비매너 신고 안내 (푸시 알림)
     // 1안) 신고내용을 관리자에게 알림 보낸다,  2안) 신고내용을 상대방에게 알림 보낸다
+  }
+
+  @Transactional
+  public void updateBlindDateBaseMatching(Integer season) {
+    blindDateMatchingHelperRepository.deleteAll();
+
+    List<BlindDate> dateList = blindDateRepository.findAllBySeason(season);
+    List<BlindDate> femaleList = dateList.stream()
+      .filter(it -> Objects.equals(it.getGender(), "F"))
+      .collect(Collectors.toList());
+    List<BlindDate> maleList = dateList.stream()
+      .filter(it -> Objects.equals(it.getGender(), "M"))
+      .collect(Collectors.toList());
+
+    // 필수 조건 매핑 체크
+    for (BlindDate female : femaleList) {
+      List<Long> tmpList = new ArrayList<>();
+
+      for (BlindDate male : maleList) {
+        if (checkAvailableMatching(female, male) && checkAvailableMatching(male, female)) {
+          tmpList.add(male.getId());
+        }
+      }
+
+      List<BlindDateMatchingHelper> matchingList = new ArrayList<>();
+      for (Long id : tmpList) {
+        BlindDateMatchingHelper match = BlindDateMatchingHelper.builder()
+          .femaleId(female.getId())
+          .maleId(id)
+          .season(season)
+          .build();
+        matchingList.add(match);
+      }
+      blindDateMatchingHelperRepository.saveAll(matchingList);
+    }
+  }
+
+  private boolean checkAvailableMatching(BlindDate base, BlindDate matched) {
+    boolean goodMatching = true;
+
+    if (base.getFavoriteDrinkImportant()) {
+      if (Objects.equals(base.getFavoriteDrink(), "NEVER") &&
+        !Objects.equals(matched.getMyDrink(), "NEVER")) {
+        goodMatching = false;
+      }
+    }
+
+    if (base.getFavoriteFaithImportant()) {
+      if (Objects.equals(base.getFavoriteFaith(), "CHRISTIAN") &&
+        !Objects.equals(matched.getFaith(), "CHRISTIAN")) {
+        goodMatching = false;
+      }
+    }
+
+    if (base.getFavoriteLocationImportant()) {
+      if (Objects.equals(base.getFavoriteLocation(), "LONG_NO") &&
+        !Objects.equals(matched.getMyLocation(), "ETC")) {
+        goodMatching = false;
+      }
+    }
+
+    if (base.getFavoriteSmokeImportant()) {
+      if (! Objects.equals(base.getFavoriteSmoke(), matched.getSmoke())) {
+        goodMatching = false;
+      }
+    }
+
+    return goodMatching;
+  }
+
+  public HashMap<Long, List<Long>> getBlindDateBaseMatching(Integer season) {
+    HashMap<Long, List<Long>> matchingMap = new HashMap<>();
+    List<BlindDateMatchingHelper> matchingList = blindDateMatchingHelperRepository.findAllBySeason(season);
+
+    Map<Long, List<BlindDateMatchingHelper>> map = matchingList.stream()
+      .collect(Collectors.groupingBy(BlindDateMatchingHelper::getFemaleId));
+    for (Long id : map.keySet()) {
+      List<BlindDateMatchingHelper> match = map.get(id);
+      matchingMap.put(id, match.stream().map(BlindDateMatchingHelper::getMaleId).collect(Collectors.toList()));
+    }
+
+    return matchingMap;
   }
 }

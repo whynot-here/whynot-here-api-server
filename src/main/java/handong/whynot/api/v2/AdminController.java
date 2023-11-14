@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -243,5 +244,20 @@ public class AdminController {
         friendMeetingService.noticeFriendMatchingInfoBySeason(season);
 
         return ResponseDTO.of(FriendMeetingResponseCode.MATCHING_NOTICE_OK);
+    }
+
+    @Operation(summary = "기본 조건 기반 매핑")
+    @PostMapping("/admin/blind-date/matching-helping")
+    public ResponseDTO updateBlindDateBaseMatchingBySeason(@RequestParam Integer season) {
+
+        blindDateService.updateBlindDateBaseMatching(season);
+        return ResponseDTO.of(AdminResponseCode.ADMIN_BASE_MATCHING_OK);
+    }
+
+    @Operation(summary = "기본 매핑 조회")
+    @GetMapping("/admin/blind-date/matching-helping")
+    public HashMap<Long, List<Long>> getBlindDateBaseMatchingBySeason(@RequestParam Integer season) {
+
+        return blindDateService.getBlindDateBaseMatching(season);
     }
 }

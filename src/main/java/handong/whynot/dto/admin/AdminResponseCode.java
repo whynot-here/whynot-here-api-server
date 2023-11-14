@@ -15,6 +15,7 @@ public enum AdminResponseCode implements ResponseCode {
     ADMIN_DELETE_BLIND_DATE_FEE_OK(20006, "보증금 납부 내역 삭제에 성공하였습니다."),
     ADMIN_APPROVE_BLIND_DATE_FEE_OK(20007, "보증금 납부를 관리자가 확인하였습니다."),
     ADMIN_APPROVE_MATCHING_IMAGE_OK(20008, "만남 인증을 관리자가 승인하였습니다."),
+    ADMIN_BASE_MATCHING_OK(20009, "기본 조건 매칭을 업데이트하였습니다."),
     NOT_VALID_CONSTRAINT(40001, "[입력조건] 검증에 실패하였습니다."),
     STUDENT_AUTH_NOT_FOUND(40002, "학생증 요청 [조회]에 실패하였습니다.");
 
