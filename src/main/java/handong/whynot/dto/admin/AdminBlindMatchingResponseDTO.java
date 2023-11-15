@@ -21,6 +21,10 @@ public class AdminBlindMatchingResponseDTO {
   private Integer season;
   private Long maleId;
   private Long femaleId;
+  private String maleImageLink;
+  private String femaleImageLink;
+  private Boolean isApproved;
+  private String approver;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN, timezone = "Asia/Seoul")
   @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -33,6 +37,10 @@ public class AdminBlindMatchingResponseDTO {
       .season(history.getSeason())
       .maleId(history.getMaleId())
       .femaleId(history.getFemaleId())
+      .maleImageLink(history.getMaleImageLink())
+      .femaleImageLink(history.getFemaleImageLink())
+      .isApproved(history.getIsApproved())
+      .approver(history.getApprover())
       .createdDt(history.getCreatedDt())
       .build();
   }

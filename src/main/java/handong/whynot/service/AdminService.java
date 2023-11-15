@@ -158,11 +158,12 @@ public class AdminService {
   }
 
   @Transactional
-  public void approveMatchingImage(Long matchingId) {
+  public void approveMatchingImage(Long matchingId, Account account) {
     MatchingHistory matchingHistory = matchingHistoryRepository.findById(matchingId)
       .orElseThrow(() -> new MatchingNotFoundException(BlindDateResponseCode.MATCHING_READ_FAIL));
 
     matchingHistory.setIsApproved(true);
+    matchingHistory.setApprover(account.getEmail());
 
     // 푸시 알림
     List<Account> accountList = new ArrayList<>();

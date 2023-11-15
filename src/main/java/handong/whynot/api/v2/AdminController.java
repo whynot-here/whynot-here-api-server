@@ -195,7 +195,8 @@ public class AdminController {
     @Operation(summary = "관리자 만남 인증 승인")
     @PutMapping("/admin/blind-date/matching/image/{matchingId}")
     public ResponseDTO approveMatchingImage(@PathVariable Long matchingId) {
-        adminService.approveMatchingImage(matchingId);
+        Account account = accountService.getCurrentAccount();
+        adminService.approveMatchingImage(matchingId, account);
 
         return ResponseDTO.of(AdminResponseCode.ADMIN_APPROVE_MATCHING_IMAGE_OK);
     }
