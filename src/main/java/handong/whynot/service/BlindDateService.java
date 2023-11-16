@@ -69,9 +69,16 @@ public class BlindDateService {
     excludeCondRepository.deleteAllByBlindDate(blindDate);
 
     List<ExcludeCond> excludeConds = excludeCondList.stream()
+      .filter(this::isNotEmptyCond)
       .peek(it -> it.setBlindDate(blindDate))
       .collect(Collectors.toList());
     excludeCondRepository.saveAll(excludeConds);
+  }
+
+  private boolean isNotEmptyCond(ExcludeCond cond) {
+    return StringUtils.isNotBlank(cond.getName()) ||
+      StringUtils.isNotBlank(cond.getDepartment()) ||
+      StringUtils.isNotBlank(cond.getStudentId());
   }
 
   private void saveImageLinks(Account account, BlindDate blindDate, List<String> links) {
