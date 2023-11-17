@@ -2,7 +2,6 @@ package handong.whynot.repository;
 
 import handong.whynot.domain.Account;
 import handong.whynot.domain.BlindDate;
-import handong.whynot.dto.blind_date.BlindDateResponseDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

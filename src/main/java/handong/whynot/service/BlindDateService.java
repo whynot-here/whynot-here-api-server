@@ -104,7 +104,7 @@ public class BlindDateService {
     return blindDateFeeRepository.existsByAccountIdAndSeasonAndUseYn(account.getId(), season, "Y");
   }
 
-  public BlindDateResponseDTO getMatchingResultBySeason(Integer season, Account account) {
+  public BlindDateMatchingResponseDTO getMatchingResultBySeason(Integer season, Account account) {
     // 소개팅 지원 확인
     BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
       .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
@@ -131,7 +131,7 @@ public class BlindDateService {
     Account matchedAccount = accountRepository.findById(matchedBlindDate.getAccount().getId())
       .orElseThrow(() -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
 
-    return BlindDateResponseDTO.of(matchedBlindDate, matchedAccount.getProfileImg(), blindDate.getName());
+    return BlindDateMatchingResponseDTO.of(matchedBlindDate, matchedAccount.getProfileImg(), blindDate.getName());
   }
 
   @Transactional
@@ -451,5 +451,28 @@ public class BlindDateService {
     }
 
     return matchingMap;
+  }
+
+  public BlindDateStepResponseDTO getSteps(Account account, Integer season) {
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    return BlindDateStepResponseDTO.builder()
+      .myStep(blindDate.getMyStep())
+      .favoriteStep(blindDate.getFavoriteStep())
+      .build();
+  }
+
+  public BlindDateResponseDTO getMyApply(Account account, Integer season) {
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+    BlindDateResponseDTO response = BlindDateResponseDTO.of(blindDate);
+
+    List<String> images = blindDateImageLinkRepository.findAllByBlindDate(blindDate).stream()
+      .map(BlindDateImageLink::getLink)
+      .collect(Collectors.toList());
+    response.setImageLinks(images);
+
+    return response;
   }
 }

@@ -14,6 +14,8 @@ public class BlindDateRequestDTO {
 
   // =========== 메타 정보 ===========
   private Integer season;
+  private Integer myStep;
+  private Integer favoriteStep;
 
   // =========== 내 정보 ===========
   private String name;

@@ -64,7 +64,7 @@ public class BlindDateController {
 
   @Operation(summary = "매칭 후 상대방 정보 조회")
   @GetMapping("/matching-result")
-  public BlindDateResponseDTO getMatchingResultBySeason(@RequestParam Integer season) {
+  public BlindDateMatchingResponseDTO getMatchingResultBySeason(@RequestParam Integer season) {
     Account account = accountService.getCurrentAccount();
     return blindDateService.getMatchingResultBySeason(season, account);
   }
@@ -178,5 +178,21 @@ public class BlindDateController {
     blindDateService.reportManners(account, season, request);
 
     return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_REPORT_MANNERS_OK);
+  }
+
+  @Operation(summary = "정보 입력 단계 조회 (본인, 상대방)")
+  @GetMapping("/steps")
+  public BlindDateStepResponseDTO getStepsBySeason(@RequestParam Integer season) {
+
+    Account account = accountService.getCurrentAccount();
+    return blindDateService.getSteps(account, season);
+  }
+
+  @Operation(summary = "본인 입력 정보 조회")
+  @GetMapping("/my-apply")
+  public BlindDateResponseDTO getMyApplyBySeason(@RequestParam Integer season) {
+
+    Account account = accountService.getCurrentAccount();
+    return blindDateService.getMyApply(account, season);
   }
 }

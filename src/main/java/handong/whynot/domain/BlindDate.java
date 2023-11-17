@@ -41,6 +41,12 @@ public class BlindDate extends BaseTimeEntity {
   @Column(name = "is_retry")
   private Boolean isRetry;
 
+  @Column(name = "my_step")
+  private Integer myStep;
+
+  @Column(name = "favorite_step")
+  private Integer favoriteStep;
+
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "account_id")
   private Account account;
@@ -160,6 +166,8 @@ public class BlindDate extends BaseTimeEntity {
       .isSubmitted(false)
       .isRetry(false)
       .account(account)
+      .myStep(0)
+      .favoriteStep(0)
       .build();
   }
 
@@ -173,6 +181,10 @@ public class BlindDate extends BaseTimeEntity {
   }
 
   public void updateBlindDate(BlindDateRequestDTO request) {
+    // =========== 메타 정보 ===========
+    this.myStep = request.getMyStep();
+    this.favoriteStep = request.getFavoriteStep();
+
     // =========== 내 정보 ===========
     this.name = request.getName();
     this.gender = request.getGender();
