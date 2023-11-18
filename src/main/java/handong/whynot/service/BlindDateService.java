@@ -266,13 +266,13 @@ public class BlindDateService {
   public Boolean getFeeIsSubmitted(Account account, Integer season) {
 
     BlindDateFee blindDateFee = blindDateFeeRepository.findByAccountIdAndSeasonAndUseYn(account.getId(), season, "Y")
-      .orElseThrow(() -> new BlindDateFeeNotFoundException(BlindDateResponseCode.BLIND_DATE_FEE_READ_FAIL));
+      .orElseGet(BlindDateFee::new);
     return blindDateFee.getIsSubmitted();
   }
 
   public Boolean getBlindDateSubmitted(Account account, Integer season) {
     BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
-      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+      .orElseGet(BlindDate::new);
 
     return blindDate.getIsSubmitted();
   }

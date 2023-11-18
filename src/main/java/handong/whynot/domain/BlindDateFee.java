@@ -36,7 +36,7 @@ public class BlindDateFee extends BaseTimeEntity {
   private Integer season;
 
   @Column(name = "is_submitted")
-  private Boolean isSubmitted;
+  private Boolean isSubmitted = false;
 
   @Column(name = "use_yn")
   private String useYn;
