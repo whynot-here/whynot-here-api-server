@@ -127,11 +127,12 @@ public class BlindDateService {
       matchedBlindDate.setName(matchedBlindDate.getName().charAt(0) + "*" + matchedBlindDate.getName().substring(2));
     }
 
-    // 상대방 프로필 이미지 조회
-    Account matchedAccount = accountRepository.findById(matchedBlindDate.getAccount().getId())
-      .orElseThrow(() -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
+    // 상대방 이미지 조회
+    List<String> images = blindDateImageLinkRepository.findAllByBlindDate(matchedBlindDate).stream()
+      .map(BlindDateImageLink::getLink)
+      .collect(Collectors.toList());
 
-    return BlindDateMatchingResponseDTO.of(matchedBlindDate, matchedAccount.getProfileImg(), blindDate.getName());
+    return BlindDateMatchingResponseDTO.of(matchedBlindDate, blindDate.getName(), images);
   }
 
   @Transactional
