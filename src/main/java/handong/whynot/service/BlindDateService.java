@@ -474,6 +474,11 @@ public class BlindDateService {
       .collect(Collectors.toList());
     response.setImageLinks(images);
 
+    List<ExcludeCondResponseDTO> excludeCondList = excludeCondRepository.findAllByBlindDate(blindDate).stream()
+      .map(ExcludeCondResponseDTO::of)
+      .collect(Collectors.toList());
+    response.setExcludeCondList(excludeCondList);
+
     return response;
   }
 }

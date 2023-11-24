@@ -37,6 +37,7 @@ public class BlindDateResponseDTO {
   private String kakaoLink;
   private String department;
   private List<String> imageLinks;
+  private List<ExcludeCondResponseDTO> excludeCondList;
 
   // =========== 선호하는 상대방 정보 ===========
   private String favoriteAge;
