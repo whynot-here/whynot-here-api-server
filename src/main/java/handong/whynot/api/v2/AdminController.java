@@ -20,6 +20,7 @@ import handong.whynot.dto.mobile.CustomPushRequestDTO;
 import handong.whynot.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -153,6 +154,7 @@ public class AdminController {
     }
 
     @Operation(summary = "매칭 상대방 정보 일괄 발송")
+    @CacheEvict(value="MatchedAccountList", key="'MatchedAccountList'")
     @PostMapping("/admin/blind-matching/announce-partner-info")
     public ResponseDTO noticeMatchingInfoBySeason(@RequestParam Integer season) {
         blindDateService.noticeMatchingInfoBySeason(season);
