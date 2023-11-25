@@ -5,4 +5,5 @@ import lombok.Getter;
 @Getter
 public class StudentAuthRequestDTO {
   private String imgUrl;
+  private String backImgUrl;
 }

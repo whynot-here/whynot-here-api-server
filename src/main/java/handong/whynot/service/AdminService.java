@@ -53,11 +53,34 @@ public class AdminService {
   }
 
   @Transactional
+  public void requestStudentAuthWithKakao(StudentAuthRequestDTO dto, Account account) {
+
+    StudentAuth studentAuth = StudentAuth.builder()
+      .account(account)
+      .imgUrl(dto.getImgUrl())
+      .backImgUrl(dto.getBackImgUrl())
+      .isAuthenticated(false)
+      .build();
+
+    studentAuthRepository.save(studentAuth);
+
+    mobilePushService.pushAdminAuth(getAdminAccount(), getRequests(false).size());
+  }
+
+  @Transactional
   public void updateStudentAuth(StudentAuthRequestDTO dto, Account account) {
     StudentAuth studentAuth = studentAuthRepository.findByAccountId(account.getId())
       .orElseThrow(() -> new StudentAuthNotFoundException(AdminResponseCode.STUDENT_AUTH_NOT_FOUND));
 
     studentAuth.updateImageUrl(dto.getImgUrl());
+  }
+
+  @Transactional
+  public void updateStudentAuthWithKakao(StudentAuthRequestDTO dto, Account account) {
+    StudentAuth studentAuth = studentAuthRepository.findByAccountId(account.getId())
+      .orElseThrow(() -> new StudentAuthNotFoundException(AdminResponseCode.STUDENT_AUTH_NOT_FOUND));
+
+    studentAuth.updateImageUrlWithKakao(dto.getImgUrl(), dto.getBackImgUrl());
   }
 
   public StudentAuth getStudentImg(Account account) {

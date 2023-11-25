@@ -1,7 +1,6 @@
 package handong.whynot.api.v2;
 
 import handong.whynot.domain.Account;
-import handong.whynot.domain.FriendMatchingHistory;
 import handong.whynot.domain.StudentAuth;
 import handong.whynot.dto.account.AdminApproveRequestDTO;
 import handong.whynot.dto.account.StudentAuthRequestDTO;
@@ -53,7 +52,8 @@ public class AdminController {
         return ResponseDTO.of(AdminResponseCode.ADMIN_USER_FEEDBACK_CREATE_OK);
     }
 
-    @Operation(summary = "학생증 인증 요청")
+    @Deprecated
+    @Operation(summary = "학생증 인증 요청 (히즈넷)")
     @PostMapping("/student/request-auth")
     public ResponseDTO requestStudentAuth(@RequestBody StudentAuthRequestDTO dto) {
 
@@ -63,7 +63,8 @@ public class AdminController {
         return ResponseDTO.of(AdminResponseCode.STUDENT_REQUEST_AUTH_OK);
     }
 
-    @Operation(summary = "학생증 이미지 변경")
+    @Deprecated
+    @Operation(summary = "학생증 이미지 변경 (히즈넷)")
     @PutMapping("/student/request-auth")
     public ResponseDTO updateStudentAuth(@RequestBody StudentAuthRequestDTO dto) {
 
@@ -73,7 +74,8 @@ public class AdminController {
         return ResponseDTO.of(AdminResponseCode.STUDENT_UPDATE_IMAGE_OK);
     }
 
-    @Operation(summary = "본인 학생증 이미지 조회")
+    @Deprecated
+    @Operation(summary = "본인 학생증 이미지 조회 (히즈넷)")
     @GetMapping("/student/img")
     public StudentAuthResponseDTO getStudentImg() {
 
@@ -89,6 +91,49 @@ public class AdminController {
         return StudentAuthResponseDTO.builder()
           .accountId(account.getId())
           .imgUrl(authImg)
+          .isAuthenticated(isAuthenticated)
+          .build();
+    }
+
+    @Operation(summary = "학생증 인증 요청 (카카오톡 학생증)")
+    @PostMapping("/student/request-auth-kakao")
+    public ResponseDTO requestStudentAuthWithKakao(@RequestBody StudentAuthRequestDTO dto) {
+
+        Account account = accountService.getCurrentAccount();
+        adminService.requestStudentAuthWithKakao(dto, account);
+
+        return ResponseDTO.of(AdminResponseCode.STUDENT_REQUEST_AUTH_OK);
+    }
+
+    @Operation(summary = "학생증 이미지 변경 (카카오톡 학생증)")
+    @PutMapping("/student/request-auth-kakao")
+    public ResponseDTO updateStudentAuthWithKakao(@RequestBody StudentAuthRequestDTO dto) {
+
+        Account account = accountService.getCurrentAccount();
+        adminService.updateStudentAuthWithKakao(dto, account);
+
+        return ResponseDTO.of(AdminResponseCode.STUDENT_UPDATE_IMAGE_OK);
+    }
+    
+    @Operation(summary = "본인 학생증 이미지 조회 (카카오톡 학생증)")
+    @GetMapping("/student/img-kakao")
+    public StudentAuthResponseDTO getStudentImgWithKakao() {
+
+        Account account = accountService.getCurrentAccount();
+        StudentAuth auth = adminService.getStudentImg(account);
+        String authImg = null;
+        String backImg = null;
+        Boolean isAuthenticated = false;
+        if (auth != null) {
+            authImg = auth.getImgUrl();
+            backImg = auth.getBackImgUrl();
+            isAuthenticated = auth.getIsAuthenticated();
+        }
+
+        return StudentAuthResponseDTO.builder()
+          .accountId(account.getId())
+          .imgUrl(authImg)
+          .backImgUrl(backImg)
           .isAuthenticated(isAuthenticated)
           .build();
     }

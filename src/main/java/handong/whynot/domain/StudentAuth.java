@@ -26,6 +26,9 @@ public class StudentAuth extends BaseTimeEntity {
     @Column(name="img_url")
     private String imgUrl;
 
+    @Column(name="back_img_url")
+    private String backImgUrl;
+
     @Column(name="is_authenticated")
     private Boolean isAuthenticated;
 
@@ -37,6 +40,11 @@ public class StudentAuth extends BaseTimeEntity {
 
     public void updateImageUrl(String url) {
         this.imgUrl = url;
+    }
+
+    public void updateImageUrlWithKakao(String url, String backUrl) {
+        this.imgUrl = url;
+        this.backImgUrl = backUrl;
     }
 
     public void updateIsAuthenticated(String approver) {
