@@ -41,6 +41,15 @@ public class BlindDateController {
     return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_UPDATED_OK);
   }
 
+  @Operation(summary = "소개팅 지원 삭제")
+  @DeleteMapping
+  public ResponseDTO deleteBlindDateBySeason(@RequestParam Integer season) {
+
+    Account account = accountService.getCurrentAccount();
+    blindDateService.deleteBlindDateBySeason(account, season);
+
+    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_DELETED_OK);
+  }
 
   @Operation(summary = "소개팅 지원자 카운트 조회")
   @GetMapping("/total-cnt")

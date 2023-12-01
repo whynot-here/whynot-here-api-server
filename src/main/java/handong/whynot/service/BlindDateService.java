@@ -481,4 +481,18 @@ public class BlindDateService {
 
     return response;
   }
+
+  public void deleteBlindDateBySeason(Account account, Integer season) {
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    // 1. exclude cond 리스트 삭제
+    excludeCondRepository.deleteAllByBlindDate(blindDate);
+
+    // 2. blind_date_image_link 삭제
+    blindDateImageLinkRepository.deleteAllByBlindDate(blindDate);
+
+    // 3. blind_date 삭제
+    blindDateRepository.deleteById(blindDate.getId());
+  }
 }
