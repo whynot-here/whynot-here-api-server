@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static handong.whynot.dto.blind_date.enums.CharacterEnum.getCharacterEnum;
 import static handong.whynot.dto.blind_date.enums.ContactStyleEnum.getContactStyleEnum;
 import static handong.whynot.dto.blind_date.enums.DateStyleEnum.getDateStyleEnum;
 import static handong.whynot.dto.blind_date.enums.DepartmentEnum.getDepartmentEnum;
@@ -35,6 +36,7 @@ public class BlindDateMatchingResponseDTO {
   private String location;
   private List<String> hobbyList;
   private String contactStyle;
+  private List<String> characterList;
   private List<String> dateStyle;
   private String commentForMate;
   private String kakaoLink;
@@ -56,6 +58,9 @@ public class BlindDateMatchingResponseDTO {
       .map(it -> getHobbyEnum(it).getDesc())
       .collect(Collectors.toList());
     String contactStyle = getContactStyleEnum(blindDate.getMyContactStyle()).getDesc();
+    List<String> characters = Stream.of(blindDate.getMyCharacter().split(";"))
+      .map(it -> getCharacterEnum(it).getDesc())
+      .collect(Collectors.toList());
     List<String> dateStyles = Stream.of(blindDate.getDateStyle().split(";"))
       .map(it -> getDateStyleEnum(it).getDesc())
       .collect(Collectors.toList());
@@ -72,6 +77,7 @@ public class BlindDateMatchingResponseDTO {
       .location(location)
       .hobbyList(hobbies)
       .contactStyle(contactStyle)
+      .characterList(characters)
       .dateStyle(dateStyles)
       .commentForMate(blindDate.getCommentForMate())
       .kakaoLink(blindDate.getKakaoLink())

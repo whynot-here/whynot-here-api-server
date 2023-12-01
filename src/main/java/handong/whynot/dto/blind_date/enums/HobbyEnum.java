@@ -8,18 +8,18 @@ import java.util.Arrays;
 @Getter
 @RequiredArgsConstructor
 public enum HobbyEnum {
-  READING_BOOKS("독서")
-  , MUSIC("음악")
-  , COOKING("요리")
-  , GAME("게임")
-  , SPORTS("스포츠")
-  , HEALTH("헬스")
-  , TRAVELING("여행")
-  , DANCE("댄스")
-  , DRAWING("그림")
-  , BOARD_GAME("보드게임")
-  , RUNNING("러닝")
-  , NO("없음")
+  READING_BOOKS("📕 독서")
+  , MUSIC("🎸 음악")
+  , COOKING("🧑🏻‍🍳 요리")
+  , GAME("🎮 게임")
+  , SPORTS("⚽️ 스포츠")
+  , HEALTH("💪 헬스")
+  , TRAVELING("✈️ 여행")
+  , DANCE("🕺 댄스")
+  , DRAWING("🎨 그림")
+  , BOARD_GAME("🎲 보드게임")
+  , RUNNING("🏃 러닝")
+  , NO("😮 없음")
   , NOT_VALID("입력없음")
   ;
 
