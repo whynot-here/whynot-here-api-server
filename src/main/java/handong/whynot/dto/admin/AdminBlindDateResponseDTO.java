@@ -41,6 +41,8 @@ public class AdminBlindDateResponseDTO {
   private String mannersReason;
   private String mannersReasonDesc;
   private String department;
+  private String myJob;
+  private String myJobDesc;
 
   // =========== 선호하는 상대방 정보 ===========
   private String favoriteAge;
@@ -87,6 +89,8 @@ public class AdminBlindDateResponseDTO {
       .mannersReason(blindDate.getMannersReason())
       .mannersReasonDesc(blindDate.getMannersReasonDesc())
       .department(blindDate.getDepartment())
+      .myJob(blindDate.getMyJob())
+      .myJobDesc(blindDate.getMyJobDesc())
       // =========== 선호하는 상대방 정보 ===========
       .favoriteAge(blindDate.getFavoriteAge())
       .favoriteAgeImportant(blindDate.getFavoriteAgeImportant())

@@ -39,6 +39,8 @@ public class BlindDateRequestDTO {
   private List<ExcludeCond> excludeCondList;
   private List<String> imageLinks;
   private String department;
+  private String myJob;
+  private String myJobDesc;
 
   // =========== 선호하는 상대방 정보 ===========
   private String favoriteAge;

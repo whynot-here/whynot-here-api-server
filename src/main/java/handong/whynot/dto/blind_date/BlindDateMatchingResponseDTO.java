@@ -16,6 +16,7 @@ import static handong.whynot.dto.blind_date.enums.DepartmentEnum.getDepartmentEn
 import static handong.whynot.dto.blind_date.enums.DrinkEnum.getDrinkEnum;
 import static handong.whynot.dto.blind_date.enums.FaithEnum.getFaithEnum;
 import static handong.whynot.dto.blind_date.enums.HobbyEnum.getHobbyEnum;
+import static handong.whynot.dto.blind_date.enums.JobEnum.getJobEnum;
 import static handong.whynot.dto.blind_date.enums.LocationEnum.getLocationEnum;
 
 @Getter
@@ -42,6 +43,8 @@ public class BlindDateMatchingResponseDTO {
   private String kakaoLink;
   private List<String> imageLinks;
   private String myName;
+  private String myJob;
+  private String myJobDesc;
 
   public static BlindDateMatchingResponseDTO of(BlindDate blindDate, String myName, List<String> images) {
     String department = getDepartmentEnum(blindDate.getDepartment()).getDesc();
@@ -49,6 +52,7 @@ public class BlindDateMatchingResponseDTO {
     String faith = getFaithEnum(blindDate.getFaith()).getDesc();
     String drink = getDrinkEnum(blindDate.getMyDrink()).getDesc();
     String location = "";
+    String job = getJobEnum(blindDate.getMyJob()).getDesc();
     LocationEnum locationEnum = getLocationEnum(blindDate.getMyLocation());
     if (locationEnum.equals(LocationEnum.DORMITORY)) {
       location = blindDate.getMyLocationDesc() + locationEnum.getDesc();
@@ -83,6 +87,8 @@ public class BlindDateMatchingResponseDTO {
       .kakaoLink(blindDate.getKakaoLink())
       .imageLinks(images)
       .myName(myName)
+      .myJob(job)
+      .myJobDesc(blindDate.getMyJobDesc())
       .build();
   }
 }

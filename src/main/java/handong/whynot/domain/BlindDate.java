@@ -118,6 +118,12 @@ public class BlindDate extends BaseTimeEntity {
   @Column(name = "department")
   private String department;
 
+  @Column(name = "my_job")
+  private String myJob;
+
+  @Column(name = "my_job_desc")
+  private String myJobDesc;
+
   // =========== 선호하는 상대방 정보 ===========
   @Column(name = "favorite_age")
   private String favoriteAge;
@@ -205,6 +211,8 @@ public class BlindDate extends BaseTimeEntity {
     this.commentForAdmin = request.getCommentForAdmin();
     this.kakaoLink = request.getKakaoLink();
     this.department = request.getDepartment();
+    this.myJob = request.getMyJob();
+    this.myJobDesc = request.getMyJobDesc();
 
     // =========== 선호하는 상대방 정보 ===========
     this.favoriteAge = request.getFavoriteAge();

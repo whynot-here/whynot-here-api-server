@@ -12,6 +12,21 @@ public enum LocationEnum {
   , POHANG("포항")
   , ETC("그 외 지역")
   , NOT_VALID("입력없음")
+  , SEOUL("서울특별시")
+  , INCHEON("인천")
+  , GYEONGGI_NORTH("경기 북부")
+  , GYEONGGI_SOUTH("경기 남부")
+  , GANGWON("강원권")
+  , CHUNGCHEONG("충청권")
+  , DAEJEON("대전")
+  , SEJONG("세종")
+  , GYEONGSANG("경상권")
+  , DAEGU("대구")
+  , BUSAN("부산")
+  , ULSAN("울산")
+  , JEONLA("전라권")
+  , GWANGJU("광주")
+  , JEJU("제주")
   ;
 
   private final String desc;
