@@ -376,6 +376,7 @@ public class BlindDateService {
 
     List<BlindDate> dateList = blindDateRepository.findAllBySeason(season).stream()
       .filter(it -> it.getMatchingBlindDateId() == null)
+      .filter(BlindDate::getIsSubmitted)
       .collect(Collectors.toList());
     List<BlindDate> femaleList = dateList.stream()
       .filter(it -> Objects.equals(it.getGender(), "F"))
