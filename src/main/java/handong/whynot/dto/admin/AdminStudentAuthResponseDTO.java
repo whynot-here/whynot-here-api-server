@@ -26,6 +26,7 @@ public class AdminStudentAuthResponseDTO {
   private AuthType authType;
   private Integer studentId;
   private String studentName;
+  private String studentType;
   private String imgUrl;
   private String backImgUrl;
   private boolean isAuthenticated;
@@ -52,6 +53,7 @@ public class AdminStudentAuthResponseDTO {
       .authType(account.getAuthType())
       .studentId(account.getStudentId())
       .studentName(account.getStudentName())
+      .studentType(account.getStudentType())
       .imgUrl(auth.getImgUrl())
       .backImgUrl(auth.getBackImgUrl())
       .isAuthenticated(auth.getIsAuthenticated())

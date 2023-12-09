@@ -77,6 +77,9 @@ public class Account {
     @Column(name = "blind_date_push")
     private boolean blindDatePush;
 
+    @Column(name = "student_type")
+    private String studentType;
+
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<AccountRole> userRoleList = new ArrayList<>();
@@ -127,9 +130,10 @@ public class Account {
           .anyMatch(it -> StringUtils.equals(it.getRole().getCode(), roleCode));
     }
 
-    public void approveStudentAuth(Integer studentId, String studentName) {
+    public void approveStudentAuth(Integer studentId, String studentName, String studentType) {
         this.studentId = studentId;
         this.studentName = studentName;
+        this.studentType = studentType;
         this.isAuthenticated = true;
     }
 

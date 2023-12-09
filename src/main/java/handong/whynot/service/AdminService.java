@@ -105,7 +105,7 @@ public class AdminService {
 
       Account account = accountRepository.findById(approve.getAccountId())
         .orElseThrow(() -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
-      account.approveStudentAuth(approve.getStudentId(), approve.getStudentName());
+      account.approveStudentAuth(approve.getStudentId(), approve.getStudentName(), approve.getStudentType());
 
       final Role role = roleService.getRoleByCode("ROLE_USER");
       account.addAccountRole(role);

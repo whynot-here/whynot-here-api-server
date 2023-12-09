@@ -7,4 +7,5 @@ public class AdminApproveRequestDTO {
   private Long accountId;
   private Integer studentId;
   private String studentName;
+  private String studentType;
 }
