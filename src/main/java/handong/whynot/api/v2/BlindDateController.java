@@ -42,7 +42,7 @@ public class BlindDateController {
   }
 
   @Operation(summary = "소개팅 지원 삭제")
-  @DeleteMapping
+  @DeleteMapping("")
   public ResponseDTO deleteBlindDateBySeason(@RequestParam Integer season) {
 
     Account account = accountService.getCurrentAccount();
@@ -99,6 +99,15 @@ public class BlindDateController {
   public ResponseDTO createBlindDateFee(@RequestBody BlindDateFeeRequestDTO dto) {
     Account account = accountService.getCurrentAccount();
     blindDateService.createBlindDateFee(account, dto);
+
+    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_FEE_CREATED_OK);
+  }
+
+  @Operation(summary = "[졸업생] 참여비 납부 동의")
+  @PostMapping("/g-fee")
+  public ResponseDTO createGBlindDateFee(@RequestBody BlindDateFeeRequestDTO dto) {
+    Account account = accountService.getCurrentAccount();
+    blindDateService.createGBlindDateFee(account, dto);
 
     return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_FEE_CREATED_OK);
   }
