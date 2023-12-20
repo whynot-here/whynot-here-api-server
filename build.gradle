@@ -86,12 +86,14 @@ clean {
     delete file('src/main/generated')
 }
 
+def querydslDir = "$buildDir/generated/querydsl"
+
 sourceSets {
-    main {
-        java {
-            srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
-        }
-    }
+    main.java.srcDirs += [ querydslDir ]
+}
+
+tasks.withType(JavaCompile) {
+    options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
 }
 
 test {
