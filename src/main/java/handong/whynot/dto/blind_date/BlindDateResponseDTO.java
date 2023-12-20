@@ -24,6 +24,8 @@ public class BlindDateResponseDTO {
   private String myDrink;
   private String myLocation;
   private String myLocationDesc;
+  private String myJob;
+  private String myJobDesc;
   private String hobby;
   private String hobbyDesc;
   private String myContactStyle;
@@ -66,6 +68,8 @@ public class BlindDateResponseDTO {
       .myDrink(blindDate.getMyDrink())
       .myLocation(blindDate.getMyLocation())
       .myLocationDesc(blindDate.getMyLocationDesc())
+      .myJob(blindDate.getMyJob())
+      .myJobDesc(blindDate.getMyJobDesc())
       .hobby(blindDate.getHobby())
       .hobbyDesc(blindDate.getHobbyDesc())
       .myContactStyle(blindDate.getMyContactStyle())
