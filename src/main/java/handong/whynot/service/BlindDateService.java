@@ -104,6 +104,11 @@ public class BlindDateService {
     return blindDateFeeRepository.existsByAccountIdAndSeasonAndUseYn(account.getId(), season, "Y");
   }
 
+  public Boolean getIsGraduatedParticipatedBySeason(Integer season, Account account) {
+
+    return isDuplicatedApply(account, season);
+  }
+
   public BlindDateMatchingResponseDTO getMatchingResultBySeason(Integer season, Account account) {
     // 소개팅 지원 확인
     BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)

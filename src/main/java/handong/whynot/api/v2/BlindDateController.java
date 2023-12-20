@@ -64,6 +64,13 @@ public class BlindDateController {
     return blindDateService.getIsParticipatedBySeason(season, account);
   }
 
+  @Operation(summary = "[졸업생] 소개팅 지원 여부 조회")
+  @GetMapping("/g-participation")
+  public Boolean getIsGraduatedParticipatedBySeason(@RequestParam Integer season) {
+    Account account = accountService.getCurrentAccount();
+    return blindDateService.getIsGraduatedParticipatedBySeason(season, account);
+  }
+
   @Operation(summary = "매칭 결과 노출 여부 조회")
   @GetMapping("/reveal-result")
   public Boolean getIsRevealResultBySeason(@RequestParam Integer season) {
