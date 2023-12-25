@@ -297,4 +297,12 @@ public class AccountService implements UserDetailsService {
     public void pushBlindDateOnOff(Account account, boolean pushOn) {
         account.setBlindDatePush(pushOn);
     }
+
+    public TokenResponseDTO getToken(Account account) {
+
+        String accessToken = signInTokenGenerator.accessToken(account);
+        String refreshToken = signInTokenGenerator.refreshToken(account);
+
+        return TokenResponseDTO.of(account, accessToken, refreshToken);
+    }
 }

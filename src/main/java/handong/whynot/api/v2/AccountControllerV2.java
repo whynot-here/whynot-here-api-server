@@ -134,6 +134,14 @@ public class AccountControllerV2 {
         return ResponseDTO.of(AccountResponseCode.ACCOUNT_UPDATE_DEVICE_TOKEN_OK);
     }
 
+    @Operation(summary = "엑세스 토큰 발급")
+    @GetMapping("/account/access-token")
+    public TokenResponseDTO getAccessToken() {
+
+        Account account = accountService.getCurrentAccount();
+        return accountService.getToken(account);
+    }
+
     @Operation(summary = "차단 사용자 조회")
     @GetMapping("/account/block-account")
     public List<BlockAccountResponseDTO> getAllBlockAccount() {
