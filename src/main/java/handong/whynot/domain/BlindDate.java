@@ -38,7 +38,7 @@ public class BlindDate extends BaseTimeEntity {
   @Column(name = "is_submitted")
   private Boolean isSubmitted = false;
 
-  @Column(name = "is_sreened")
+  @Column(name = "is_screened")
   private Boolean isScreened;
 
   @Column(name = "is_payed")
