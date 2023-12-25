@@ -3,6 +3,7 @@ package handong.whynot.api.v2;
 import handong.whynot.domain.Account;
 import handong.whynot.domain.BlindDateSummary;
 import handong.whynot.dto.blind_date.*;
+import handong.whynot.dto.blind_date.enums.GBlindDateState;
 import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.service.AccountService;
 import handong.whynot.service.BlindDateService;
@@ -219,5 +220,13 @@ public class BlindDateController {
 
     Account account = accountService.getCurrentAccount();
     return blindDateService.getMyApply(account, season);
+  }
+
+  @Operation(summary = "[졸업생] 현재 상태 조회")
+  @GetMapping("/g-state")
+  public GBlindDateState getGBlindDateState(@RequestParam Integer season) {
+
+    Account account = accountService.getCurrentAccount();
+    return blindDateService.getGBlindDateState(account, season);
   }
 }

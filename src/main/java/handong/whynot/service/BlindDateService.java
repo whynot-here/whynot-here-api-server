@@ -4,6 +4,7 @@ import handong.whynot.domain.*;
 import handong.whynot.dto.account.AccountResponseCode;
 import handong.whynot.dto.admin.AdminBlindDateResponseDTO;
 import handong.whynot.dto.blind_date.*;
+import handong.whynot.dto.blind_date.enums.GBlindDateState;
 import handong.whynot.dto.friend_meeting.FriendMeetingResponseCode;
 import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.blind_date.*;
@@ -498,6 +499,7 @@ public class BlindDateService {
     return response;
   }
 
+  @Transactional
   public void deleteBlindDateBySeason(Account account, Integer season) {
     BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
       .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
@@ -510,5 +512,58 @@ public class BlindDateService {
 
     // 3. blind_date 삭제
     blindDateRepository.deleteById(blindDate.getId());
+  }
+
+  public GBlindDateState getGBlindDateState(Account account, Integer season) {
+
+    Optional<BlindDate> optionalBlindDate = blindDateRepository.findByAccountAndSeason(account, season);
+
+    // 참여하지 않은 경우
+    if (optionalBlindDate.isEmpty()) {
+      return GBlindDateState.NO;
+    }
+
+    // 신청서 작성 중인 경우
+    BlindDate blindDate = optionalBlindDate.get();
+    if (! blindDate.getIsSubmitted()) {
+      return GBlindDateState.BLIND_ING;
+    }
+
+    // 내부 검수 중인 경우
+    if (! blindDate.getIsScreened()) {
+      return GBlindDateState.SCREEN;
+    }
+
+    // 참여비 정보 제출 중인 경우
+    if (! blindDateFeeRepository.existsByAccountIdAndSeasonAndUseYn(account.getId(), season, "Y")) {
+      return GBlindDateState.FEE_ING;
+    }
+
+    // 납부 확인 중인 경우
+    if (! blindDate.getIsPayed()) {
+      return GBlindDateState.FEE;
+    }
+
+    // 1차 오픈 대기 중인 경우
+    if (! blindDate.getIsReveal()) {
+      return GBlindDateState.MATCH;
+    }
+
+    // 매칭 성공된 경우
+    if (Objects.isNull(blindDate.getMatchingBlindDateId())) {
+      return GBlindDateState.MATCH_OK;
+    }
+
+    // 상대방이 재매칭 요구한 경우
+    if (blindDate.getIsRejected()) {
+      return GBlindDateState.MATCH_REJECTED;
+    }
+
+    // 2차 오픈 예정
+    if (blindDate.getIsRetry()) {
+      return GBlindDateState.REMATCH;
+    } else {
+      return GBlindDateState.MATCH_FAIL;
+    }
   }
 }
