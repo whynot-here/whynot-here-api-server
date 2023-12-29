@@ -86,15 +86,6 @@ public class BlindDateController {
     return blindDateService.getMatchingResultBySeason(season, account);
   }
 
-  @Operation(summary = "매칭 승인 or 거절")
-  @CacheEvict(value="MatchedAccountList", key="'MatchedAccountList'")
-  @PostMapping("/apply")
-  public ResponseDTO submitApply(@RequestBody BlindDateApplyDTO applyDTO) {
-    Account account = accountService.getCurrentAccount();
-    blindDateService.submitApply(applyDTO.getApproval(), applyDTO.getSeason(), account);
-    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_SUBMIT_APPLY_OK);
-  }
-
   @Operation(summary = "매칭 결과 summary 조회")
   @GetMapping("/summary")
   public BlindDateSummary getMatchingResultSummary(@RequestParam Integer season) {
@@ -228,5 +219,15 @@ public class BlindDateController {
 
     Account account = accountService.getCurrentAccount();
     return blindDateService.getGBlindDateState(account, season);
+  }
+
+  @Operation(summary = "[졸업생] 참여비 즉시 환불 요청")
+  @PutMapping("/g-fee/recall")
+  public ResponseDTO requestRecallFee(@RequestParam Integer season) {
+
+    Account account = accountService.getCurrentAccount();
+    blindDateService.requestRecallFee(account, season);
+
+    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_FEE_RECALL_OK);
   }
 }

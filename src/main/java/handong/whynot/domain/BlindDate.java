@@ -2,6 +2,7 @@ package handong.whynot.domain;
 
 import handong.whynot.domain.common.BaseTimeEntity;
 import handong.whynot.dto.blind_date.BlindDateRequestDTO;
+import handong.whynot.dto.blind_date.enums.GBlindDateState;
 import lombok.*;
 
 import javax.persistence.*;
@@ -55,6 +56,9 @@ public class BlindDate extends BaseTimeEntity {
 
   @Column(name = "is_retry")
   private Boolean isRetry;
+
+  @Column(name = "g_state")
+  private GBlindDateState gState;
 
   @Column(name = "my_step")
   private Integer myStep;
@@ -191,6 +195,7 @@ public class BlindDate extends BaseTimeEntity {
       .isRecalled(false)
       .isReveal2(false)
       .isRetry(false)
+      .gState(GBlindDateState.BLIND_ING)
       .account(account)
       .myStep(0)
       .favoriteStep(0)
@@ -199,11 +204,6 @@ public class BlindDate extends BaseTimeEntity {
 
   public void updateMatchingBlindDate(Long matchingId) {
     matchingBlindDateId = matchingId;
-  }
-
-  public void updateMatchingApproval(Boolean approval) {
-    isActive = true;
-    isMatched = approval;
   }
 
   public void updateBlindDate(BlindDateRequestDTO request) {

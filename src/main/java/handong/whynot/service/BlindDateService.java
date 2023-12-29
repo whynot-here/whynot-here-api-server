@@ -1,12 +1,10 @@
 package handong.whynot.service;
 
 import handong.whynot.domain.*;
-import handong.whynot.dto.account.AccountResponseCode;
 import handong.whynot.dto.admin.AdminBlindDateResponseDTO;
 import handong.whynot.dto.blind_date.*;
 import handong.whynot.dto.blind_date.enums.GBlindDateState;
 import handong.whynot.dto.friend_meeting.FriendMeetingResponseCode;
-import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.blind_date.*;
 import handong.whynot.exception.friend_meeting.FriendMeetingDuplicatedException;
 import handong.whynot.repository.*;
@@ -28,7 +26,6 @@ public class BlindDateService {
   private final MobilePushService mobilePushService;
   private final MatchingHistoryRepository matchingHistoryRepository;
   private final MatchingHistoryService matchingHistoryService;
-  private final AccountRepository accountRepository;
   private final BlindDateSummaryRepository blindDateSummaryRepository;
   private final BlindDateFeeRepository blindDateFeeRepository;
   private final BlindDateImageLinkRepository blindDateImageLinkRepository;
@@ -139,16 +136,6 @@ public class BlindDateService {
       .collect(Collectors.toList());
 
     return BlindDateMatchingResponseDTO.of(matchedBlindDate, blindDate.getName(), images);
-  }
-
-  @Transactional
-  public void submitApply(Boolean approval, Integer season, Account account) {
-    // 소개팅 지원 확인
-    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
-      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
-
-    // 지원 의사 업데이트
-    blindDate.updateMatchingApproval(approval);
   }
 
   @Transactional
@@ -565,5 +552,15 @@ public class BlindDateService {
     } else {
       return GBlindDateState.MATCH_FAIL;
     }
+  }
+
+  @Transactional
+  public void requestRecallFee(Account account, Integer season) {
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    blindDate.setIsActive(true);
+    blindDate.setIsRecalled(true);
+    blindDate.setGState(GBlindDateState.FINISHED);
   }
 }

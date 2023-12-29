@@ -16,6 +16,8 @@ public enum GBlindDateState {
   , MATCH_FAIL("매칭 실패")
   , MATCH_REJECTED("상대방 재매칭 요구")
   , REMATCH("2차 오픈 대기")
+  , REMATCH_OK("2차 매칭 완료")
+  , FINISHED("시즌 종료")
   ;
 
   private final String desc;
