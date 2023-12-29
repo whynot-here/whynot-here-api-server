@@ -308,4 +308,13 @@ public class AdminController {
 
         return blindDateService.getBlindDateBaseMatching(season);
     }
+
+    @Operation(summary = "내부 검수 완료")
+    @PutMapping("/admin/g-blind-date/screen/{blindId}")
+    public ResponseDTO approveScreen(@PathVariable Long blindId) {
+
+        blindDateService.approveScreen(blindId);
+
+        return ResponseDTO.of(AdminResponseCode.ADMIN_SCREEN_OK);
+    }
 }

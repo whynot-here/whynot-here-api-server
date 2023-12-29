@@ -286,6 +286,7 @@ public class BlindDateService {
       .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
 
     blindDate.setIsSubmitted(true);
+    blindDate.setGState(GBlindDateState.SCREEN);
   }
 
   @Transactional
@@ -562,5 +563,14 @@ public class BlindDateService {
     blindDate.setIsActive(true);
     blindDate.setIsRecalled(true);
     blindDate.setGState(GBlindDateState.FINISHED);
+  }
+
+  @Transactional
+  public void approveScreen(Long blindId) {
+    BlindDate blindDate = blindDateRepository.findById(blindId)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    blindDate.setIsScreened(true);
+    blindDate.setGState(GBlindDateState.FEE_ING);
   }
 }
