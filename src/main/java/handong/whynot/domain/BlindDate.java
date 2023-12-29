@@ -35,6 +35,9 @@ public class BlindDate extends BaseTimeEntity {
   @Column(name = "is_reveal")
   private Boolean isReveal;
 
+  @Column(name = "is_reveal_2")
+  private Boolean isReveal2;
+
   @Column(name = "is_submitted")
   private Boolean isSubmitted = false;
 
@@ -46,6 +49,9 @@ public class BlindDate extends BaseTimeEntity {
 
   @Column(name = "is_rejected")
   private Boolean isRejected;
+
+  @Column(name = "is_recalled")
+  private Boolean isRecalled;
 
   @Column(name = "is_retry")
   private Boolean isRetry;
@@ -182,6 +188,8 @@ public class BlindDate extends BaseTimeEntity {
       .isScreened(false)
       .isPayed(false)
       .isRejected(false)
+      .isRecalled(false)
+      .isReveal2(false)
       .isRetry(false)
       .account(account)
       .myStep(0)

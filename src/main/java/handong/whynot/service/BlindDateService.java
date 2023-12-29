@@ -337,8 +337,7 @@ public class BlindDateService {
       .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
 
     // 상태 업데이트
-    updateRetryState(blindDate);   // 본인
-    updateRetryState(matched);     // 상대방
+    updateRetryState(blindDate, matched);   // 본인, 싱대방
 
     // 매칭 내역 재매칭으로 수정
     MatchingHistory matchingHistory = matchingHistoryService.getMatchingHistoryByBlindDate(blindDate);
@@ -349,15 +348,16 @@ public class BlindDateService {
     mobilePushService.pushIsRetriedByMatching(accountList);
   }
 
-  private void updateRetryState(BlindDate blindDate) {
+  private void updateRetryState(BlindDate me, BlindDate you) {
     // 1. isRetry True 로 업데이트
-    blindDate.setIsRetry(true);
+    me.setIsRetry(true);
 
-    // 2. 매칭 결과 노출 False
-    blindDate.setIsReveal(false);
+    // 2. 매칭 대상자 초기화
+    me.setMatchingBlindDateId(null);
+    you.setMatchingBlindDateId(null);
 
-    // 3. 매칭 대상자 초기화
-    blindDate.setMatchingBlindDateId(null);
+    // 3. 상대방 거절 업데이트
+    you.setIsRejected(true);
   }
 
   public Boolean getIsRetryBySeason(Account account, Integer season) {
