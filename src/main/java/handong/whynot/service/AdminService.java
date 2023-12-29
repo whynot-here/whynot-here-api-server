@@ -8,6 +8,7 @@ import handong.whynot.dto.admin.AdminResponseCode;
 import handong.whynot.dto.admin.AdminStudentAuthResponseDTO;
 import handong.whynot.dto.blind_date.BlindDateFeeResponseDTO;
 import handong.whynot.dto.blind_date.BlindDateResponseCode;
+import handong.whynot.dto.blind_date.enums.GBlindDateState;
 import handong.whynot.dto.mobile.CustomPushRequestDTO;
 import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.account.StudentAuthNotFoundException;
@@ -169,6 +170,27 @@ public class AdminService {
     blindDateService.createBlindDate(season, account);
 
     // 3. 푸시 알림
+    List<Account> accountList = Collections.singletonList(account);
+    mobilePushService.pushApproveBlindDateFee(accountList);
+  }
+
+  @Transactional
+  public void approveGBlindDateFee(Long feeId, Account approver) {
+    // 1. is_submitted true 업데이트
+    BlindDateFee blindDateFee = blindDateFeeRepository.findById(feeId)
+      .orElseThrow(() -> new BlindDateFeeNotFoundException(BlindDateResponseCode.BLIND_DATE_FEE_READ_FAIL));
+
+    blindDateFee.approveBlindDateFee(approver.getEmail());
+
+    // 2. 상태 업데이트
+    BlindDate blindDate = blindDateRepository.findById(blindDateFee.getBlindDateId())
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+    blindDate.setGState(GBlindDateState.MATCH);
+
+    // 3. 푸시 알림
+    Account account = accountRepository.findById(blindDateFee.getAccountId())
+      .orElseThrow(() -> new AccountNotFoundException(AccountResponseCode.ACCOUNT_READ_FAIL));
+
     List<Account> accountList = Collections.singletonList(account);
     mobilePushService.pushApproveBlindDateFee(accountList);
   }

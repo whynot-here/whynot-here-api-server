@@ -23,6 +23,9 @@ public class BlindDateFee extends BaseTimeEntity {
   @Column(name = "account_id")
   private Long accountId;
 
+  @Column(name = "blind_date_id")
+  private Long blindDateId;
+
   @Column(name = "name")
   private String name;
 
@@ -47,6 +50,19 @@ public class BlindDateFee extends BaseTimeEntity {
   public static BlindDateFee of(Long accountId, BlindDateFeeRequestDTO dto) {
     return builder()
       .accountId(accountId)
+      .name(dto.getName())
+      .bankName(dto.getBankName())
+      .bankNumber(dto.getBankNumber())
+      .season(dto.getSeason())
+      .isSubmitted(false)
+      .useYn("Y")
+      .build();
+  }
+
+  public static BlindDateFee of(Long accountId, Long blindDateId, BlindDateFeeRequestDTO dto) {
+    return builder()
+      .accountId(accountId)
+      .blindDateId(blindDateId)
       .name(dto.getName())
       .bankName(dto.getBankName())
       .bankNumber(dto.getBankNumber())

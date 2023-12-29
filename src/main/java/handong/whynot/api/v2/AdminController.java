@@ -232,6 +232,15 @@ public class AdminController {
         return ResponseDTO.of(AdminResponseCode.ADMIN_APPROVE_BLIND_DATE_FEE_OK);
     }
 
+    @Operation(summary = "관리자 [졸업생] 참여비 납부 확인")
+    @PutMapping("/admin/g-blind-date/fee/{feeId}")
+    public ResponseDTO approveGBlindDateFeeBySeason(@PathVariable Long feeId) {
+        Account account = accountService.getCurrentAccount();
+        adminService.approveGBlindDateFee(feeId, account);
+
+        return ResponseDTO.of(AdminResponseCode.ADMIN_APPROVE_BLIND_DATE_FEE_OK);
+    }
+
     @Operation(summary = "보증금 납부 동의 리스트 조회")
     @GetMapping("/admin/blind-date/fee")
     public List<BlindDateFeeResponseDTO> getBlindDateFeeListBySeason(@RequestParam Integer season) {

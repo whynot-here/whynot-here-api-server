@@ -249,11 +249,14 @@ public class BlindDateService {
   @Transactional
   public void createGBlindDateFee(Account account, BlindDateFeeRequestDTO dto) {
     // 졸업생 소개팅 지원한 사용자들에 한해서 참가비 납부 정보 획득
-    blindDateRepository.findByAccountAndSeason(account, dto.getSeason())
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, dto.getSeason())
       .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
 
-    BlindDateFee dateFee = BlindDateFee.of(account.getId(), dto);
+    BlindDateFee dateFee = BlindDateFee.of(account.getId(), blindDate.getId(), dto);
     blindDateFeeRepository.save(dateFee);
+
+    // 상태 업데이트
+    blindDate.setGState(GBlindDateState.FEE);
   }
 
   private Boolean isDuplicatedBlindDateFee(Account account, Integer season) {
