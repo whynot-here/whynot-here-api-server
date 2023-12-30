@@ -74,7 +74,7 @@ public class MobilePushService {
   public void pushMatchingSuccess(List<Account> accountList) {
     NotificationEvent event = NotificationEvent.builder()
       .accountList(accountList)
-      .url("blind-date/matching")
+      .url("g-blind-date/matching")
       .title(("[한대소] 상대방 매칭 완료 🎁"))
       .body("매칭된 상대방의 정보를 확인하고, 연락 해보세요~!")
       .build();
@@ -85,7 +85,7 @@ public class MobilePushService {
   public void pushMatchingFail(List<Account> accountList) {
     NotificationEvent event = NotificationEvent.builder()
       .accountList(accountList)
-      .url("blind-date/matching-fail")
+      .url("g-blind-date/matching")
       .title(("[한대소] 상대방 매칭 실패 😥"))
       .body("아쉽지만 학우님과 딱 맞는 매칭 상대를 찾지 못했어요 😥")
       .build();
@@ -118,9 +118,20 @@ public class MobilePushService {
   public void pushApproveBlindDateFee(List<Account> accountList) {
     NotificationEvent event = NotificationEvent.builder()
       .accountList(accountList)
-      .url("")   // todo: 프론트 주소 나오면 채우기
-      .title(("[한대소] 보증금 납부 확인 완료"))
-      .body("신청 정보를 작성하고, 한대소 참여를 완료해주세요~! ☺️")
+      .url("g-blind-date/proceeding_01")
+      .title(("[한대소] 참여비 납부 확인 완료"))
+      .body("참여비 확인이 완료되었습니다. 제출하신 소중한 정보를 바탕으로 최고의 상대를 매칭하고 있습니다~! ☺️")
+      .build();
+
+    eventPublisher.publishEvent(event);
+  }
+
+  public void pushRematch(List<Account> accountList) {
+    NotificationEvent event = NotificationEvent.builder()
+      .accountList(accountList)
+      .url("g-blind-date/proceeding_02")
+      .title(("[한대소] 2차 매칭 시작"))
+      .body("2차 매칭이 시작되었습니다. 제출하신 소중한 정보를 바탕으로 최고의 상대를 매칭하고 있습니다~! ☺️")
       .build();
 
     eventPublisher.publishEvent(event);
@@ -140,9 +151,20 @@ public class MobilePushService {
   public void pushIsRetriedByMatching(List<Account> accountList) {
     NotificationEvent event = NotificationEvent.builder()
       .accountList(accountList)
-      .url("")   // todo: 프론트 주소 나오면 채우기
+      .url("g-blind-date/recall")
       .title(("[한대소] 재매칭 진행 대상자 알림 😥"))
-      .body("상대방이 재매칭 신청을 요청하여, 24시간 후 새로운 매칭 대상자와 매칭될 예정입니다.")
+      .body("상대방이 재매칭 신청을 요청하여, 새로운 대상자 매칭이 필요합니다.")
+      .build();
+
+    eventPublisher.publishEvent(event);
+  }
+
+  public void pushAdminScreenResult(List<Account> accountList) {
+    NotificationEvent event = NotificationEvent.builder()
+      .accountList(accountList)
+      .url("g-blind-date/fee")
+      .title(("[한대소] 내부 검수 완료 ✅"))
+      .body("보내주신 신청서를 잘 전달 받았습니다✨ 참여비 관련 정보를 제출해주세요~!")
       .build();
 
     eventPublisher.publishEvent(event);
