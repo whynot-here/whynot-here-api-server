@@ -344,7 +344,7 @@ public class AdminController {
 
     @Operation(summary = "[졸업생, 재학생] 2차 매칭 상대방 정보 일괄 발송")
     @CacheEvict(value="MatchedAccountList", key="'MatchedAccountList'")
-    @PostMapping("/admin/blind-matching/announce-partner-info")
+    @PostMapping("/admin/blind-matching2/announce-partner-info")
     public ResponseDTO notice2MatchingInfoBySeason(@RequestParam Integer season) {
         blindDateService.notice2MatchingInfoBySeason(season);
 
