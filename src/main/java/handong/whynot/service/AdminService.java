@@ -23,6 +23,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -185,6 +186,7 @@ public class AdminService {
     // 2. 상태 업데이트
     BlindDate blindDate = blindDateRepository.findById(blindDateFee.getBlindDateId())
       .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+    blindDate.setIsPayed(true);
     blindDate.setGState(GBlindDateState.MATCH);
 
     // 3. 푸시 알림
@@ -198,6 +200,14 @@ public class AdminService {
   public List<BlindDateFeeResponseDTO> getBlindDateFeeListBySeason(Integer season) {
 
     return blindDateFeeRepository.findAllBySeason(season).stream()
+      .map(BlindDateFeeResponseDTO::of)
+      .collect(Collectors.toList());
+  }
+
+  public List<BlindDateFeeResponseDTO> getGBlindDateFeeListBySeason(Integer season) {
+
+    return blindDateFeeRepository.findAllBySeason(season).stream()
+      .filter(it -> ! it.getIsSubmitted())
       .map(BlindDateFeeResponseDTO::of)
       .collect(Collectors.toList());
   }

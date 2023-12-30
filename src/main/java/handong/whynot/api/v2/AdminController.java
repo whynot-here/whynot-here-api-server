@@ -170,14 +170,6 @@ public class AdminController {
         return ResponseDTO.of(AccusationResponseCode.ACCUSATION_SUBMIT_OK);
     }
 
-    @Operation(summary = "남, 여 매칭 생성")
-    @PostMapping("/admin/blind-matching")
-    public ResponseDTO createMatching(@RequestBody MatchingRequestDTO request) {
-        blindDateService.createMatching(request.getMaleId(), request.getFemaleId());
-
-        return ResponseDTO.of(BlindDateResponseCode.MATCHING_CREATED_OK);
-    }
-
     @Operation(summary = "매칭 리스트 조회")
     @GetMapping("/admin/blind-matching")
     public List<AdminBlindMatchingResponseDTO> getBlindMatchingListBySeason(@RequestParam Integer season) {
@@ -196,15 +188,6 @@ public class AdminController {
         matchingHistoryService.deleteBlindMatching(matchingId);
 
         return ResponseDTO.of(BlindDateResponseCode.MATCHING_DELETED_OK);
-    }
-
-    @Operation(summary = "매칭 상대방 정보 일괄 발송")
-    @CacheEvict(value="MatchedAccountList", key="'MatchedAccountList'")
-    @PostMapping("/admin/blind-matching/announce-partner-info")
-    public ResponseDTO noticeMatchingInfoBySeason(@RequestParam Integer season) {
-        blindDateService.noticeMatchingInfoBySeason(season);
-
-        return ResponseDTO.of(BlindDateResponseCode.MATCHING_NOTICE_OK);
     }
 
     @Operation(summary = "관리자 수동 푸시")
@@ -228,15 +211,6 @@ public class AdminController {
     public ResponseDTO approveBlindDateFeeBySeason(@PathVariable Long feeId, @RequestParam Integer season) {
         Account account = accountService.getCurrentAccount();
         adminService.approveBlindDateFee(feeId, season, account);
-
-        return ResponseDTO.of(AdminResponseCode.ADMIN_APPROVE_BLIND_DATE_FEE_OK);
-    }
-
-    @Operation(summary = "관리자 [졸업생] 참여비 납부 확인")
-    @PutMapping("/admin/g-blind-date/fee/{feeId}")
-    public ResponseDTO approveGBlindDateFeeBySeason(@PathVariable Long feeId) {
-        Account account = accountService.getCurrentAccount();
-        adminService.approveGBlindDateFee(feeId, account);
 
         return ResponseDTO.of(AdminResponseCode.ADMIN_APPROVE_BLIND_DATE_FEE_OK);
     }
@@ -318,12 +292,62 @@ public class AdminController {
         return blindDateService.getBlindDateBaseMatching(season);
     }
 
-    @Operation(summary = "내부 검수 완료")
+    @Operation(summary = "[졸업생] 소개팅 내부 검수 리스트 조회")
+    @GetMapping("/admin/g-blind-date/screen")
+    public List<AdminBlindDateResponseDTO> getGBlindDateListBySeason(@RequestParam Integer season) {
+
+        return blindDateService.getGBlindDateListBySeason(season);
+    }
+
+    @Operation(summary = "[졸업생] 내부 검수 완료")
     @PutMapping("/admin/g-blind-date/screen/{blindId}")
     public ResponseDTO approveScreen(@PathVariable Long blindId) {
 
         blindDateService.approveScreen(blindId);
 
         return ResponseDTO.of(AdminResponseCode.ADMIN_SCREEN_OK);
+    }
+
+    @Operation(summary = "[졸업생] 소개팅 참여비 납부 동의 리스트 조회")
+    @GetMapping("/admin/g-blind-date/fee")
+    public List<BlindDateFeeResponseDTO> getGBlindDateFeeListBySeason(@RequestParam Integer season) {
+
+        return adminService.getGBlindDateFeeListBySeason(season);
+    }
+
+    @Operation(summary = "[졸업생] 참여비 납부 확인")
+    @PutMapping("/admin/g-blind-date/fee/{feeId}")
+    public ResponseDTO approveGBlindDateFeeBySeason(@PathVariable Long feeId) {
+
+        Account account = accountService.getCurrentAccount();
+        adminService.approveGBlindDateFee(feeId, account);
+
+        return ResponseDTO.of(AdminResponseCode.ADMIN_APPROVE_BLIND_DATE_FEE_OK);
+    }
+
+    @Operation(summary = "[졸업생, 재학생] 남, 여 매칭 생성")
+    @PostMapping("/admin/blind-matching")
+    public ResponseDTO createMatching(@RequestBody MatchingRequestDTO request) {
+        blindDateService.createMatching(request.getMaleId(), request.getFemaleId());
+
+        return ResponseDTO.of(BlindDateResponseCode.MATCHING_CREATED_OK);
+    }
+
+    @Operation(summary = "[졸업생, 재학생] 매칭 상대방 정보 일괄 발송")
+    @CacheEvict(value="MatchedAccountList", key="'MatchedAccountList'")
+    @PostMapping("/admin/blind-matching/announce-partner-info")
+    public ResponseDTO noticeMatchingInfoBySeason(@RequestParam Integer season) {
+        blindDateService.noticeMatchingInfoBySeason(season);
+
+        return ResponseDTO.of(BlindDateResponseCode.MATCHING_NOTICE_OK);
+    }
+
+    @Operation(summary = "[졸업생, 재학생] 2차 매칭 상대방 정보 일괄 발송")
+    @CacheEvict(value="MatchedAccountList", key="'MatchedAccountList'")
+    @PostMapping("/admin/blind-matching/announce-partner-info")
+    public ResponseDTO notice2MatchingInfoBySeason(@RequestParam Integer season) {
+        blindDateService.notice2MatchingInfoBySeason(season);
+
+        return ResponseDTO.of(BlindDateResponseCode.MATCHING_NOTICE_OK);
     }
 }

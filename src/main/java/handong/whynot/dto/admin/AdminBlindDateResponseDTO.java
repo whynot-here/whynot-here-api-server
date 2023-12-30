@@ -1,6 +1,7 @@
 package handong.whynot.dto.admin;
 
 import handong.whynot.domain.BlindDate;
+import handong.whynot.dto.blind_date.enums.GBlindDateState;
 import lombok.*;
 
 import java.util.List;
@@ -15,8 +16,7 @@ public class AdminBlindDateResponseDTO {
   // =========== 메타 정보 ===========
   private Long blindDateId;
   private Boolean matchedByAdmin;
-  private Boolean isSubmitted;
-  private Boolean isRetry;
+  private GBlindDateState gState;
 
   // =========== 내 정보 ===========
   private String name;
@@ -32,7 +32,6 @@ public class AdminBlindDateResponseDTO {
   private String myCharacter;
   private String dateStyle;
   private String faith;
-  private String mbti;
   private String smoke;
   private String commentForMate;
   private String commentForAdmin;
@@ -64,8 +63,7 @@ public class AdminBlindDateResponseDTO {
       // =========== 메타 정보 ===========
       .blindDateId(blindDate.getId())
       .matchedByAdmin(blindDate.getMatchingBlindDateId() != null)
-      .isSubmitted(blindDate.getIsSubmitted())
-      .isRetry(blindDate.getIsRetry())
+      .gState(blindDate.getGState())
       // =========== 내 정보 ===========
       .name(blindDate.getName())
       .gender(blindDate.getGender())
@@ -80,7 +78,6 @@ public class AdminBlindDateResponseDTO {
       .myCharacter(blindDate.getMyCharacter())
       .dateStyle(blindDate.getDateStyle())
       .faith(blindDate.getFaith())
-      .mbti(blindDate.getMbti())
       .smoke(blindDate.getSmoke())
       .commentForMate(blindDate.getCommentForMate())
       .commentForAdmin(blindDate.getCommentForAdmin())

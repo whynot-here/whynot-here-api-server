@@ -21,7 +21,7 @@ public class BlindDateController {
   private final BlindDateService blindDateService;
   private final AccountService accountService;
 
-  @Operation(summary = "소개팅 지원")
+  @Operation(summary = "[졸업생] 소개팅 지원 (약관동의)")
   @PostMapping("")
   @ResponseStatus(CREATED)
   public ResponseDTO createBlindDateBySeason(@RequestParam Integer season) {
@@ -32,7 +32,7 @@ public class BlindDateController {
     return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_CREATED_OK);
   }
 
-  @Operation(summary = "소개팅 수정")
+  @Operation(summary = "[졸업생] 소개팅 수정")
   @PutMapping("")
   public ResponseDTO updateBlindDate(@RequestBody BlindDateRequestDTO request) {
     Account account = accountService.getCurrentAccount();
@@ -41,7 +41,7 @@ public class BlindDateController {
     return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_UPDATED_OK);
   }
 
-  @Operation(summary = "소개팅 지원 삭제")
+  @Operation(summary = "[졸업생] 소개팅 지원 삭제")
   @DeleteMapping("")
   public ResponseDTO deleteBlindDateBySeason(@RequestParam Integer season) {
 
@@ -49,6 +49,85 @@ public class BlindDateController {
     blindDateService.deleteBlindDateBySeason(account, season);
 
     return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_DELETED_OK);
+  }
+
+  @Operation(summary = "[졸업생] 소개팅 최종 제출")
+  @PutMapping("/finish")
+  public ResponseDTO finishEditingBySeason(@RequestParam Integer season) {
+    Account account = accountService.getCurrentAccount();
+    blindDateService.finishEditing(account, season);
+
+    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_APPLY_FINISH_OK);
+  }
+
+  @Operation(summary = "[졸업생] 참여비 납부 동의")
+  @PostMapping("/g-fee")
+  public ResponseDTO createGBlindDateFee(@RequestBody BlindDateFeeRequestDTO dto) {
+    Account account = accountService.getCurrentAccount();
+    blindDateService.createGBlindDateFee(account, dto);
+
+    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_FEE_CREATED_OK);
+  }
+
+  @Operation(summary = "[졸업생] 매칭 후 상대방 정보 조회")
+  @GetMapping("/matching-result")
+  public BlindDateMatchingResponseDTO getMatchingResultBySeason(@RequestParam Integer season) {
+    Account account = accountService.getCurrentAccount();
+    return blindDateService.getMatchingResultBySeason(season, account);
+  }
+
+  @Operation(summary = "[졸업생] 재매칭 신청")
+  @PutMapping("/retry")
+  public ResponseDTO applyRetryBySeason(@RequestParam Integer season,
+                                        @RequestBody BlindDateRetryRequestDTO request) {
+    Account account = accountService.getCurrentAccount();
+    blindDateService.applyRetryBySeason(account, season, request.getReason());
+
+    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_RETRY_APPLY_OK);
+  }
+
+  @Operation(summary = "[졸업생] 참여비 즉시 환불 or 재매칭 신청")
+  @PutMapping("/g-fee/recall")
+  public ResponseDTO requestRecallFee(@RequestBody RecallRequestDTO recall) {
+
+    Account account = accountService.getCurrentAccount();
+    blindDateService.requestRecallFee(account, recall);
+
+    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_FEE_RECALL_OK);
+  }
+
+  @Operation(summary = "[졸업생] 비매너 신고")
+  @PutMapping("/manners")
+  public ResponseDTO reportMannersBySeason(@RequestParam Integer season,
+                                           @RequestBody MannerReportRequestDTO request) {
+    Account account = accountService.getCurrentAccount();
+    blindDateService.reportManners(account, season, request);
+
+    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_REPORT_MANNERS_OK);
+  }
+
+  @Operation(summary = "[졸업생] 정보 입력 단계 조회 (본인, 상대방)")
+  @GetMapping("/steps")
+  public BlindDateStepResponseDTO getStepsBySeason(@RequestParam Integer season) {
+
+    Account account = accountService.getCurrentAccount();
+    return blindDateService.getSteps(account, season);
+  }
+
+  @Operation(summary = "[졸업생] 본인 입력 정보 조회")
+  @GetMapping("/my-apply")
+  public BlindDateResponseDTO getMyApplyBySeason(@RequestParam Integer season) {
+
+    Account account = accountService.getCurrentAccount();
+    return blindDateService.getMyApply(account, season);
+  }
+
+  @Operation(summary = "[졸업생] 현재 상태 조회")
+  @GetMapping("/g-state")
+  public GBlindDateState getGBlindDateState(@RequestParam Integer season) {
+
+    Account account = accountService.getCurrentAccount();
+    return blindDateService.getGBlindDateState(account, season);
   }
 
   @Operation(summary = "소개팅 지원자 카운트 조회")
@@ -64,25 +143,11 @@ public class BlindDateController {
     return blindDateService.getIsParticipatedBySeason(season, account);
   }
 
-  @Operation(summary = "[졸업생] 소개팅 지원 여부 조회")
-  @GetMapping("/g-participation")
-  public Boolean getIsGraduatedParticipatedBySeason(@RequestParam Integer season) {
-    Account account = accountService.getCurrentAccount();
-    return blindDateService.getIsGraduatedParticipatedBySeason(season, account);
-  }
-
   @Operation(summary = "매칭 결과 노출 여부 조회")
   @GetMapping("/reveal-result")
   public Boolean getIsRevealResultBySeason(@RequestParam Integer season) {
     Account account = accountService.getCurrentAccount();
     return blindDateService.getIsRevealResultBySeason(season, account);
-  }
-
-  @Operation(summary = "매칭 후 상대방 정보 조회")
-  @GetMapping("/matching-result")
-  public BlindDateMatchingResponseDTO getMatchingResultBySeason(@RequestParam Integer season) {
-    Account account = accountService.getCurrentAccount();
-    return blindDateService.getMatchingResultBySeason(season, account);
   }
 
   @Operation(summary = "매칭 결과 summary 조회")
@@ -101,15 +166,6 @@ public class BlindDateController {
     return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_FEE_CREATED_OK);
   }
 
-  @Operation(summary = "[졸업생] 참여비 납부 동의")
-  @PostMapping("/g-fee")
-  public ResponseDTO createGBlindDateFee(@RequestBody BlindDateFeeRequestDTO dto) {
-    Account account = accountService.getCurrentAccount();
-    blindDateService.createGBlindDateFee(account, dto);
-
-    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_FEE_CREATED_OK);
-  }
-
   @Operation(summary = "보증금 납부 확인 여부 조회")
   @GetMapping("/fee/confirm")
   public Boolean getIsSubmittedBySeason(@RequestParam Integer season) {
@@ -123,15 +179,6 @@ public class BlindDateController {
     Account account = accountService.getCurrentAccount();
 
     return blindDateService.getBlindDateSubmitted(account, season);
-  }
-
-  @Operation(summary = "소개팅 최종 제출")
-  @PutMapping("/finish")
-  public ResponseDTO finishEditingBySeason(@RequestParam Integer season) {
-    Account account = accountService.getCurrentAccount();
-    blindDateService.finishEditing(account, season);
-
-    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_APPLY_FINISH_OK);
   }
 
   @Operation(summary = "만남 인증 사진 업로드")
@@ -160,16 +207,6 @@ public class BlindDateController {
     return blindDateService.getMatchingApprovedBySeason(account, season);
   }
 
-  @Operation(summary = "재매칭 신청")
-  @PutMapping("/retry")
-  public ResponseDTO applyRetryBySeason(@RequestParam Integer season,
-                                        @RequestBody BlindDateRetryRequestDTO request) {
-    Account account = accountService.getCurrentAccount();
-    blindDateService.applyRetryBySeason(account, season, request.getReason());
-
-    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_RETRY_APPLY_OK);
-  }
-
   @Operation(summary = "재매칭 신청 여부 조회")
   @GetMapping("/retry")
   public Boolean getIsRetryBySeason(@RequestParam Integer season) {
@@ -184,49 +221,5 @@ public class BlindDateController {
     Account account = accountService.getCurrentAccount();
 
     return blindDateService.getIsReportMannersBySeason(account, season);
-  }
-
-  @Operation(summary = "비매너 신고")
-  @PutMapping("/manners")
-  public ResponseDTO reportMannersBySeason(@RequestParam Integer season,
-                                           @RequestBody MannerReportRequestDTO request) {
-    Account account = accountService.getCurrentAccount();
-    blindDateService.reportManners(account, season, request);
-
-    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_REPORT_MANNERS_OK);
-  }
-
-  @Operation(summary = "정보 입력 단계 조회 (본인, 상대방)")
-  @GetMapping("/steps")
-  public BlindDateStepResponseDTO getStepsBySeason(@RequestParam Integer season) {
-
-    Account account = accountService.getCurrentAccount();
-    return blindDateService.getSteps(account, season);
-  }
-
-  @Operation(summary = "본인 입력 정보 조회")
-  @GetMapping("/my-apply")
-  public BlindDateResponseDTO getMyApplyBySeason(@RequestParam Integer season) {
-
-    Account account = accountService.getCurrentAccount();
-    return blindDateService.getMyApply(account, season);
-  }
-
-  @Operation(summary = "[졸업생] 현재 상태 조회")
-  @GetMapping("/g-state")
-  public GBlindDateState getGBlindDateState(@RequestParam Integer season) {
-
-    Account account = accountService.getCurrentAccount();
-    return blindDateService.getGBlindDateState(account, season);
-  }
-
-  @Operation(summary = "[졸업생] 참여비 즉시 환불 요청")
-  @PutMapping("/g-fee/recall")
-  public ResponseDTO requestRecallFee(@RequestParam Integer season) {
-
-    Account account = accountService.getCurrentAccount();
-    blindDateService.requestRecallFee(account, season);
-
-    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_FEE_RECALL_OK);
   }
 }

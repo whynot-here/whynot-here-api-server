@@ -102,11 +102,6 @@ public class BlindDateService {
     return blindDateFeeRepository.existsByAccountIdAndSeasonAndUseYn(account.getId(), season, "Y");
   }
 
-  public Boolean getIsGraduatedParticipatedBySeason(Integer season, Account account) {
-
-    return isDuplicatedApply(account, season);
-  }
-
   public BlindDateMatchingResponseDTO getMatchingResultBySeason(Integer season, Account account) {
     // 소개팅 지원 확인
     BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
@@ -187,14 +182,29 @@ public class BlindDateService {
     return responseList;
   }
 
+  public List<AdminBlindDateResponseDTO> getGBlindDateListBySeason(Integer season) {
+
+    return blindDateRepository.findAllBySeason(season).stream()
+      .filter(it -> Objects.equals(it.getGState(), GBlindDateState.SCREEN))
+      .map(AdminBlindDateResponseDTO::of)
+      .collect(Collectors.toList());
+  }
+
   public void noticeMatchingInfoBySeason(Integer season) {
     List<BlindDate> blindDateList = blindDateRepository.findAllBySeason(season);
     noticeResult(blindDateList);
   }
 
+  public void notice2MatchingInfoBySeason(Integer season) {
+    List<BlindDate> blindDateList = blindDateRepository.findAllBySeason(season).stream()
+      .filter(it -> Objects.equals(it.getGState(), GBlindDateState.REMATCH))
+      .collect(Collectors.toList());
+    noticeResult(blindDateList);
+  }
+
   public void noticeRetryBySeason(Integer season) {
     List<BlindDate> blindDateList = blindDateRepository.findAllBySeasonAndIsRetry(season, true);
-    noticeResult(blindDateList);
+    notice2Result(blindDateList);
   }
 
   private void noticeResult(List<BlindDate> blindDateList) {
@@ -204,6 +214,38 @@ public class BlindDateService {
     }
 
     // 매칭 성공 사용자 push
+    List<BlindDate> successList = blindDateList.stream()
+      .filter(it -> Objects.nonNull(it.getMatchingBlindDateId()))
+      .peek(it -> it.setGState(GBlindDateState.MATCH_OK))
+      .collect(Collectors.toList());
+
+    List<Account> accountSuccessList = successList.stream()
+      .map(BlindDate::getAccount)
+      .collect(Collectors.toList());
+
+    mobilePushService.pushMatchingSuccess(accountSuccessList);
+
+    // 매칭 실패한 사용자 push
+    List<BlindDate> failList = blindDateList.stream()
+      .filter(it -> Objects.isNull(it.getMatchingBlindDateId()))
+      .peek(it -> it.setGState(GBlindDateState.MATCH_FAIL))
+      .collect(Collectors.toList());
+
+    List<Account> accountFailList = failList.stream()
+      .map(BlindDate::getAccount)
+      .collect(Collectors.toList());
+
+    mobilePushService.pushMatchingFail(accountFailList);
+  }
+
+  private void notice2Result(List<BlindDate> blindDateList) {
+    // 사용자 매칭 결과 노출 ON
+    for (BlindDate blindDate : blindDateList) {
+      blindDate.setIsReveal2(true);
+      blindDate.setGState(GBlindDateState.REMATCH_OK);
+    }
+
+    // 2차 매칭 성공 사용자 push
     List<Account> accountSuccessList = blindDateList.stream()
       .filter(it -> Objects.nonNull(it.getMatchingBlindDateId()))
       .map(BlindDate::getAccount)
@@ -211,7 +253,7 @@ public class BlindDateService {
 
     mobilePushService.pushMatchingSuccess(accountSuccessList);
 
-    // 매칭 실패한 사용자 push
+    // 2차 매칭 실패한 사용자 push
     List<Account> accountFailList = blindDateList.stream()
       .filter(it -> Objects.isNull(it.getMatchingBlindDateId()))
       .map(BlindDate::getAccount)
@@ -349,6 +391,10 @@ public class BlindDateService {
 
     // 3. 상대방 거절 업데이트
     you.setIsRejected(true);
+
+    // 4. 상태 업데이트
+    me.setGState(GBlindDateState.REMATCH);
+    you.setGState(GBlindDateState.MATCH_REJECTED);
   }
 
   public Boolean getIsRetryBySeason(Account account, Integer season) {
@@ -514,58 +560,28 @@ public class BlindDateService {
       return GBlindDateState.NO;
     }
 
-    // 신청서 작성 중인 경우
+    // 참여한 경우
     BlindDate blindDate = optionalBlindDate.get();
-    if (! blindDate.getIsSubmitted()) {
-      return GBlindDateState.BLIND_ING;
-    }
-
-    // 내부 검수 중인 경우
-    if (! blindDate.getIsScreened()) {
-      return GBlindDateState.SCREEN;
-    }
-
-    // 참여비 정보 제출 중인 경우
-    if (! blindDateFeeRepository.existsByAccountIdAndSeasonAndUseYn(account.getId(), season, "Y")) {
-      return GBlindDateState.FEE_ING;
-    }
-
-    // 납부 확인 중인 경우
-    if (! blindDate.getIsPayed()) {
-      return GBlindDateState.FEE;
-    }
-
-    // 1차 오픈 대기 중인 경우
-    if (! blindDate.getIsReveal()) {
-      return GBlindDateState.MATCH;
-    }
-
-    // 매칭 성공된 경우
-    if (Objects.isNull(blindDate.getMatchingBlindDateId())) {
-      return GBlindDateState.MATCH_OK;
-    }
-
-    // 상대방이 재매칭 요구한 경우
-    if (blindDate.getIsRejected()) {
-      return GBlindDateState.MATCH_REJECTED;
-    }
-
-    // 2차 오픈 예정
-    if (blindDate.getIsRetry()) {
-      return GBlindDateState.REMATCH;
-    } else {
-      return GBlindDateState.MATCH_FAIL;
-    }
+    return blindDate.getGState();
   }
 
   @Transactional
-  public void requestRecallFee(Account account, Integer season) {
-    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
+  public void requestRecallFee(Account account, RecallRequestDTO request) {
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, request.getSeason())
       .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
 
     blindDate.setIsActive(true);
-    blindDate.setIsRecalled(true);
-    blindDate.setGState(GBlindDateState.FINISHED);
+    blindDate.setIsRecalled(request.getIsRecall());
+
+    if (request.getIsRecall()) {                      // 환불 받고 시즌 종료
+      blindDate.setGState(GBlindDateState.FINISHED);
+    } else {                                          // 2차 매칭 시작
+      blindDate.setGState(GBlindDateState.REMATCH);
+
+      // 2차 매칭 오픈 예정 알림
+      List<Account> accountList = Collections.singletonList(blindDate.getAccount());
+      mobilePushService.pushRematch(accountList);
+    }
   }
 
   @Transactional
@@ -575,5 +591,9 @@ public class BlindDateService {
 
     blindDate.setIsScreened(true);
     blindDate.setGState(GBlindDateState.FEE_ING);
+
+    // 내부 검수 완료 알림
+    List<Account> accountList = Collections.singletonList(blindDate.getAccount());
+    mobilePushService.pushAdminScreenResult(accountList);
   }
 }
