@@ -207,7 +207,6 @@ public class AdminService {
   public List<BlindDateFeeResponseDTO> getGBlindDateFeeListBySeason(Integer season) {
 
     return blindDateFeeRepository.findAllBySeason(season).stream()
-      .filter(it -> ! it.getIsSubmitted())
       .map(BlindDateFeeResponseDTO::of)
       .collect(Collectors.toList());
   }
