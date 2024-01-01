@@ -50,6 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Account
                 .antMatchers("/v1/login", "/v1/sign-up", "/v1/check-email-token", "/v1/resend-token",
                         "/v1/check-email-duplicate", "/v1/check-nickname-duplicate", "/v2/sign-in", "/v2/admin-sign-in", "/auth/login/**", "/v2/login/apple").permitAll()
+                .antMatchers("/reset-admin").hasAnyRole("ADMIN")
 
                 // Post
                 .antMatchers(HttpMethod.GET, "/v1/posts/**", "/v1/comments/**", "/v2/posts/**", "/v2/posts/category/**").permitAll()

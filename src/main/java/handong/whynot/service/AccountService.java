@@ -305,4 +305,13 @@ public class AccountService implements UserDetailsService {
 
         return TokenResponseDTO.of(account, accessToken, refreshToken);
     }
+
+  @Transactional
+  public void resetAdminPW(String email, String password) {
+     Account account = accountRepository.findByEmail(email);
+
+     if (account.getAuthType().equals(AuthType.admin)) {
+         account.setPassword(passwordEncoder.encode(password));
+     }
+  }
 }

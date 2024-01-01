@@ -4,6 +4,7 @@ import handong.whynot.domain.Account;
 import handong.whynot.domain.AuthType;
 import handong.whynot.dto.account.*;
 import handong.whynot.dto.account.oauth2.AppleServicesResponseDTO;
+import handong.whynot.dto.admin.AdminResponseCode;
 import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.dto.mobile.DeviceTokenDTO;
 import handong.whynot.exception.account.PasswordNotSupportedException;
@@ -185,5 +186,12 @@ public class AccountControllerV2 {
         accountService.pushBlindDateOnOff(account, pushOn);
 
         return ResponseDTO.of(AccountResponseCode.BLIND_DATE_PUSH_ON_OFF_OK);
+    }
+
+    @PutMapping("/reset-admin")
+    public ResponseDTO resetAdminPW(@RequestBody SignInRequestDTO request) {
+        accountService.resetAdminPW(request.getEmail(), request.getPassword());
+
+        return ResponseDTO.of(AccountResponseCode.ACCOUNT_CHANGE_PASSWORD_OK);
     }
 }
