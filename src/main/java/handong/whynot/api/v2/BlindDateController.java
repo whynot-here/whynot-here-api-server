@@ -130,6 +130,16 @@ public class BlindDateController {
     return blindDateService.getGBlindDateState(account, season);
   }
 
+  @Operation(summary = "[졸업생] (매칭 실패 후) 재매칭 여부 신청")
+  @PutMapping("/g-rematch")
+  public ResponseDTO requestRematch(@RequestBody ReMatchRequestDTO request) {
+
+    Account account = accountService.getCurrentAccount();
+    blindDateService.requestRematch(account, request);
+
+    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_REMATCH_OK);
+  }
+
   @Operation(summary = "소개팅 지원자 카운트 조회")
   @GetMapping("/total-cnt")
   public Long getApplicantsCntBySeason(@RequestParam Integer season) {

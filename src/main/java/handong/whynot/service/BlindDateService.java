@@ -596,4 +596,18 @@ public class BlindDateService {
     List<Account> accountList = Collections.singletonList(blindDate.getAccount());
     mobilePushService.pushAdminScreenResult(accountList);
   }
+
+  @Transactional
+  public void requestRematch(Account account, ReMatchRequestDTO request) {
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, request.getSeason())
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    if (request.getIsWantToRematch()) {              // 필수 조건 변경 후 재매칭 신청
+      blindDate.updateBlindDateByRematch(request);
+      blindDate.setIsRetry(true);
+      blindDate.setGState(GBlindDateState.REMATCH);
+    } else {                                         // 시즌 종료
+      blindDate.setGState(GBlindDateState.FINISHED);
+    }
+  }
 }

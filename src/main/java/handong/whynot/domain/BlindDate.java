@@ -2,6 +2,7 @@ package handong.whynot.domain;
 
 import handong.whynot.domain.common.BaseTimeEntity;
 import handong.whynot.dto.blind_date.BlindDateRequestDTO;
+import handong.whynot.dto.blind_date.ReMatchRequestDTO;
 import handong.whynot.dto.blind_date.enums.GBlindDateState;
 import lombok.*;
 
@@ -248,4 +249,21 @@ public class BlindDate extends BaseTimeEntity {
     this.favoriteLocation = request.getFavoriteLocation();
     this.favoriteLocationImportant = request.getFavoriteLocationImportant();
   }
+
+  public void updateBlindDateByRematch(ReMatchRequestDTO request) {
+    this.favoriteAge = request.getFavoriteAge();
+    this.favoriteAgeImportant = request.getFavoriteAgeImportant();
+    this.favoriteHeight = request.getFavoriteHeight();
+    this.favoriteHeightImportant = request.getFavoriteHeightImportant();
+    this.favoriteSmoke = request.getFavoriteSmoke();
+    this.favoriteSmokeImportant = request.getFavoriteSmokeImportant();
+    this.favoriteDrink = request.getFavoriteDrink();
+    this.favoriteDrinkImportant = request.getFavoriteDrinkImportant();
+    this.favoriteFaith = request.getFavoriteFaith();
+    this.favoriteFaithImportant = request.getFavoriteFaithImportant();
+    this.favoriteLocation = request.getFavoriteLocation();
+    this.favoriteLocationImportant = request.getFavoriteLocationImportant();
+  }
+
+
 }
