@@ -299,6 +299,13 @@ public class AdminController {
         return blindDateService.getGBlindDateListBySeason(season);
     }
 
+    @Operation(summary = "[졸업생] 소개팅 사진 리스트 조회")
+    @GetMapping("/admin/g-blind-date/image/{blindId}")
+    public List<String> getGBlindDateImage(@PathVariable Long blindId) {
+
+        return blindDateService.getGBlindDateImage(blindId);
+    }
+
     @Operation(summary = "[졸업생] 내부 검수 완료")
     @PutMapping("/admin/g-blind-date/screen/{blindId}")
     public ResponseDTO approveScreen(@PathVariable Long blindId) {

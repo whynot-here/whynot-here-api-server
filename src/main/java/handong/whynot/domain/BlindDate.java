@@ -59,6 +59,7 @@ public class BlindDate extends BaseTimeEntity {
   private Boolean isRetry;
 
   @Column(name = "g_state")
+  @Enumerated(EnumType.STRING)
   private GBlindDateState gState;
 
   @Column(name = "my_step")

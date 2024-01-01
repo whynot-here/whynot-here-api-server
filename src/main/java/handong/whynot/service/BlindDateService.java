@@ -190,6 +190,15 @@ public class BlindDateService {
       .collect(Collectors.toList());
   }
 
+  public List<String> getGBlindDateImage(Long blindId) {
+    BlindDate blindDate = blindDateRepository.findById(blindId)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    return blindDateImageLinkRepository.findAllByBlindDate(blindDate).stream()
+      .map(BlindDateImageLink::getLink)
+      .collect(Collectors.toList());
+  }
+
   public void noticeMatchingInfoBySeason(Integer season) {
     List<BlindDate> blindDateList = blindDateRepository.findAllBySeason(season);
     noticeResult(blindDateList);
