@@ -107,7 +107,7 @@ public class MobilePushService {
   public void pushDeleteBlindDateFee(List<Account> accountList) {
     NotificationEvent event = NotificationEvent.builder()
       .accountList(accountList)
-      .url("")   // todo: 프론트 주소 나오면 채우기
+      .url("g-blind-date/fee")
       .title(("[한대소] 연애탭 참여 신청 취소 완료"))
       .body("한대소 신청과 보증금 납부 내역이 삭제되었어요~! 다음에 또 만나요!")
       .build();
