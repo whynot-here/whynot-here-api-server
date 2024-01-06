@@ -54,9 +54,7 @@ public class BlindDateMatchingResponseDTO {
     String location = "";
     String job = getJobEnum(blindDate.getMyJob()).getDesc();
     LocationEnum locationEnum = getLocationEnum(blindDate.getMyLocation());
-    if (locationEnum.equals(LocationEnum.DORMITORY)) {
-      location = blindDate.getMyLocationDesc() + locationEnum.getDesc();
-    }
+    location = String.format("%s(%s)", locationEnum.getDesc(), blindDate.getMyLocationDesc());
 
     List<String> hobbies = Stream.of(blindDate.getHobby().split(";"))
       .map(it -> getHobbyEnum(it).getDesc())
