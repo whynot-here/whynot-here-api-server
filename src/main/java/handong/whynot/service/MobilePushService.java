@@ -71,6 +71,17 @@ public class MobilePushService {
     eventPublisher.publishEvent(event);
   }
 
+  public void pushAdminBlindAccusation(List<Account> accountList) {
+    NotificationEvent event = NotificationEvent.builder()
+      .accountList(accountList)
+      .url("")
+      .title(("소개팅 비매너 신고가 접수되었습니다. 🚨"))
+      .body("")
+      .build();
+
+    eventPublisher.publishEvent(event);
+  }
+
   public void pushMatchingSuccess(List<Account> accountList) {
     NotificationEvent event = NotificationEvent.builder()
       .accountList(accountList)

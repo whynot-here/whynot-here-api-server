@@ -31,6 +31,7 @@ public class BlindDateService {
   private final BlindDateImageLinkRepository blindDateImageLinkRepository;
   private final FriendMeetingRepository friendMeetingRepository;
   private final BlindDateMatchingHelperRepository blindDateMatchingHelperRepository;
+  private final AccountQueryRepository accountQueryRepository;
 
   @Transactional
   public void createBlindDate(Integer season, Account account) {
@@ -430,6 +431,7 @@ public class BlindDateService {
 
     // todo: 상대방 비매너 신고 안내 (푸시 알림)
     // 1안) 신고내용을 관리자에게 알림 보낸다,  2안) 신고내용을 상대방에게 알림 보낸다
+    mobilePushService.pushAdminBlindAccusation(accountQueryRepository.getAdminAccountList());
   }
 
   @Transactional
