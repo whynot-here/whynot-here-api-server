@@ -85,7 +85,7 @@ public class MobilePushService {
   public void pushMatchingFail(List<Account> accountList) {
     NotificationEvent event = NotificationEvent.builder()
       .accountList(accountList)
-      .url("g-blind-date/matching")
+      .url("g-blind-date/rematching")
       .title(("[한대소] 상대방 매칭 실패 😥"))
       .body("아쉽지만 학우님과 딱 맞는 매칭 상대를 찾지 못했어요 😥")
       .build();
