@@ -104,6 +104,17 @@ public class MobilePushService {
     eventPublisher.publishEvent(event);
   }
 
+  public void pushMatchingFail2(List<Account> accountList) {
+    NotificationEvent event = NotificationEvent.builder()
+      .accountList(accountList)
+      .url("g-blind-date/matching")
+      .title(("[한대소] 상대방 매칭 실패 😥"))
+      .body("아쉽지만 학우님과 딱 맞는 매칭 상대를 찾지 못했어요 😥")
+      .build();
+
+    eventPublisher.publishEvent(event);
+  }
+
   public void pushCustomMessage(List<Account> accountList, String url, String title, String body) {
     NotificationEvent event = NotificationEvent.builder()
       .accountList(accountList)
@@ -162,7 +173,7 @@ public class MobilePushService {
   public void pushIsRetriedByMatching(List<Account> accountList) {
     NotificationEvent event = NotificationEvent.builder()
       .accountList(accountList)
-      .url("g-blind-date/recall")
+      .url("g-blind-date/rematching/other")
       .title(("[한대소] 재매칭 진행 대상자 알림 😥"))
       .body("상대방이 재매칭 신청을 요청하여, 새로운 대상자 매칭이 필요합니다.")
       .build();

@@ -209,7 +209,7 @@ public class BlindDateService {
     List<BlindDate> blindDateList = blindDateRepository.findAllBySeason(season).stream()
       .filter(it -> Objects.equals(it.getGState(), GBlindDateState.REMATCH))
       .collect(Collectors.toList());
-    noticeResult(blindDateList);
+    noticeResult2(blindDateList);
   }
 
   public void noticeRetryBySeason(Integer season) {
@@ -246,6 +246,37 @@ public class BlindDateService {
       .collect(Collectors.toList());
 
     mobilePushService.pushMatchingFail(accountFailList);
+  }
+
+  private void noticeResult2(List<BlindDate> blindDateList) {
+    // 사용자 매칭 결과 노출 ON
+    for (BlindDate blindDate : blindDateList) {
+      blindDate.setIsReveal(true);
+    }
+
+    // 매칭 성공 사용자 push
+    List<BlindDate> successList = blindDateList.stream()
+      .filter(it -> Objects.nonNull(it.getMatchingBlindDateId()))
+      .peek(it -> it.setGState(GBlindDateState.REMATCH_OK))
+      .collect(Collectors.toList());
+
+    List<Account> accountSuccessList = successList.stream()
+      .map(BlindDate::getAccount)
+      .collect(Collectors.toList());
+
+    mobilePushService.pushMatchingSuccess(accountSuccessList);
+
+    // 매칭 실패한 사용자 push
+    List<BlindDate> failList = blindDateList.stream()
+      .filter(it -> Objects.isNull(it.getMatchingBlindDateId()))
+      .peek(it -> it.setGState(GBlindDateState.REMATCH_OK))
+      .collect(Collectors.toList());
+
+    List<Account> accountFailList = failList.stream()
+      .map(BlindDate::getAccount)
+      .collect(Collectors.toList());
+
+    mobilePushService.pushMatchingFail2(accountFailList);
   }
 
   private void notice2Result(List<BlindDate> blindDateList) {
