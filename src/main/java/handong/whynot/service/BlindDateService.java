@@ -314,6 +314,13 @@ public class BlindDateService {
   }
 
   @Transactional
+  public Integer getVisitCnt(Integer season) {
+    BlindDateSummary summary = blindDateSummaryRepository.findBySeason(season);
+    summary.setTotalCnt(summary.getTotalCnt()+1);
+    return summary.getTotalCnt();
+  }
+
+  @Transactional
   public void createBlindDateFee(Account account, BlindDateFeeRequestDTO dto) {
     // 신청한 내역이 있는지 확인
     if (isDuplicatedBlindDateFee(account, dto.getSeason())) {

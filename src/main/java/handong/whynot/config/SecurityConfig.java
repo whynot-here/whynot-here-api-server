@@ -64,6 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // Blind Date
                 .antMatchers(HttpMethod.GET, "/v2/blind-date/total-cnt").permitAll()
+                .antMatchers(HttpMethod.GET, "/v2/blind-date/visit-cnt").permitAll()
                 .antMatchers(HttpMethod.GET, "/v2/blind-date/summary").permitAll()
                 .antMatchers( "/v2/blind-date/**").hasAnyRole("USER")
 
