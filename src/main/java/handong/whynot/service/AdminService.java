@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -92,6 +93,7 @@ public class AdminService {
   public List<AdminStudentAuthResponseDTO> getRequests(Boolean isAuthenticated) {
 
     return studentAuthRepository.findAllByIsAuthenticated(isAuthenticated).stream()
+      .filter(it -> it.getCreatedDt().isAfter(LocalDateTime.of(2024, 1, 1, 0, 0, 0)))
       .map(AdminStudentAuthResponseDTO::of)
       .collect(Collectors.toList());
   }
