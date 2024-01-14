@@ -29,6 +29,7 @@ public class MatchingHistoryService {
       .collect(Collectors.toList());
   }
 
+  @Transactional
   public void deleteBlindMatching(Long matchingId) {
     MatchingHistory matchingHistory = matchingHistoryRepository.findById(matchingId)
       .orElseThrow(() -> new MatchingNotFoundException(BlindDateResponseCode.MATCHING_READ_FAIL));
