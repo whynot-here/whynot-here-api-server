@@ -1,6 +1,7 @@
 package handong.whynot.handler;
 
 import handong.whynot.dto.account.AccountResponseCode;
+import handong.whynot.dto.admin.AdminResponseCode;
 import handong.whynot.dto.common.ErrorResponseDTO;
 import handong.whynot.dto.common.ResponseCode;
 import handong.whynot.exception.account.*;
@@ -74,5 +75,11 @@ public class AccountExceptionHandler {
     @ExceptionHandler(BlockAccountNotFoundException.class)
     public ErrorResponseDTO blockAccountNotFoundExceptionHandle() {
         return ErrorResponseDTO.of(AccountResponseCode.BLOCK_ACCOUNT_READ_FAIL, null);
+    }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(StudentAuthNotValidException.class)
+    public ErrorResponseDTO studentAuthNotValidExceptionHandle() {
+        return ErrorResponseDTO.of(AdminResponseCode.NOT_VALID_STUDENT_TYPE, null);
     }
 }

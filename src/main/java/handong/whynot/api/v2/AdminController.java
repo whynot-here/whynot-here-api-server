@@ -16,6 +16,7 @@ import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.dto.friend_meeting.FriendMatchingRequestDTO;
 import handong.whynot.dto.friend_meeting.FriendMeetingResponseCode;
 import handong.whynot.dto.mobile.CustomPushRequestDTO;
+import handong.whynot.repository.StudentAuthRepository;
 import handong.whynot.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,7 @@ public class AdminController {
     private final MatchingHistoryService matchingHistoryService;
     private final FriendMeetingService friendMeetingService;
     private final FriendMatchingHistoryService friendMatchingHistoryService;
+    private final StudentAuthRepository studentAuthRepository;
 
     @Operation(summary = "사용자 후기 등록")
     @PostMapping("/admin/feedback")
@@ -136,6 +138,16 @@ public class AdminController {
           .backImgUrl(backImg)
           .isAuthenticated(isAuthenticated)
           .build();
+    }
+
+    @Operation(summary = "본인 학생증 인증 초기화")
+    @DeleteMapping("/student/reset-auth")
+    public ResponseDTO deleteStudentAuth() {
+
+        Account account = accountService.getCurrentAccount();
+        adminService.deleteStudentAuth(account);
+
+        return ResponseDTO.of(AdminResponseCode.STUDENT_DELETE_OK);
     }
 
     @Operation(summary = "인증 요청 전체 조회")

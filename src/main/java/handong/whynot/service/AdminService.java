@@ -12,11 +12,13 @@ import handong.whynot.dto.blind_date.enums.GBlindDateState;
 import handong.whynot.dto.mobile.CustomPushRequestDTO;
 import handong.whynot.exception.account.AccountNotFoundException;
 import handong.whynot.exception.account.StudentAuthNotFoundException;
+import handong.whynot.exception.account.StudentAuthNotValidException;
 import handong.whynot.exception.blind_date.BlindDateFeeNotFoundException;
 import handong.whynot.exception.blind_date.BlindDateNotFoundException;
 import handong.whynot.exception.blind_date.MatchingNotFoundException;
 import handong.whynot.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -24,7 +26,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +41,7 @@ public class AdminService {
   private final BlindDateService blindDateService;
   private final MatchingHistoryRepository matchingHistoryRepository;
   private final BlindDateRepository blindDateRepository;
+  private final AccountRoleRepository accountRoleRepository;
 
   @Transactional
   public void requestStudentAuth(StudentAuthRequestDTO dto, Account account) {
@@ -88,6 +90,24 @@ public class AdminService {
 
   public StudentAuth getStudentImg(Account account) {
     return studentAuthRepository.findByAccountId(account.getId()).orElse(null);
+  }
+
+  @Transactional
+  public void deleteStudentAuth(Account account) {
+    // 졸업생 타입은 인증 초기화 불가
+    if (StringUtils.equals(account.getStudentType(), StudentType.GRADUATED.getDesc())) {
+      throw new StudentAuthNotValidException(AdminResponseCode.NOT_VALID_STUDENT_TYPE);
+    }
+
+    // 인증 내역 제거 NOT_VALID_STUDENT_TYPE
+    studentAuthRepository.deleteByAccount(account);
+
+    // account 상태값 변경
+    account.setAuthenticated(false);
+
+    // role 제거
+    final Role role = roleService.getRoleByCode("ROLE_USER");
+    accountRoleRepository.deleteByAccountAndRole(account, role);
   }
 
   public List<AdminStudentAuthResponseDTO> getRequests(Boolean isAuthenticated) {
