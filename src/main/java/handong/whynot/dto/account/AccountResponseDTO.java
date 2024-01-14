@@ -3,6 +3,7 @@ package handong.whynot.dto.account;
 import handong.whynot.domain.Account;
 import handong.whynot.domain.AuthType;
 import handong.whynot.domain.Role;
+import handong.whynot.domain.StudentType;
 import lombok.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class AccountResponseDTO {
     private AuthType authType;
     private List<String> roles;
     private boolean isAuthenticated;
+    private String studentType;
 
     public static AccountResponseDTO of(Account account) {
         return builder()
@@ -32,6 +34,7 @@ public class AccountResponseDTO {
                 .authType(account.getAuthType())
                 .roles(account.getRoles().stream().map(Role::getCode).collect(Collectors.toList()))
                 .isAuthenticated(account.isAuthenticated())
+                .studentType(account.getStudentType())
                 .build();
     }
 }
