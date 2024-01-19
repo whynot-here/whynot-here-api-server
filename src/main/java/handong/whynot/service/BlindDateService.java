@@ -171,6 +171,7 @@ public class BlindDateService {
 
   public List<AdminBlindDateResponseDTO> getBlindDateListBySeason(Integer season) {
     List<AdminBlindDateResponseDTO> responseList = blindDateRepository.findAllBySeason(season).stream()
+      .filter(BlindDate::getIsPayed)
       .map(AdminBlindDateResponseDTO::of)
       .collect(Collectors.toList());
 
@@ -478,7 +479,7 @@ public class BlindDateService {
 
     List<BlindDate> dateList = blindDateRepository.findAllBySeason(season).stream()
       .filter(it -> it.getMatchingBlindDateId() == null)
-      .filter(BlindDate::getIsSubmitted)
+      .filter(BlindDate::getIsPayed)
       .collect(Collectors.toList());
     List<BlindDate> femaleList = dateList.stream()
       .filter(it -> Objects.equals(it.getGender(), "F"))
@@ -529,13 +530,30 @@ public class BlindDateService {
 
     if (base.getFavoriteLocationImportant()) {
       if (Objects.equals(base.getFavoriteLocation(), "LONG_NO") &&
-        !Objects.equals(matched.getMyLocation(), "ETC")) {
+        !Objects.equals(matched.getMyLocation(), base.getMyLocation())) {
         goodMatching = false;
       }
     }
 
     if (base.getFavoriteSmokeImportant()) {
       if (! Objects.equals(base.getFavoriteSmoke(), matched.getSmoke())) {
+        goodMatching = false;
+      }
+    }
+
+    if (base.getFavoriteHeightImportant()) {
+      if (Objects.equals(base.getFavoriteAge(), "UP") &&
+        base.getMyAge() > matched.getMyAge()) {
+        goodMatching = false;
+      }
+
+      if (Objects.equals(base.getFavoriteAge(), "DOWN") &&
+        base.getMyAge() < matched.getMyAge()) {
+        goodMatching = false;
+      }
+
+      if (Objects.equals(base.getFavoriteAge(), "SAME") &&
+        !Objects.equals(base.getMyAge(), matched.getMyAge())) {
         goodMatching = false;
       }
     }
