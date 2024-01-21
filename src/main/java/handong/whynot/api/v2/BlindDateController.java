@@ -140,6 +140,24 @@ public class BlindDateController {
     return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_REMATCH_OK);
   }
 
+  @Operation(summary = "[졸업생] 추가 정보 입력")
+  @PutMapping("/g-extra-info")
+  public ResponseDTO requestExtraInfo(@RequestBody GExtraInfo request, @RequestParam Integer season) {
+
+    Account account = accountService.getCurrentAccount();
+    blindDateService.requestExtraInfo(account, request, season);
+
+    return ResponseDTO.of(BlindDateResponseCode.BLIND_DATE_EXTRA_INFO_OK);
+  }
+
+  @Operation(summary = "[졸업생] 추가 정보 조회")
+  @GetMapping("/g-extra-info")
+  public GExtraInfo getExtraInfo(@RequestParam Integer season) {
+
+    Account account = accountService.getCurrentAccount();
+    return blindDateService.getExtraInfo(account, season);
+  }
+
   @Operation(summary = "소개팅 지원자 카운트 조회")
   @GetMapping("/total-cnt")
   public Long getApplicantsCntBySeason(@RequestParam Integer season) {

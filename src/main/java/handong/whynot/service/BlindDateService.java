@@ -514,46 +514,29 @@ public class BlindDateService {
   private boolean checkAvailableMatching(BlindDate base, BlindDate matched) {
     boolean goodMatching = true;
 
-    if (base.getFavoriteDrinkImportant()) {
+    if (Objects.nonNull(base.getFavoriteDrinkImportant()) && base.getFavoriteDrinkImportant()) {
       if (Objects.equals(base.getFavoriteDrink(), "NEVER") &&
         !Objects.equals(matched.getMyDrink(), "NEVER")) {
         goodMatching = false;
       }
     }
 
-    if (base.getFavoriteFaithImportant()) {
+    if (Objects.nonNull(base.getFavoriteFaithImportant()) && base.getFavoriteFaithImportant()) {
       if (Objects.equals(base.getFavoriteFaith(), "CHRISTIAN") &&
         !Objects.equals(matched.getFaith(), "CHRISTIAN")) {
         goodMatching = false;
       }
     }
 
-    if (base.getFavoriteLocationImportant()) {
+    if (Objects.nonNull(base.getFavoriteLocationImportant()) && base.getFavoriteLocationImportant()) {
       if (Objects.equals(base.getFavoriteLocation(), "LONG_NO") &&
         !Objects.equals(matched.getMyLocation(), base.getMyLocation())) {
         goodMatching = false;
       }
     }
 
-    if (base.getFavoriteSmokeImportant()) {
+    if (Objects.nonNull(base.getFavoriteSmokeImportant()) && base.getFavoriteSmokeImportant()) {
       if (! Objects.equals(base.getFavoriteSmoke(), matched.getSmoke())) {
-        goodMatching = false;
-      }
-    }
-
-    if (base.getFavoriteHeightImportant()) {
-      if (Objects.equals(base.getFavoriteAge(), "UP") &&
-        base.getMyAge() > matched.getMyAge()) {
-        goodMatching = false;
-      }
-
-      if (Objects.equals(base.getFavoriteAge(), "DOWN") &&
-        base.getMyAge() < matched.getMyAge()) {
-        goodMatching = false;
-      }
-
-      if (Objects.equals(base.getFavoriteAge(), "SAME") &&
-        !Objects.equals(base.getMyAge(), matched.getMyAge())) {
         goodMatching = false;
       }
     }
@@ -676,5 +659,26 @@ public class BlindDateService {
     } else {                                         // 시즌 종료
       blindDate.setGState(GBlindDateState.FINISHED);
     }
+  }
+
+  @Transactional
+  public void requestExtraInfo(Account account, GExtraInfo request, Integer season) {
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    blindDate.setMyAge(request.getAge());
+    blindDate.setKakaoLink(request.getKakaoLink());
+    blindDate.setCommentForMate(request.getComment());
+  }
+
+  public GExtraInfo getExtraInfo(Account account, Integer season) {
+    BlindDate blindDate = blindDateRepository.findByAccountAndSeason(account, season)
+      .orElseThrow(() -> new BlindDateNotFoundException(BlindDateResponseCode.BLIND_DATE_READ_FAIL));
+
+    return GExtraInfo.builder()
+      .age(blindDate.getMyAge())
+      .comment(blindDate.getCommentForMate())
+      .kakaoLink(blindDate.getKakaoLink())
+      .build();
   }
 }

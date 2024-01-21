@@ -6,6 +6,8 @@ import lombok.*;
 
 import java.util.List;
 
+import static handong.whynot.dto.blind_date.enums.DepartmentEnum.getDepartmentEnum;
+
 @Getter
 @Setter
 @Builder
@@ -85,7 +87,7 @@ public class AdminBlindDateResponseDTO {
       .retryReason(blindDate.getRetryReason())
       .mannersReason(blindDate.getMannersReason())
       .mannersReasonDesc(blindDate.getMannersReasonDesc())
-      .department(blindDate.getDepartment())
+      .department(getDepartmentEnum(blindDate.getDepartment()).getDesc())
       .myJob(blindDate.getMyJob())
       .myJobDesc(blindDate.getMyJobDesc())
       // =========== 선호하는 상대방 정보 ===========
