@@ -203,7 +203,10 @@ public class BlindDateService {
 
   public void noticeMatchingInfoBySeason(Integer season) {
     List<BlindDate> blindDateList = blindDateRepository.findAllBySeason(season);
-    noticeResult(blindDateList);
+    List<BlindDate> filteredList = blindDateList.stream()
+      .filter(BlindDate::getIsPayed)
+      .collect(Collectors.toList());
+    noticeResult(filteredList);
   }
 
   public void notice2MatchingInfoBySeason(Integer season) {
