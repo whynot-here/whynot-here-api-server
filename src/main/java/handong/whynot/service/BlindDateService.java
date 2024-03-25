@@ -255,7 +255,7 @@ public class BlindDateService {
   private void noticeResult2(List<BlindDate> blindDateList) {
     // 사용자 매칭 결과 노출 ON
     for (BlindDate blindDate : blindDateList) {
-      blindDate.setIsReveal(true);
+      blindDate.setIsReveal2(true);
     }
 
     // 매칭 성공 사용자 push

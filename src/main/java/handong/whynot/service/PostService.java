@@ -387,6 +387,13 @@ public class PostService {
           .collect(Collectors.toList());
     }
 
+    public List<PostResponseDTO> getPostsByPage(Long lastPostId, Long categoryId, List<Long> blockPostList, int size) {
+        return postQueryRepository.findPostsByPage(lastPostId, categoryId, blockPostList, size)
+          .stream()
+          .map(PostResponseDTO::of)
+          .collect(Collectors.toList());
+    }
+
     public List<PostResponseDTO> getPostsByCategory(Long id) {
 
         Category category = categoryRepository.findById(id)
