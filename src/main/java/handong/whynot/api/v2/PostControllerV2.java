@@ -1,7 +1,6 @@
 package handong.whynot.api.v2;
 
 import handong.whynot.domain.Account;
-import handong.whynot.domain.Post;
 import handong.whynot.dto.common.ResponseDTO;
 import handong.whynot.dto.post.*;
 import handong.whynot.repository.PostRepository;
@@ -12,17 +11,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -32,7 +26,6 @@ import static org.springframework.http.HttpStatus.CREATED;
 public class PostControllerV2 {
 
     private final PostService postService;
-    private final PostRepository postRepository;
     private final AccountService accountService;
 
     @Operation(summary = "공고 전체 조회")
@@ -40,7 +33,7 @@ public class PostControllerV2 {
     public List<PostResponseDTO> getPostsV2(
             @RequestParam(name = "categoryId", required = false) Long categoryId,
             @RequestParam(name = "lastPostId", required = false) Long lastPostId,
-            @RequestParam(name = "size", required = false, defaultValue = "10") int size
+            @RequestParam(name = "size", required = false, defaultValue = "20") int size
     ) {
         List<Long> blockPostList = accountService.getCurrentAccountForGetPosts();
         return postService.getPostsByPage(lastPostId, categoryId, blockPostList, size);
