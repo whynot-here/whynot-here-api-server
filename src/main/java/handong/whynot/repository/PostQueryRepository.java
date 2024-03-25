@@ -1,11 +1,14 @@
 package handong.whynot.repository;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import handong.whynot.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.querydsl.jpa.JPAExpressions.select;
 
@@ -164,5 +167,32 @@ public class PostQueryRepository {
                         qPost.createdDt.desc()
                 )
                 .fetch();
+    }
+
+    public List<Post> findPostsByPage(Long lastPostId, Long categoryId, List<Long> blockPostList, int size) {
+        BooleanBuilder postRangeFilter = new BooleanBuilder();
+        BooleanBuilder categoryFilter = new BooleanBuilder();
+        BooleanBuilder blockPostFilter = new BooleanBuilder();
+
+        // offset 세팅
+        if (Objects.nonNull(lastPostId)) {
+            postRangeFilter.and(qPost.id.lt(lastPostId));
+        }
+
+        // category 설정
+        if (Objects.nonNull(categoryId)) {
+            categoryFilter.and(qPost.categoryId.id.eq(categoryId));
+        }
+
+        // 차단 사용자 게시글 제거
+        blockPostFilter.and(qPost.id.notIn(blockPostList));
+
+        return queryFactory.selectFrom(qPost)
+          .where(
+            postRangeFilter, categoryFilter, blockPostFilter
+          )
+          .orderBy(qPost.id.desc())
+          .limit(size)
+          .fetch();
     }
 }
